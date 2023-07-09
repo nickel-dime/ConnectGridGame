@@ -1,22 +1,83 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+datasource db {
+  provider          = "postgresql"
+  url               = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl         = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING") // used for migrations
+}
 
 generator client {
   provider = "prisma-client-js"
   previewFeatures = ["jsonProtocol"]
 }
 
-datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
-  shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING") // used for migrations
+model Player {
+  firstName   String
+  lastName    String
+  yearStart   String
+  yearEnd     String
+  profilePic  String?
+  position    String?
+  pff_page    String?
+  fbdb_page   String?
+  Player_Team Player_Team[]
+  college     String?
+  id          Int       @default(autoincrement())
+
+  @@id([firstName, lastName, yearStart, yearEnd])
 }
 
-model users {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  image     String
-  createdAt DateTime @default(now())
+model Player_Team {
+  teamName        Team   
+  player          Player @relation(fields: [playerFirstName, playerLastName, playerYearStart, playerYearEnd], references: [firstName, lastName, yearStart, yearEnd])
+  playerFirstName String
+  playerLastName  String
+  playerYearStart String
+  playerYearEnd   String
+
+  @@id([teamName, playerFirstName, playerLastName, playerYearStart, playerYearEnd])
+}
+
+model Grid {
+  day            DateTime @unique
+  a_team         Team
+  b_team         Team
+  c_team         Team
+  one_team       Team
+  two_team       Team
+  three_team     Team
+}
+
+enum Team {
+  MIA
+  HOU
+  BAL
+  JAX
+  CAR
+  TB
+  SEA
+  CIN
+  NO
+  ATL
+  MIN
+  BUF
+  TEN
+  LV
+  NE
+  NYJ
+  DEN
+  LAC
+  KC
+  DAL
+  IND
+  CLE
+  SF
+  LA
+  PIT
+  PHI
+  WAS
+  DET
+  NYG
+  GB
+  CHI
+  ARI
 }
