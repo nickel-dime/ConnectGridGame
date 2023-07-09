@@ -145,6 +145,7 @@ export default function Home() {
 
   let [teams, setTeams] = useState([]);
   let [mode, setMode] = useState("endless");
+  
 
   useEffect(() => {
     fetch(`/api/teams?mode=${mode}`)
