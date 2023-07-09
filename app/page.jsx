@@ -6,7 +6,6 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Combobox } from "@headlessui/react";
 import Example, { HomeContext } from "../components/combobox";
 
-
 function GridLogo({ width, logo, hidden }) {
   return (
     <div
@@ -99,12 +98,12 @@ function GridBox({ boxId }) {
       ></MyModal>
       <button
         className={`col-1 flex items-center bg- justify-center ${
-          playerSelected ? "bg-emerald-500" : "bg-green"
-        } hover:bg-indigo-900 w-24 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40`}
+          playerSelected ? "bg-indigo-900" : "bg-green"
+        } hover:bg-indigo-900 disabled: w-24 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40`}
         onClick={() => {
           setIsOpen(true);
         }}
-        disabled={guessesLeft <= 0}
+        disabled={guessesLeft <= 0 || playerSelected}
       >
         <div className="relative h-full w-full overflow flex flex-col justify-center items-center">
           <div className="grow mt-4">
@@ -124,7 +123,7 @@ function GridBox({ boxId }) {
               <></>
             )}
           </div>
-          <div className="mb-2">
+          <div className="mb-2 text-white">
             {playerSelected && loaded
               ? `${playerSelected["firstName"]} ${playerSelected["lastName"]}`
               : ""}
