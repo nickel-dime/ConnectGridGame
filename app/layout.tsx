@@ -24,6 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="shortcut icon" href="/logo.png" />
         <title>Immaculate Gridiron</title>
         <meta property="og:title" content="Immaculate Gridiron NFL" />
         <meta
