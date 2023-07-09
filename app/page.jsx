@@ -17,6 +17,7 @@ function GridLogo({ width, logo, hidden }) {
         width="120"
         height="120"
         className={`${hidden} ? 'hidden': ""`}
+        loading="eager"
       ></Image>
     </div>
   );
