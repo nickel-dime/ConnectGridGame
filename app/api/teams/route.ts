@@ -27,7 +27,17 @@ export async function GET(request: Request) {
   //       //   userId: currentUser.id
   //     },
   //   });
-  return NextResponse.json(getRandom(TEAMS, 6));
+  var url = new URL(request.url);
+  var mode = url.searchParams.get("mode");
+
+  if (mode == "endless") {
+    console.log("WE IN ENDLESS MODE BYATCH")
+    return NextResponse.json(getRandom(TEAMS, 6));
+  } else {
+    // pull from db 
+    return NextResponse.error()
+  }
+
 }
 
 function getRandom(arr: String[], n: number) {
