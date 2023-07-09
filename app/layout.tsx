@@ -5,6 +5,9 @@ import { Analytics } from "@vercel/analytics/react";
 export const metadata = {
   title: "Immaculate Gridiron NFL",
   description: "The Immaculate Grid you know and love, NFL edition!",
+  icons: {
+    icon: "../public/favicon.ico",
+  },
 };
 
 const inter = Inter({
