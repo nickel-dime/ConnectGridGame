@@ -1,6 +1,7 @@
 import { Player, Team } from "@prisma/client";
 import next from "next";
 import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 
 const MAP_BOX_ID_TO_GRID_ID = [
   [0, 3],
@@ -65,7 +66,7 @@ async function check_if_player_fits_teams(
   team1: Team,
   team2: Team
 ) {
-  const teams = await prisma?.player_Team.findMany({
+  const teams = await prisma.player_Team.findMany({
     where: {
       playerFirstName: player.firstName,
       playerLastName: player.lastName,
