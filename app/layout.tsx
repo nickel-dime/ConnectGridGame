@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 
 export const metadata = {
-  title: "Immaculate Gridiron",
+  title: "Immaculate Gridiron NFL",
   description: "The Immaculate Grid you know and love, NFL edition!",
 };
 
@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <title>Next.js</title>
+        <title>Immacualte Gridiron></title>
       </head>
       <body>
         {children}
