@@ -24,7 +24,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <title>Immacualte Gridiron</title>
+        <title>Immaculate Gridiron</title>
+        <meta property="og:title" content="Immaculate Gridiron NFL" />
+        <meta
+          property="og:description"
+          content="The Immaculate Grid you know and love, NFL edition!"
+        />
+        <meta
+          property="og:image"
+          content="https://immaculategridironnfl.com/preview.png"
+        />
       </head>
       <body>
         {children}
