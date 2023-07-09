@@ -6,14 +6,6 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Combobox } from "@headlessui/react";
 import Example, { HomeContext } from "../components/combobox";
 
-const people = [
-  "Durward Reynolds",
-  "Kenton Towne",
-  "Therese Wunsch",
-  "Benedict Kessler",
-  "Katelyn Rohan",
-];
-
 function GridLogo({ width, logo, hidden }) {
   return (
     <div
@@ -145,7 +137,6 @@ export default function Home() {
 
   let [teams, setTeams] = useState([]);
   let [mode, setMode] = useState("endless");
-  
 
   useEffect(() => {
     fetch(`/api/teams?mode=${mode}`)
