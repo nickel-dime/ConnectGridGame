@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <title>Immacualte Gridiron></title>
+        <title>Immacualte Gridiron</title>
       </head>
       <body>
         {children}
