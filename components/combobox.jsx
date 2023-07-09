@@ -45,7 +45,6 @@ export default function Example({ setClose, setPlayerSelected, boxId }) {
   const checkPlayer = async (player, boxId, callback_after) => {
     const requestOptions = {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         player: player,
         mode: mode,
@@ -53,13 +52,19 @@ export default function Example({ setClose, setPlayerSelected, boxId }) {
       }),
     };
 
-    fetch(`/api/check?boxId=${boxId}`, requestOptions)
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        callback_after(data["success"]);
-      });
+    console.log(requestOptions);
+    try {
+      fetch(`/api/check?boxId=${boxId}`, requestOptions)
+        .then((response) => {
+          console.log(response);
+          return response.json();
+        })
+        .then((data) => {
+          callback_after(data["success"]);
+        });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

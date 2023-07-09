@@ -4,8 +4,21 @@ const nextConfig = {
     appDir: true,
   },
   images: {
-    domains: ['pbs.twimg.com'],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.fantasypros.com",
+        port: "",
+        pathname: "/images/players/nfl/*/headshot/70x70.png",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.footballdb.com",
+        port: "",
+        pathname: "/headshots/NFL/**",
+      },
+    ],
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
