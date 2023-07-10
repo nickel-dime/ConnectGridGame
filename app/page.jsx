@@ -198,7 +198,7 @@ export default function Home() {
     <main className=" bg-background min-h-screen min-w-max flex items-center justify-center">
       {teams != undefined && teams.length > 0 && (
         <div>
-          <div className="absolute font-freshman top-4 left-4 right-4 flex justify-between items-center font-bold text-xl font-display uppercase tracking-wide text-black">
+          <div className="absolute font-freshman top-4 left-4 right-4 flex justify-between items-center font-bold text-xl md:text-3xl font-display uppercase tracking-wide text-black">
             <div></div>
             <div className="m-8">IMMACULATE GRIDIRON</div>
             <div></div>
@@ -213,7 +213,7 @@ export default function Home() {
             }}
           >
             <div>
-              <div className="flex">
+              <div className="flex mt-10">
                 {/* <div className="flex items-center justify-center w-24 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"></div> */}
                 <GridLogo width={"w-20"} logo="NFL" hidden={true}></GridLogo>
                 <GridLogo width={"w-24"} logo={teams[0]}></GridLogo>
@@ -235,14 +235,16 @@ export default function Home() {
                   <div className="hidden sm:block font-freshman">
                     <div className="text-center text-4xl">{guessesLeft}</div>
                     <div className="text-center text-lg">GUESSES</div>
-                    <button
-                      onClick={() => {
-                        resetTeams();
-                      }}
-                      className=" text-yellow-400 hover:bg-indigo-900 text-center flex m-auto bg-green p-2 pl-4 pr-4 rounded-lg"
-                    >
-                      next
-                    </button>
+                    {mode == "endless" && (
+                      <button
+                        onClick={() => {
+                          resetTeams();
+                        }}
+                        className=" text-yellow-400 hover:bg-indigo-900 text-center flex m-auto bg-green p-2 pl-4 pr-4 rounded-lg"
+                      >
+                        next
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -250,14 +252,16 @@ export default function Home() {
                 <div className="font-freshman">
                   <div className="text-center text-4xl">{guessesLeft}</div>
                   <div className="text-center text-lg">GUESSES</div>
-                  <button
-                    className="flex m-auto bg-green text-yellow-400 hover:bg-indigo-900 p-2 pl-4 pr-4 rounded-lg"
-                    onClick={() => {
-                      resetTeams();
-                    }}
-                  >
-                    next
-                  </button>
+                  {mode == "endless" && (
+                    <button
+                      className="flex m-auto bg-green text-yellow-400 hover:bg-indigo-900 p-2 pl-4 pr-4 rounded-lg"
+                      onClick={() => {
+                        resetTeams();
+                      }}
+                    >
+                      next
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
