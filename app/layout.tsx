@@ -35,6 +35,10 @@ export default function RootLayout({
           property="og:image"
           content="https://immaculategridironnfl.com/preview.png"
         />
+        <meta
+          name="google-site-verification"
+          content="7PyNZ9sBZ0Z8cmCnVA5ntvUQRSXcChU16i1zpX9U_jc"
+        />
       </head>
       <body>
         {children}
