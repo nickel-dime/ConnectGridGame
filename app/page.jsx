@@ -80,9 +80,21 @@ function GridBox({ boxId }) {
   let [loaded, setLoaded] = useState(false);
 
   const { guessesLeft, setGuessesLeft } = useContext(HomeContext);
+  const { reset, setReset } = useContext(HomeContext);
+
+  useEffect(() => {
+    let player;
+    // Get the value from local storage if it exists
+    player = JSON.parse(localStorage.getItem(`playerSelected${boxId}`)) || null;
+    setPlayerSelected(player);
+  }, [reset]);
 
   useEffect(() => {
     if (playerSelected) {
+      localStorage.setItem(
+        `playerSelected${boxId}`,
+        JSON.stringify(playerSelected)
+      );
       const image = document.createElement("img");
       image.src = playerSelected["profilePic"];
     }
@@ -108,22 +120,20 @@ function GridBox({ boxId }) {
         <div className="relative h-full w-full overflow flex flex-col justify-center items-center">
           <div className="grow mt-4">
             {playerSelected ? (
-              <Image
+              <img
                 src={playerSelected["profilePic"]}
-                className="rounded-md"
-                height={137}
-                width={92}
+                className="rounded-md sm:w-[92px] w-[60px]"
                 loading="eager"
                 onLoad={() => {
                   setLoaded(true);
                 }}
                 alt="Image of player"
-              ></Image>
+              ></img>
             ) : (
               <></>
             )}
           </div>
-          <div className="mb-2 text-white">
+          <div className="mb-2  text-[8px] sm:text-base text-yellow-400 ">
             {playerSelected && loaded
               ? `${playerSelected["firstName"]} ${playerSelected["lastName"]}`
               : ""}
@@ -139,13 +149,49 @@ export default function Home() {
 
   let [teams, setTeams] = useState([]);
   let [mode, setMode] = useState("endless");
+  let [reset, setReset] = useState(false);
 
-  useEffect(() => {
+  function resetTeams() {
+    setReset(true);
     fetch(`/api/teams?mode=${mode}`)
       .then((response) => response.json())
       .then((data) => {
         setTeams(data);
+        localStorage.setItem("teams", JSON.stringify(data));
       });
+    setGuessesLeft(9);
+    localStorage.setItem("guessesLeft", 9);
+
+    for (let i = 0; i <= 8; i++) {
+      localStorage.setItem(`playerSelected${i}`, null);
+    }
+  }
+
+  useEffect(() => {
+    // load from local storage -> teams and mode guesses left
+    const guessesLeft = localStorage.getItem("guessesLeft") || 9;
+    setGuessesLeft(guessesLeft);
+
+    const mode = localStorage.getItem("mode") || "endless";
+    setMode(mode);
+
+    const teamsLocalStorage = JSON.parse(localStorage.getItem("teams"));
+    if (teamsLocalStorage != "null" && teamsLocalStorage != null) {
+      setTeams(teamsLocalStorage);
+    }
+
+    if (
+      teamsLocalStorage === undefined ||
+      teamsLocalStorage === null ||
+      teamsLocalStorage.length == 0
+    ) {
+      fetch(`/api/teams?mode=${mode}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setTeams(data);
+          localStorage.setItem("teams", JSON.stringify(data));
+        });
+    }
   }, []);
 
   return (
@@ -163,6 +209,7 @@ export default function Home() {
               setGuessesLeft: setGuessesLeft,
               teams: teams,
               mode: mode,
+              reset: reset,
             }}
           >
             <div>
@@ -188,6 +235,14 @@ export default function Home() {
                   <div className="hidden sm:block font-freshman">
                     <div className="text-center text-4xl">{guessesLeft}</div>
                     <div className="text-center text-lg">GUESSES</div>
+                    <button
+                      onClick={() => {
+                        resetTeams();
+                      }}
+                      className=" text-yellow-400 hover:bg-indigo-900 text-center flex m-auto bg-green p-2 pl-4 pr-4 rounded-lg"
+                    >
+                      next
+                    </button>
                   </div>
                 </div>
               </div>
@@ -195,6 +250,14 @@ export default function Home() {
                 <div className="font-freshman">
                   <div className="text-center text-4xl">{guessesLeft}</div>
                   <div className="text-center text-lg">GUESSES</div>
+                  <button
+                    className="flex m-auto bg-green text-yellow-400 hover:bg-indigo-900 p-2 pl-4 pr-4 rounded-lg"
+                    onClick={() => {
+                      resetTeams();
+                    }}
+                  >
+                    next
+                  </button>
                 </div>
               </div>
             </div>

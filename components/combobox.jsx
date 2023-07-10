@@ -84,6 +84,7 @@ export default function Example({ setClose, setPlayerSelected, boxId }) {
             }
 
             setGuessesLeft(guessesLeft - 1);
+            localStorage.setItem("guessesLeft", guessesLeft - 1)
           });
         }}
       >

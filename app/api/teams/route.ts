@@ -31,13 +31,11 @@ export async function GET(request: Request) {
   var mode = url.searchParams.get("mode");
 
   if (mode == "endless") {
-    console.log("WE IN ENDLESS MODE BYATCH")
     return NextResponse.json(getRandom(TEAMS, 6));
   } else {
-    // pull from db 
-    return NextResponse.error()
+    // pull from db
+    return NextResponse.error();
   }
-
 }
 
 function getRandom(arr: String[], n: number) {
