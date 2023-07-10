@@ -242,7 +242,7 @@ export default function Home() {
                         }}
                         className=" text-yellow-400 hover:bg-indigo-900 text-center flex m-auto bg-green p-2 pl-4 pr-4 rounded-lg"
                       >
-                        next
+                        reset
                       </button>
                     )}
                   </div>
@@ -259,7 +259,7 @@ export default function Home() {
                         resetTeams();
                       }}
                     >
-                      next
+                      reset
                     </button>
                   )}
                 </div>
