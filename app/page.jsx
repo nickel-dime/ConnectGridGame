@@ -122,6 +122,18 @@ function GridBox({ boxId }) {
     }
   }, [playerSelected]);
 
+  function isRounded() {
+    if (boxId == 0) {
+      return "rounded-tl-[30px]";
+    } else if (boxId == 2) {
+      return "rounded-bl-[30px]";
+    } else if (boxId == 6) {
+      return "rounded-tr-[30px]";
+    } else if (boxId == 8) {
+      return "rounded-br-[30px]";
+    }
+  }
+
   return (
     <div>
       <MyModal
@@ -131,15 +143,15 @@ function GridBox({ boxId }) {
         boxId={boxId}
       ></MyModal>
       <button
-        className={`col-1 flex items-center bg- justify-center ${
+        className={`col-1 flex items-center border-x border-y border-[#fff0e6] justify-center ${isRounded()} ${
           playerSelected ? "bg-indigo-900" : "bg-green"
-        } hover:bg-indigo-900 disabled: w-24 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40`}
+        } hover:bg-indigo-900 disabled: w-24 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40 `}
         onClick={() => {
           setIsOpen(true);
         }}
         disabled={guessesLeft <= 0 || playerSelected}
       >
-        <div className="relative h-full w-full overflow flex flex-col justify-center items-center">
+        <div className="relative h-full w-full overflow flex flex-col justify-center items-center ">
           <div className="grow mt-4">
             {playerSelected ? (
               <img
@@ -216,7 +228,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className=" bg-background min-h-screen min-w-max flex justify-center">
+    <main className=" bg-[#fff0e6] min-h-screen min-w-max flex justify-center">
       {teams != undefined && teams.length > 0 && (
         <div>
           <div className="font-freshman top mt-10 flex justify-between items-center font-bold text-xl md:text-3xl font-display uppercase tracking-wide text-black">
@@ -250,12 +262,12 @@ export default function Home() {
                   <GridLogo width={"w-20"} logo={teams[4]}></GridLogo>
                   <GridLogo width={"w-20"} logo={teams[5]}></GridLogo>
                 </div>
-                <div className="grid grid-rows-3 grid-flow-col divide-x divide-y justify-items-center rounded-[30px] overflow-hidden ">
+                <div className="grid grid-rows-3 grid-flow-col justify-items-center overflow-hidden ">
                   {[...Array(9)].map((e, i) => (
                     <GridBox key={i} boxId={i}></GridBox>
                   ))}
                 </div>
-                <div className="text-black sm:w-36 md:w-40 h-full flex justify-center">
+                <div className=" text-black sm:w-36 md:w-40 h-full flex justify-center">
                   <div className="hidden sm:block font-freshman">
                     <div className="text-center text-4xl">{guessesLeft}</div>
                     <div className="text-center text-lg">GUESSES</div>
@@ -264,7 +276,7 @@ export default function Home() {
                         onClick={() => {
                           resetTeams();
                         }}
-                        className=" text-yellow-400  hover:bg-indigo-900 text-center flex m-auto bg-green p-2 pl-4 pr-4 rounded-lg"
+                        className=" text-yellow-400  hover:bg-indigo-900 text-center flex m-auto bg-green p-2 pl-4 pr-4 mt-2 rounded-lg"
                       >
                         reset
                       </button>

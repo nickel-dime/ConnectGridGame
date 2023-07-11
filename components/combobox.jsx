@@ -131,7 +131,7 @@ export default function Example({ setClose, setPlayerSelected, boxId }) {
       >
         {({ open }) => (
           <div className="relative">
-            <div className="relative w-full cursor-pointer overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none  focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
+            <div className="relative w-full cursor-pointer overflow-hidden rounded-lg bg-slate-100 text-left shadow-md focus:outline-none  focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
               <Combobox.Input
                 className="w-full border-none outline-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
                 displayValue={(person) => person.name}
@@ -202,7 +202,7 @@ export default function Example({ setClose, setPlayerSelected, boxId }) {
                           {selected ? (
                             <span
                               className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                                active ? "text-white" : "text-green"
+                                active ? "text-slate-100" : "text-green"
                               }`}
                             ></span>
                           ) : null}
