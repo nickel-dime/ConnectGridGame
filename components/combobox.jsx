@@ -4,8 +4,7 @@ import { CheckIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 export const HomeContext = React.createContext(null);
 
 export default function Example({ setClose, setPlayerSelected, boxId }) {
-  const { guessesLeft, setGuessesLeft, mode, teams, reset } =
-    useContext(HomeContext);
+  const { guessesLeft, setGuessesLeft, mode, teams } = useContext(HomeContext);
 
   const [selected, setSelected] = useState({});
   const [query, setQuery] = useState("");
@@ -27,16 +26,6 @@ export default function Example({ setClose, setPlayerSelected, boxId }) {
   useEffect(() => {
     loadPreviousGuesses();
   }, []);
-
-  useEffect(() => {
-    if (reset) {
-      let previousGuesses = localStorage.setItem(
-        `previousGuesses${boxId}`,
-        "[]"
-      );
-      setPreviousGuesses([]);
-    }
-  }, [reset]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -61,7 +50,6 @@ export default function Example({ setClose, setPlayerSelected, boxId }) {
       .then((response) => response.json())
       // 4. Setting *dogImage* to the image url that we received from the response above
       .then((data) => {
-        console.log(data);
         for (const playerData of data) {
           if (Array.isArray(previousGuesses) && previousGuesses.length) {
             var item = previousGuesses.find(
@@ -95,11 +83,9 @@ export default function Example({ setClose, setPlayerSelected, boxId }) {
       }),
     };
 
-    console.log(requestOptions);
     try {
       fetch(`/api/check?boxId=${boxId}`, requestOptions)
         .then((response) => {
-          console.log(response);
           return response.json();
         })
         .then((data) => {
@@ -212,7 +198,6 @@ export default function Example({ setClose, setPlayerSelected, boxId }) {
                                 {person.yearStart} - {person.yearEnd}
                               </div>
                             </div>
-                            {/* <div>LOADING</div> */}
                           </span>
                           {selected ? (
                             <span

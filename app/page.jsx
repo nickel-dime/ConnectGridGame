@@ -5,21 +5,43 @@ import React, { Fragment, use, useContext, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Combobox } from "@headlessui/react";
 import Example, { HomeContext } from "../components/combobox";
+import {
+  BsGearFill,
+  BsTwitter,
+  BsLightbulbFill,
+  BsQuestionCircleFill,
+} from "react-icons/bs";
 
 function GridLogo({ width, logo, hidden }) {
   return (
     <div
-      className={`flex items-center justify-center ${width} sm:w-36 md:w-40 h-24 sm:h-36 md:h-40`}
+      className={`flex items-center justify-center ${width} sm:w-36 md:w-40 h-24 sm:h-36 md:h-40 `}
     >
-      <Image
+      <img
         src={`/logos/${logo}.png`}
         alt={`Team logo ${logo}`}
-        width="120"
-        height="120"
-        className={`${hidden} ? 'hidden': ""`}
+        className={`w-16 sm:w-20 md:w-24 h-16 sm:h-20 md:h-24 ${hidden} ? 'hidden': ""`}
         loading="eager"
         priority="high"
-      ></Image>
+      ></img>
+    </div>
+  );
+}
+
+function SportLogo({ width, logo, hidden }) {
+  return (
+    <div
+      className={`flex items-center justify-center ${width} sm:w-36 md:w-40 h-24 sm:h-36 md:h-40 `}
+    >
+      {/* <button className="hover:shadow-lg rounded-lg hover:bg-emerald-200"> */}
+      <img
+        src={`/logos/${logo}.png`}
+        alt={`Team logo ${logo}`}
+        className={`w-16 sm:w-20 md:w-24 h-16 sm:h-20 md:h-24 ${hidden} ? 'hidden': ""`}
+        loading="eager"
+        priority="high"
+      ></img>
+      {/* </button> */}
     </div>
   );
 }
@@ -80,14 +102,14 @@ function GridBox({ boxId }) {
   let [loaded, setLoaded] = useState(false);
 
   const { guessesLeft, setGuessesLeft } = useContext(HomeContext);
-  const { reset, setReset } = useContext(HomeContext);
+  // const { reset, setReset } = useContext(HomeContext);
 
   useEffect(() => {
     let player;
     // Get the value from local storage if it exists
     player = JSON.parse(localStorage.getItem(`playerSelected${boxId}`)) || null;
     setPlayerSelected(player);
-  }, [reset]);
+  }, []);
 
   useEffect(() => {
     if (playerSelected) {
@@ -133,7 +155,7 @@ function GridBox({ boxId }) {
               <></>
             )}
           </div>
-          <div className="mb-2  text-[8px] sm:text-base text-yellow-400 ">
+          <div className="mb-2  text-[8px] font-bold sm:text-base text-yellow-400 ">
             {playerSelected && loaded
               ? `${playerSelected["firstName"]} ${playerSelected["lastName"]}`
               : ""}
@@ -149,10 +171,8 @@ export default function Home() {
 
   let [teams, setTeams] = useState([]);
   let [mode, setMode] = useState("endless");
-  let [reset, setReset] = useState(false);
 
   function resetTeams() {
-    setReset(true);
     fetch(`/api/teams?mode=${mode}`)
       .then((response) => response.json())
       .then((data) => {
@@ -164,6 +184,7 @@ export default function Home() {
 
     for (let i = 0; i <= 8; i++) {
       localStorage.setItem(`playerSelected${i}`, null);
+      localStorage.setItem(`previousGuesses${i}`, "[]");
     }
   }
 
@@ -195,13 +216,17 @@ export default function Home() {
   }, []);
 
   return (
-    <main className=" bg-background min-h-screen min-w-max flex items-center justify-center">
+    <main className=" bg-background min-h-screen min-w-max flex justify-center">
       {teams != undefined && teams.length > 0 && (
         <div>
-          <div className="absolute font-freshman top-4 left-4 right-4 flex justify-between items-center font-bold text-xl md:text-3xl font-display uppercase tracking-wide text-black">
-            <div></div>
-            <div className="m-8">IMMACULATE GRIDIRON</div>
-            <div></div>
+          <div className="font-freshman top mt-10 flex justify-between items-center font-bold text-xl md:text-3xl font-display uppercase tracking-wide text-black">
+            <div className="pl-4 sm:pl-10">CONNECT</div>
+            <div className="flex gap-6">
+              <BsLightbulbFill className="fill-green"></BsLightbulbFill>
+              <BsQuestionCircleFill className="fill-green"></BsQuestionCircleFill>
+              <BsTwitter className="fill-green"></BsTwitter>
+              <BsGearFill className="fill-green"></BsGearFill>
+            </div>
           </div>
           <HomeContext.Provider
             value={{
@@ -209,13 +234,12 @@ export default function Home() {
               setGuessesLeft: setGuessesLeft,
               teams: teams,
               mode: mode,
-              reset: reset,
             }}
           >
             <div>
-              <div className="flex mt-10">
+              <div className="flex pt-28 sm:pt-20">
                 {/* <div className="flex items-center justify-center w-24 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"></div> */}
-                <GridLogo width={"w-20"} logo="NFL" hidden={true}></GridLogo>
+                <SportLogo width={"w-20"} logo="NFL" hidden={true}></SportLogo>
                 <GridLogo width={"w-24"} logo={teams[0]}></GridLogo>
                 <GridLogo width={"w-24"} logo={teams[1]}></GridLogo>
                 <GridLogo width={"w-24"} logo={teams[2]}></GridLogo>
@@ -240,7 +264,7 @@ export default function Home() {
                         onClick={() => {
                           resetTeams();
                         }}
-                        className=" text-yellow-400 hover:bg-indigo-900 text-center flex m-auto bg-green p-2 pl-4 pr-4 rounded-lg"
+                        className=" text-yellow-400  hover:bg-indigo-900 text-center flex m-auto bg-green p-2 pl-4 pr-4 rounded-lg"
                       >
                         reset
                       </button>
@@ -254,7 +278,7 @@ export default function Home() {
                   <div className="text-center text-lg">GUESSES</div>
                   {mode == "endless" && (
                     <button
-                      className="flex m-auto bg-green text-yellow-400 hover:bg-indigo-900 p-2 pl-4 pr-4 rounded-lg"
+                      className="flex m-auto bg-green text-yellow-400 hover:bg-indigo-900 p-2 pl-4 pr-4 mt-2 rounded-lg"
                       onClick={() => {
                         resetTeams();
                       }}
