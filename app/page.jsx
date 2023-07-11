@@ -17,13 +17,15 @@ function GridLogo({ width, logo, hidden }) {
     <div
       className={`flex items-center justify-center ${width} sm:w-36 md:w-40 h-24 sm:h-36 md:h-40 `}
     >
-      <img
+      <Image
         src={`/logos/${logo}.png`}
         alt={`Team logo ${logo}`}
-        className={`w-16 sm:w-20 md:w-24 h-16 sm:h-20 md:h-24 ${hidden} ? 'hidden': ""`}
+        width={96}
+        height={96}
+        className={` w-16 sm:w-20 md:w-24 h-16 sm:h-20 md:h-24 ${hidden} ? 'hidden': ""`}
         loading="eager"
         priority="high"
-      ></img>
+      ></Image>
     </div>
   );
 }
@@ -33,14 +35,16 @@ function SportLogo({ width, logo, hidden }) {
     <div
       className={`flex items-center justify-center ${width} sm:w-36 md:w-40 h-24 sm:h-36 md:h-40 `}
     >
-      {/* <button className="hover:shadow-lg rounded-lg hover:bg-emerald-200"> */}
-      <img
+      {/* <button className="hover:shadow-lg rounded-lg hover:bg-emerald-300 p-2" onClick={() => { console.log("CLICK")}}> */}
+      <Image
         src={`/logos/${logo}.png`}
         alt={`Team logo ${logo}`}
+        width={96}
+        height={96}
         className={`w-16 sm:w-20 md:w-24 h-16 sm:h-20 md:h-24 ${hidden} ? 'hidden': ""`}
         loading="eager"
         priority="high"
-      ></img>
+      ></Image>
       {/* </button> */}
     </div>
   );
@@ -109,7 +113,7 @@ function GridBox({ boxId }) {
     // Get the value from local storage if it exists
     player = JSON.parse(localStorage.getItem(`playerSelected${boxId}`)) || null;
     setPlayerSelected(player);
-  }, []);
+  }, [boxId]);
 
   useEffect(() => {
     if (playerSelected) {
@@ -120,7 +124,7 @@ function GridBox({ boxId }) {
       const image = document.createElement("img");
       image.src = playerSelected["profilePic"];
     }
-  }, [playerSelected]);
+  }, [playerSelected, boxId]);
 
   function isRounded() {
     if (boxId == 0) {
@@ -154,15 +158,17 @@ function GridBox({ boxId }) {
         <div className="relative h-full w-full overflow flex flex-col justify-center items-center ">
           <div className="grow mt-4">
             {playerSelected ? (
-              <img
+              <Image
                 src={playerSelected["profilePic"]}
+                width={96}
+                height={96}
                 className="rounded-md sm:w-[92px] w-[60px]"
                 loading="eager"
                 onLoad={() => {
                   setLoaded(true);
                 }}
                 alt="Image of player"
-              ></img>
+              ></Image>
             ) : (
               <></>
             )}
@@ -237,7 +243,9 @@ export default function Home() {
               <div className="flex gap-6">
                 <BsLightbulbFill className="fill-green"></BsLightbulbFill>
                 <BsQuestionCircleFill className="fill-green"></BsQuestionCircleFill>
-                <BsTwitter className="fill-green"></BsTwitter>
+                <a href="https://twitter.com/ImmGridironNFL">
+                  <BsTwitter className="fill-green"></BsTwitter>
+                </a>
                 <BsGearFill className="fill-green"></BsGearFill>
               </div>
             </div>
