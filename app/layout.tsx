@@ -25,6 +25,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="shortcut icon" href="/logo.png" />
+        <link rel="preload" href="/fonts/Freshman.ttf" as="font" />
         <title>Immaculate Gridiron</title>
         <meta property="og:title" content="Immaculate Gridiron NFL" />
         <meta

@@ -228,16 +228,18 @@ export default function Home() {
   }, []);
 
   return (
-    <main className=" bg-[#fff0e6] min-h-screen min-w-max flex justify-center">
+    <main className=" bg-[#fff0e6] min-h-screen min-w-max flex justify-center items-center">
       {teams != undefined && teams.length > 0 && (
         <div>
-          <div className="font-freshman top mt-10 flex justify-between items-center font-bold text-xl md:text-3xl font-display uppercase tracking-wide text-black">
-            <div className="pl-4 sm:pl-10">CONNECT</div>
-            <div className="flex gap-6">
-              <BsLightbulbFill className="fill-green"></BsLightbulbFill>
-              <BsQuestionCircleFill className="fill-green"></BsQuestionCircleFill>
-              <BsTwitter className="fill-green"></BsTwitter>
-              <BsGearFill className="fill-green"></BsGearFill>
+          <div className="absolute top-0 left-0 right-0 max-w-[750px] mr-auto ml-auto">
+            <div className="p-4 mt-5 font-freshman flex justify-between font-bold text-xl md:text-3xl font-display uppercase tracking-wide text-black">
+              <div className="pl-4">CONNECT</div>
+              <div className="flex gap-6">
+                <BsLightbulbFill className="fill-green"></BsLightbulbFill>
+                <BsQuestionCircleFill className="fill-green"></BsQuestionCircleFill>
+                <BsTwitter className="fill-green"></BsTwitter>
+                <BsGearFill className="fill-green"></BsGearFill>
+              </div>
             </div>
           </div>
           <HomeContext.Provider
@@ -249,7 +251,7 @@ export default function Home() {
             }}
           >
             <div>
-              <div className="flex pt-28 sm:pt-20">
+              <div className="flex">
                 {/* <div className="flex items-center justify-center w-24 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"></div> */}
                 <SportLogo width={"w-20"} logo="NFL" hidden={true}></SportLogo>
                 <GridLogo width={"w-24"} logo={teams[0]}></GridLogo>
