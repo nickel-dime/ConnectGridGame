@@ -59,7 +59,7 @@ function SportLogo({ width, logo, hidden }) {
   );
 }
 
-function MyModal({ isOpen, setIsOpen, setPlayerSelected, boxId, myRef }) {
+function MyModal({ isOpen, setIsOpen, setPlayerSelected, boxId, innerRef }) {
   function closeModal() {
     setIsOpen(false);
   }
@@ -98,7 +98,7 @@ function MyModal({ isOpen, setIsOpen, setPlayerSelected, boxId, myRef }) {
                     }}
                     setPlayerSelected={setPlayerSelected}
                     boxId={boxId}
-                    ref={myRef}
+                    innerRef={innerRef}
                   ></Example>
                 </Dialog.Panel>
               </Transition.Child>
@@ -164,7 +164,7 @@ function GridBox({ boxId, reset }) {
         setIsOpen={setIsOpen}
         setPlayerSelected={setPlayerSelected}
         boxId={boxId}
-        ref={myRef}
+        innerRef={myRef}
       ></MyModal>
       <button
         className={` transition-colors duration-75 focus-visible:z-50 col-1 flex items-center border-x border-y border-[#fff0e6] justify-center ${isRounded()} ${
