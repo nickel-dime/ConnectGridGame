@@ -35,6 +35,9 @@ export default function Example({ setClose, setPlayerSelected, boxId, myRef }) {
     setTimeout(() => {
       innerRef.current.focus();
     }, 1);
+  });
+
+  useEffect(() => {
     loadPreviousGuesses();
   }, []);
 
