@@ -98,12 +98,7 @@ function GridBox({ boxId, reset }) {
       return "rounded-br-[30px]";
     }
   }
-  const inputRef = useRef(null);
 
-  function handleClick() {
-    inputRef.current?.blur();
-    inputRef.current.focus();
-  }
   return (
     <div>
       <MyModal
@@ -111,16 +106,12 @@ function GridBox({ boxId, reset }) {
         setIsOpen={setIsOpen}
         setPlayerSelected={setPlayerSelected}
         boxId={boxId}
-        ref={inputRef}
       ></MyModal>
       <button
         className={` transition-colors duration-75 focus-visible:z-50 col-1 flex items-center border-x border-y border-[#fff0e6] justify-center ${isRounded()} ${
           playerSelected ? "bg-indigo-900" : "bg-green"
         } sm:hover:bg-indigo-900 disabled: w-24 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40 `}
         onClick={() => {
-          setTimeout(() => {
-            handleClick();
-          }, 50);
           setIsOpen(true);
         }}
         disabled={guessesLeft <= 0 || playerSelected}
