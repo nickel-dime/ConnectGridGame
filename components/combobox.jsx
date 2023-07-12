@@ -1,4 +1,10 @@
-import React, { Fragment, useContext, useState, useEffect } from "react";
+import React, {
+  Fragment,
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+} from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 export const HomeContext = React.createContext(null);
@@ -104,6 +110,9 @@ export default function Example({ setClose, setPlayerSelected, boxId, myRef }) {
     }
   };
 
+  const innerRef = useRef();
+  useEffect(() => innerRef.current && innerRef.current.focus());
+
   return (
     <div className="top-16 w-80 sm:w-96">
       <Combobox
@@ -148,7 +157,7 @@ export default function Example({ setClose, setPlayerSelected, boxId, myRef }) {
                 }}
                 autoFocus={true}
                 autoComplete="off"
-                ref={myRef}
+                ref={innerRef}
                 onLoad={(e) => {
                   if (
                     e.relatedTarget?.id?.includes("headlessui-combobox-button")
