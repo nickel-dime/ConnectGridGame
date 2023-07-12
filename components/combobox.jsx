@@ -153,7 +153,6 @@ const Example = ({ setClose, setPlayerSelected, boxId }, ref) => {
                   setQuery(event.target.value);
                 }}
                 ref={ref}
-                autoFocus={true}
                 autoComplete="off"
                 onBlur={(e) => {
                   console.log("LOADED");
@@ -174,7 +173,6 @@ const Example = ({ setClose, setPlayerSelected, boxId }, ref) => {
               />
               <Combobox.Button
                 className="absolute inset-y-0 right-0 flex items-center pr-2"
-                autoFocus={true}
               >
                 <MagnifyingGlassIcon
                   className="h-5 w-5 text-black"
