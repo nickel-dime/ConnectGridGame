@@ -108,7 +108,6 @@ function GridBox({ boxId, reset }) {
     <div>
       <MyModal
         isOpen={isOpen}
-        autofocus={false}
         setIsOpen={setIsOpen}
         setPlayerSelected={setPlayerSelected}
         boxId={boxId}
