@@ -3,7 +3,7 @@ import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 export const HomeContext = React.createContext(null);
 
-export default function Example({ setClose, setPlayerSelected, boxId }) {
+export default function Example({ setClose, setPlayerSelected, boxId, innerRef }) {
   const { guessesLeft, setGuessesLeft, isEndless, teams } =
     useContext(HomeContext);
 
@@ -146,6 +146,7 @@ export default function Example({ setClose, setPlayerSelected, boxId }) {
                 onChange={(event) => {
                   setQuery(event.target.value);
                 }}
+                ref={innerRef}
                 autoFocus={true}
                 autoComplete="off"
                 onBlur={(e) => {

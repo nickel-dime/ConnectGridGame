@@ -59,7 +59,7 @@ function SportLogo({ width, logo, hidden }) {
   );
 }
 
-function MyModal({ isOpen, setIsOpen, setPlayerSelected, boxId }) {
+function MyModal({ isOpen, setIsOpen, setPlayerSelected, boxId, innerRef }) {
   function closeModal() {
     setIsOpen(false);
   }
@@ -98,6 +98,7 @@ function MyModal({ isOpen, setIsOpen, setPlayerSelected, boxId }) {
                     }}
                     setPlayerSelected={setPlayerSelected}
                     boxId={boxId}
+                    innerRef={innerRef}
                   ></Example>
                 </Dialog.Panel>
               </Transition.Child>
@@ -147,6 +148,8 @@ function GridBox({ boxId, reset }) {
     }
   }
 
+  const innerRef = useRef();
+
   return (
     <div>
       <MyModal
@@ -155,6 +158,7 @@ function GridBox({ boxId, reset }) {
         setIsOpen={setIsOpen}
         setPlayerSelected={setPlayerSelected}
         boxId={boxId}
+        innerRef={innerRef}
       ></MyModal>
       <button
         className={` transition-colors duration-75 focus-visible:z-50 col-1 flex items-center border-x border-y border-[#fff0e6] justify-center ${isRounded()} ${
@@ -162,6 +166,9 @@ function GridBox({ boxId, reset }) {
         } hover:bg-indigo-900 disabled: w-24 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40 `}
         onClick={() => {
           setIsOpen(true);
+          setTimeout(() => {
+            innerRef.current.focus();
+          }, 500);
         }}
         disabled={guessesLeft <= 0 || playerSelected}
       >
