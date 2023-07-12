@@ -243,7 +243,7 @@ export default function Home() {
       {teams != undefined && teams.length > 0 && (
         <div>
           <div className="absolute top-0 left-0 right-0 max-w-[750px] mr-auto ml-auto">
-            <div className="p-4 mt-5 font-freshman flex justify-between font-bold text-xl md:text-3xl font-display uppercase tracking-wide text-black">
+            <div className="p-4 mt-1 sm:mt-5 font-freshman flex justify-between font-bold text-xl md:text-3xl font-display uppercase tracking-wide text-black">
               <div className="pl-4">CONNECT</div>
               <div className="flex gap-6 ">
                 <BsLightbulbFill className="fill-green hover:fill-indigo-900"></BsLightbulbFill>
