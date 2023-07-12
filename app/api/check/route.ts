@@ -39,6 +39,31 @@ export async function POST(request: Request) {
       teams[grid_ids[1]]
     );
 
+    if (success) {
+      grid_ids.sort();
+
+      await prisma.answers.upsert({
+        where: {
+          team1_team2_playerId: {
+            team1: teams[grid_ids[0]],
+            team2: teams[grid_ids[1]],
+            playerId: data["player"].id,
+          },
+        },
+        update: {
+          count: {
+            increment: 1,
+          },
+        },
+        create: {
+          playerId: data["player"].id,
+          team1: teams[grid_ids[0]],
+          team2: teams[grid_ids[1]],
+          count: 1,
+        },
+      });
+    }
+
     return NextResponse.json({
       success: success,
     });
