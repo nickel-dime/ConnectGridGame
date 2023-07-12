@@ -20,6 +20,7 @@ export default function Example({ setClose, setPlayerSelected, boxId, myRef }) {
   const [isLoading, setIsLoading] = useState(true);
 
   let [previousGuesses, setPreviousGuesses] = useState([]);
+  const innerRef = useRef();
 
   function loadPreviousGuesses() {
     let previousGuesses =
@@ -31,6 +32,9 @@ export default function Example({ setClose, setPlayerSelected, boxId, myRef }) {
   }
 
   useEffect(() => {
+    setTimeout(() => {
+      innerRef.current.focus();
+    }, 1);
     loadPreviousGuesses();
   }, []);
 
@@ -109,9 +113,6 @@ export default function Example({ setClose, setPlayerSelected, boxId, myRef }) {
       console.log(error);
     }
   };
-
-  const innerRef = useRef();
-  useEffect(() => innerRef.current && innerRef.current.focus());
 
   return (
     <div className="top-16 w-80 sm:w-96">
