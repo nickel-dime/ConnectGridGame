@@ -59,7 +59,7 @@ function SportLogo({ width, logo, hidden }) {
   );
 }
 
-function MyModal({ isOpen, setIsOpen, setPlayerSelected, boxId, innerRef }) {
+function MyModal({ isOpen, setIsOpen, setPlayerSelected, boxId }) {
   function closeModal() {
     setIsOpen(false);
   }
@@ -98,7 +98,6 @@ function MyModal({ isOpen, setIsOpen, setPlayerSelected, boxId, innerRef }) {
                     }}
                     setPlayerSelected={setPlayerSelected}
                     boxId={boxId}
-                    innerRef={innerRef}
                   ></Example>
                 </Dialog.Panel>
               </Transition.Child>
@@ -147,14 +146,6 @@ function GridBox({ boxId, reset }) {
       return "rounded-br-[30px]";
     }
   }
-  const myRef = useRef();
-
-  useEffect(() => {
-    if (myRef && myRef.current) {
-      const { input } = myRef.current;
-      input.focus();
-    }
-  });
 
   return (
     <div>
@@ -164,7 +155,6 @@ function GridBox({ boxId, reset }) {
         setIsOpen={setIsOpen}
         setPlayerSelected={setPlayerSelected}
         boxId={boxId}
-        innerRef={myRef}
       ></MyModal>
       <button
         className={` transition-colors duration-75 focus-visible:z-50 col-1 flex items-center border-x border-y border-[#fff0e6] justify-center ${isRounded()} ${

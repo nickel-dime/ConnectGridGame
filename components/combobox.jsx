@@ -1,15 +1,9 @@
-import React, {
-  Fragment,
-  useContext,
-  useState,
-  useEffect,
-  useRef,
-} from "react";
+import React, { Fragment, useContext, useState, useEffect } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 export const HomeContext = React.createContext(null);
 
-export default function Example({ setClose, setPlayerSelected, boxId, myRef }) {
+export default function Example({ setClose, setPlayerSelected, boxId }) {
   const { guessesLeft, setGuessesLeft, isEndless, teams } =
     useContext(HomeContext);
 
@@ -20,7 +14,6 @@ export default function Example({ setClose, setPlayerSelected, boxId, myRef }) {
   const [isLoading, setIsLoading] = useState(true);
 
   let [previousGuesses, setPreviousGuesses] = useState([]);
-  const innerRef = useRef();
 
   function loadPreviousGuesses() {
     let previousGuesses =
@@ -30,12 +23,6 @@ export default function Example({ setClose, setPlayerSelected, boxId, myRef }) {
     setPreviousGuesses(previousGuesses);
     return previousGuesses;
   }
-
-  useEffect(() => {
-    setTimeout(() => {
-      innerRef.current.focus();
-    }, 1);
-  });
 
   useEffect(() => {
     loadPreviousGuesses();
@@ -154,21 +141,13 @@ export default function Example({ setClose, setPlayerSelected, boxId, myRef }) {
           <div className="relative">
             <div className="relative w-full cursor-pointer overflow-hidden rounded-lg bg-slate-100 text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
               <Combobox.Input
-                className="w-full border-none outline-none py-2 pl-3 pr-10 text-[16px] leading-5 text-gray-900 focus:ring-0"
+                className="w-full border-none outline-none py-2 pl-3 pr-10 text-[16px] sm:text-[14px] leading-5 text-gray-900 focus:ring-0"
                 displayValue={(person) => person.name}
                 onChange={(event) => {
                   setQuery(event.target.value);
                 }}
                 autoFocus={true}
                 autoComplete="off"
-                ref={innerRef}
-                onLoad={(e) => {
-                  if (
-                    e.relatedTarget?.id?.includes("headlessui-combobox-button")
-                  )
-                    return;
-                  !open && e.target.nextSibling.click();
-                }}
                 onFocus={(e) => {
                   if (
                     e.relatedTarget?.id?.includes("headlessui-combobox-button")
@@ -177,7 +156,10 @@ export default function Example({ setClose, setPlayerSelected, boxId, myRef }) {
                   !open && e.target.nextSibling.click();
                 }}
               />
-              <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
+              <Combobox.Button
+                className="absolute inset-y-0 right-0 flex items-center pr-2"
+                autoFocus={true}
+              >
                 <MagnifyingGlassIcon
                   className="h-5 w-5 text-black"
                   aria-hidden="true"
