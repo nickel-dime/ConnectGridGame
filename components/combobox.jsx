@@ -34,6 +34,12 @@ export default function Example({ setClose, setPlayerSelected, boxId }) {
     // split up query into first and last name
     var stringArray = query.split(/(\s+)/);
 
+    if (query == "") {
+      setPeople([]);
+      setIsLoading(false);
+      return;
+    }
+
     var firstName = stringArray[0];
 
     if (stringArray.length > 1) {
@@ -106,6 +112,7 @@ export default function Example({ setClose, setPlayerSelected, boxId }) {
           if (guessesLeft <= 0) {
             return;
           }
+
           setSelected(value);
           // make api call with value and box. if correct then setPlayerSelected and close else dont do either
 
@@ -142,6 +149,13 @@ export default function Example({ setClose, setPlayerSelected, boxId }) {
                 ref={(input) => input && input.focus()}
                 autoFocus
                 autoComplete="off"
+                onLoad={(e) => {
+                  if (
+                    e.relatedTarget?.id?.includes("headlessui-combobox-button")
+                  )
+                    return;
+                  !open && e.target.nextSibling.click();
+                }}
                 onFocus={(e) => {
                   if (
                     e.relatedTarget?.id?.includes("headlessui-combobox-button")
@@ -165,7 +179,8 @@ export default function Example({ setClose, setPlayerSelected, boxId }) {
               afterLeave={() => setQuery("")}
             >
               <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                {people === undefined || people.length == 0 ? (
+                {people === undefined ||
+                (people.length == 0 && (isLoading || query.length > 1)) ? (
                   <div className="relative cursor-default select-none py-4 px-4 text-gray-700">
                     {isLoading ? "Loading" : "Nothing found."}
                   </div>
