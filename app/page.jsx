@@ -173,7 +173,7 @@ function GridBox({ boxId, reset }) {
       <button
         className={` transition-colors duration-75 focus-visible:z-50 col-1 flex items-center border-x border-y border-[#fff0e6] justify-center ${isRounded()} ${
           playerSelected ? "bg-indigo-900" : "bg-green"
-        } hover:bg-indigo-900 disabled: w-24 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40 `}
+        } sm:hover:bg-indigo-900 disabled: w-24 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40 `}
         onClick={() => {
           setIsOpen(true);
           setTimeout(() => {
@@ -273,10 +273,10 @@ export default function Home() {
             <div className="p-4 mt-1 sm:mt-5 font-freshman flex justify-between font-bold text-xl md:text-3xl font-display uppercase tracking-wide text-black">
               <div className="pl-4">CONNECT</div>
               <div className="flex gap-6 ">
-                <BsLightbulbFill className="fill-green hover:fill-indigo-900"></BsLightbulbFill>
-                <BsQuestionCircleFill className="fill-green hover:fill-indigo-900"></BsQuestionCircleFill>
+                <BsLightbulbFill className="fill-green sm:hover:fill-indigo-900"></BsLightbulbFill>
+                <BsQuestionCircleFill className="fill-green sm:hover:fill-indigo-900"></BsQuestionCircleFill>
                 <a href="https://twitter.com/ImmGridironNFL">
-                  <BsTwitter className="fill-green hover:fill-indigo-900"></BsTwitter>
+                  <BsTwitter className="fill-green sm:hover:fill-indigo-900"></BsTwitter>
                 </a>
                 <Setting></Setting>
               </div>
@@ -339,7 +339,7 @@ function ManageNormalGameDesktop({ guessesLeft, resetTeams, isEndless }) {
             onClick={() => {
               resetTeams();
             }}
-            className=" text-yellow-400  hover:bg-indigo-900 text-center flex m-auto bg-green p-2 pl-4 pr-4 mt-2 rounded-lg"
+            className=" text-yellow-400  sm:hover:bg-indigo-900 text-center flex m-auto bg-green p-2 pl-4 pr-4 mt-2 rounded-lg"
           >
             reset
           </button>
@@ -357,7 +357,7 @@ function ManageNormalGameMobile({ guessesLeft, resetTeams, isEndless }) {
         <div className="text-center text-lg">GUESSES</div>
         {isEndless && (
           <button
-            className="flex m-auto bg-green text-yellow-400 hover:bg-indigo-900 p-2 pl-4 pr-4 mt-2 rounded-lg"
+            className="flex m-auto bg-green text-yellow-400 sm:hover:bg-indigo-900 p-2 pl-4 pr-4 mt-2 rounded-lg"
             onClick={() => {
               resetTeams();
             }}
