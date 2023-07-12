@@ -147,7 +147,7 @@ export default function Example({ setClose, setPlayerSelected, boxId }) {
                   setQuery(event.target.value);
                 }}
                 ref={(input) => input && input.focus()}
-                autoFocus
+                autoFocus={true}
                 autoComplete="off"
                 onLoad={(e) => {
                   if (
