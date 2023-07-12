@@ -1,9 +1,15 @@
-import React, { Fragment, useContext, useState, useEffect } from "react";
+import React, {
+  Fragment,
+  useContext,
+  useState,
+  useEffect,
+  forwardRef,
+} from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 export const HomeContext = React.createContext(null);
 
-export default function Example({ setClose, setPlayerSelected, boxId, innerRef }) {
+const Example = ({ setClose, setPlayerSelected, boxId }, ref) => {
   const { guessesLeft, setGuessesLeft, isEndless, teams } =
     useContext(HomeContext);
 
@@ -146,7 +152,7 @@ export default function Example({ setClose, setPlayerSelected, boxId, innerRef }
                 onChange={(event) => {
                   setQuery(event.target.value);
                 }}
-                ref={innerRef}
+                ref={ref}
                 autoFocus={true}
                 autoComplete="off"
                 onBlur={(e) => {
@@ -241,4 +247,6 @@ export default function Example({ setClose, setPlayerSelected, boxId, innerRef }
       </Combobox>
     </div>
   );
-}
+};
+
+export default forwardRef(Example);

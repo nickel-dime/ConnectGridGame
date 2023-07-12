@@ -91,7 +91,7 @@ function SettingModal({ open, setOpen }) {
                 <div className="mt-5 sm:mt-8 sm:flex sm:flex-row-reverse">
                   <button
                     type="button"
-                    className="inline-flex w-full justify-center rounded-md bg-green px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-900 sm:ml-3 sm:w-auto"
+                    className="inline-flex w-full justify-center rounded-md bg-green px-3 py-2 text-sm font-semibold text-white shadow-sm sm:hover:bg-indigo-900 sm:ml-3 sm:w-auto"
                     onClick={() => setOpen(false)}
                   >
                     Save

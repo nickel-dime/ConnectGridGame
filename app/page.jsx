@@ -8,6 +8,7 @@ import React, {
   useEffect,
   useState,
   useRef,
+  forwardRef,
 } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Combobox } from "@headlessui/react";
@@ -59,65 +60,58 @@ function SportLogo({ width, logo, hidden }) {
   );
 }
 
-function MyModal({ isOpen, setIsOpen, setPlayerSelected, boxId, innerRef }) {
-  function closeModal() {
-    setIsOpen(false);
-  }
+const MyModal = forwardRef(
+  ({ isOpen, setIsOpen, setPlayerSelected, boxId, acresRef }, ref) => {
+    function closeModal() {
+      setIsOpen(false);
+    }
 
-  return (
-    <>
-      <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black bg-opacity-25" />
-          </Transition.Child>
+    return (
+      <>
+        <Transition appear show={isOpen} as={Fragment}>
+          <Dialog as="div" className="relative z-10" onClose={closeModal}>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-black bg-opacity-25" />
+            </Transition.Child>
 
-          <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex justify-center p-4 text-center mt-4 sm:mt-16">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <Dialog.Panel className=" max-w-md rounded-lg align-middle transition-all">
-                  <Example
-                    setClose={() => {
-                      setIsOpen(false);
-                    }}
-                    setPlayerSelected={setPlayerSelected}
-                    boxId={boxId}
-                    innerRef={innerRef}
-                  ></Example>
-                </Dialog.Panel>
-              </Transition.Child>
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex justify-center p-4 text-center mt-4 sm:mt-16">
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <Dialog.Panel className=" max-w-md rounded-lg align-middle transition-all">
+                    <Example
+                      setClose={() => {
+                        setIsOpen(false);
+                      }}
+                      setPlayerSelected={setPlayerSelected}
+                      boxId={boxId}
+                      ref={ref}
+                    ></Example>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
             </div>
-          </div>
-        </Dialog>
-      </Transition>
-    </>
-  );
-}
-
-const UseFocus = () => {
-  const htmlElRef = useRef(null);
-  const setFocus = () => {
-    htmlElRef.current && htmlElRef.current.focus();
-  };
-
-  return [htmlElRef, setFocus];
-};
+          </Dialog>
+        </Transition>
+      </>
+    );
+  }
+);
 
 function GridBox({ boxId, reset }) {
   let [isOpen, setIsOpen] = useState(false);
@@ -156,10 +150,11 @@ function GridBox({ boxId, reset }) {
       return "rounded-br-[30px]";
     }
   }
-  const [input1Ref, setInput1Focus] = UseFocus();
+  const inputRef = useRef(null);
 
-  const innerRef = useRef();
-
+  function handleClick() {
+    inputRef.current.focus();
+  }
   return (
     <div>
       <MyModal
@@ -168,19 +163,17 @@ function GridBox({ boxId, reset }) {
         setIsOpen={setIsOpen}
         setPlayerSelected={setPlayerSelected}
         boxId={boxId}
-        innerRef={input1Ref}
+        ref={inputRef}
       ></MyModal>
       <button
         className={` transition-colors duration-75 focus-visible:z-50 col-1 flex items-center border-x border-y border-[#fff0e6] justify-center ${isRounded()} ${
           playerSelected ? "bg-indigo-900" : "bg-green"
         } sm:hover:bg-indigo-900 disabled: w-24 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40 `}
         onClick={() => {
-          setIsOpen(true);
           setTimeout(() => {
-            console.log("FOUCSING");
-            // innerRef.current.focus();
-            setInput1Focus();
-          }, 500);
+            handleClick();
+          }, 50);
+          setIsOpen(true);
         }}
         disabled={guessesLeft <= 0 || playerSelected}
       >
