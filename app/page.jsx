@@ -1,7 +1,14 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { Fragment, use, useContext, useEffect, useState } from "react";
+import React, {
+  Fragment,
+  use,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Combobox } from "@headlessui/react";
 import Example, { HomeContext } from "../components/combobox";
@@ -52,7 +59,7 @@ function SportLogo({ width, logo, hidden }) {
   );
 }
 
-function MyModal({ isOpen, setIsOpen, setPlayerSelected, boxId }) {
+function MyModal({ isOpen, setIsOpen, setPlayerSelected, boxId, myRef }) {
   function closeModal() {
     setIsOpen(false);
   }
@@ -91,6 +98,7 @@ function MyModal({ isOpen, setIsOpen, setPlayerSelected, boxId }) {
                     }}
                     setPlayerSelected={setPlayerSelected}
                     boxId={boxId}
+                    ref={myRef}
                   ></Example>
                 </Dialog.Panel>
               </Transition.Child>
@@ -139,6 +147,14 @@ function GridBox({ boxId, reset }) {
       return "rounded-br-[30px]";
     }
   }
+  const myRef = useRef();
+
+  useEffect(() => {
+    if (myRef && myRef.current) {
+      const { input } = myRef.current;
+      input.focus();
+    }
+  });
 
   return (
     <div>
@@ -148,6 +164,7 @@ function GridBox({ boxId, reset }) {
         setIsOpen={setIsOpen}
         setPlayerSelected={setPlayerSelected}
         boxId={boxId}
+        ref={myRef}
       ></MyModal>
       <button
         className={` transition-colors duration-75 focus-visible:z-50 col-1 flex items-center border-x border-y border-[#fff0e6] justify-center ${isRounded()} ${

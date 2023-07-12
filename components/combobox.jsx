@@ -3,7 +3,7 @@ import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 export const HomeContext = React.createContext(null);
 
-export default function Example({ setClose, setPlayerSelected, boxId }) {
+export default function Example({ setClose, setPlayerSelected, boxId, myRef }) {
   const { guessesLeft, setGuessesLeft, isEndless, teams } =
     useContext(HomeContext);
 
@@ -139,16 +139,16 @@ export default function Example({ setClose, setPlayerSelected, boxId }) {
       >
         {({ open }) => (
           <div className="relative">
-            <div className="relative w-full cursor-pointer overflow-hidden rounded-lg bg-slate-100 text-left shadow-md focus:outline-none  focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
+            <div className="relative w-full cursor-pointer overflow-hidden rounded-lg bg-slate-100 text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
               <Combobox.Input
                 className="w-full border-none outline-none py-2 pl-3 pr-10 text-[16px] leading-5 text-gray-900 focus:ring-0"
                 displayValue={(person) => person.name}
                 onChange={(event) => {
                   setQuery(event.target.value);
                 }}
-                ref={(input) => input && input.focus()}
                 autoFocus={true}
                 autoComplete="off"
+                ref={myRef}
                 onLoad={(e) => {
                   if (
                     e.relatedTarget?.id?.includes("headlessui-combobox-button")
@@ -178,7 +178,7 @@ export default function Example({ setClose, setPlayerSelected, boxId }) {
               leaveTo="opacity-0"
               afterLeave={() => setQuery("")}
             >
-              <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white text-base shadow-lg ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                 {people === undefined ||
                 (people.length == 0 && (isLoading || query.length > 1)) ? (
                   <div className="relative cursor-default select-none py-4 px-4 text-gray-700">
