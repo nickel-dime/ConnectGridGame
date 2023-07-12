@@ -205,9 +205,14 @@ export default function Home() {
             <div className="p-4 mt-1 sm:mt-5 font-freshman flex justify-between font-bold text-xl md:text-3xl font-display uppercase tracking-wide text-black">
               <div className="pl-4">CONNECT</div>
               <div className="flex gap-6 ">
-                <BsLightbulbFill className="fill-green sm:hover:fill-indigo-900"></BsLightbulbFill>
+                <a href="mailto:immaculategridironnfl@gmail.com?subject=Ideas%20for%20Grid">
+                  <BsLightbulbFill className="fill-green sm:hover:fill-indigo-900 hidden sm:block"></BsLightbulbFill>
+                </a>
                 <BsQuestionCircleFill className="fill-green sm:hover:fill-indigo-900"></BsQuestionCircleFill>
-                <a href="https://twitter.com/ImmGridironNFL">
+                <a
+                  href="https://twitter.com/ImmGridironNFL"
+                  className="hidden sm:block"
+                >
                   <BsTwitter className="fill-green sm:hover:fill-indigo-900"></BsTwitter>
                 </a>
                 <Setting></Setting>
