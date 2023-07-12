@@ -110,6 +110,15 @@ function MyModal({ isOpen, setIsOpen, setPlayerSelected, boxId, innerRef }) {
   );
 }
 
+const UseFocus = () => {
+  const htmlElRef = useRef(null);
+  const setFocus = () => {
+    htmlElRef.current && htmlElRef.current.focus();
+  };
+
+  return [htmlElRef, setFocus];
+};
+
 function GridBox({ boxId, reset }) {
   let [isOpen, setIsOpen] = useState(false);
   let [playerSelected, setPlayerSelected] = useState(null);
@@ -147,6 +156,7 @@ function GridBox({ boxId, reset }) {
       return "rounded-br-[30px]";
     }
   }
+  const [input1Ref, setInput1Focus] = UseFocus();
 
   const innerRef = useRef();
 
@@ -158,7 +168,7 @@ function GridBox({ boxId, reset }) {
         setIsOpen={setIsOpen}
         setPlayerSelected={setPlayerSelected}
         boxId={boxId}
-        innerRef={innerRef}
+        innerRef={input1Ref}
       ></MyModal>
       <button
         className={` transition-colors duration-75 focus-visible:z-50 col-1 flex items-center border-x border-y border-[#fff0e6] justify-center ${isRounded()} ${
@@ -167,7 +177,9 @@ function GridBox({ boxId, reset }) {
         onClick={() => {
           setIsOpen(true);
           setTimeout(() => {
-            innerRef.current.focus();
+            console.log("FOUCSING");
+            // innerRef.current.focus();
+            setInput1Focus();
           }, 500);
         }}
         disabled={guessesLeft <= 0 || playerSelected}
