@@ -13,7 +13,7 @@ module.exports = {
     },
     extend: {
       colors: {
-        background: "#FFFFFF",
+        background: "#fff0e6",
         green: "#0C6B58",
       },
       backgroundImage: {

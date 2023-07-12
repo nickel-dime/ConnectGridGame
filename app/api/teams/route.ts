@@ -28,9 +28,9 @@ export async function GET(request: Request) {
   //     },
   //   });
   var url = new URL(request.url);
-  var mode = url.searchParams.get("mode");
+  var isEndless = url.searchParams.get("isEndless");
 
-  if (mode == "endless") {
+  if (isEndless) {
     return NextResponse.json(getRandom(TEAMS, 6));
   } else {
     // pull from db

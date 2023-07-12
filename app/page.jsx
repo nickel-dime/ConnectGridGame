@@ -12,6 +12,8 @@ import {
   BsQuestionCircleFill,
 } from "react-icons/bs";
 
+import Setting from "../components/settings";
+
 function GridLogo({ width, logo, hidden }) {
   return (
     <div
@@ -72,7 +74,7 @@ function MyModal({ isOpen, setIsOpen, setPlayerSelected, boxId }) {
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex justify-center p-4 text-center mt-16">
+            <div className="flex justify-center p-4 text-center mt-4 sm:mt-16">
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -100,7 +102,7 @@ function MyModal({ isOpen, setIsOpen, setPlayerSelected, boxId }) {
   );
 }
 
-function GridBox({ boxId }) {
+function GridBox({ boxId, reset }) {
   let [isOpen, setIsOpen] = useState(false);
   let [playerSelected, setPlayerSelected] = useState(null);
   let [loaded, setLoaded] = useState(false);
@@ -113,7 +115,7 @@ function GridBox({ boxId }) {
     // Get the value from local storage if it exists
     player = JSON.parse(localStorage.getItem(`playerSelected${boxId}`)) || null;
     setPlayerSelected(player);
-  }, [boxId]);
+  }, [boxId, reset]);
 
   useEffect(() => {
     if (playerSelected) {
@@ -188,10 +190,13 @@ export default function Home() {
   const [guessesLeft, setGuessesLeft] = useState(9);
 
   let [teams, setTeams] = useState([]);
-  let [mode, setMode] = useState("endless");
+  let [isEndless, setIsEndless] = useState(true);
+
+  let [reset, setReset] = useState(false);
 
   function resetTeams() {
-    fetch(`/api/teams?mode=${mode}`)
+    setReset(!reset);
+    fetch(`/api/teams?isEndless=${isEndless}`)
       .then((response) => response.json())
       .then((data) => {
         setTeams(data);
@@ -211,8 +216,8 @@ export default function Home() {
     const guessesLeft = localStorage.getItem("guessesLeft") || 9;
     setGuessesLeft(guessesLeft);
 
-    const mode = localStorage.getItem("mode") || "endless";
-    setMode(mode);
+    const isEndless = localStorage.getItem("isEndless") || true;
+    setIsEndless(isEndless);
 
     const teamsLocalStorage = JSON.parse(localStorage.getItem("teams"));
     if (teamsLocalStorage != "null" && teamsLocalStorage != null) {
@@ -224,7 +229,7 @@ export default function Home() {
       teamsLocalStorage === null ||
       teamsLocalStorage.length == 0
     ) {
-      fetch(`/api/teams?mode=${mode}`)
+      fetch(`/api/teams?isEndless=${isEndless}`)
         .then((response) => response.json())
         .then((data) => {
           setTeams(data);
@@ -234,19 +239,19 @@ export default function Home() {
   }, []);
 
   return (
-    <main className=" bg-[#fff0e6] min-h-screen min-w-max flex justify-center items-center">
+    <main className="  bg-background min-h-screen min-w-max flex justify-center items-center">
       {teams != undefined && teams.length > 0 && (
         <div>
           <div className="absolute top-0 left-0 right-0 max-w-[750px] mr-auto ml-auto">
             <div className="p-4 mt-5 font-freshman flex justify-between font-bold text-xl md:text-3xl font-display uppercase tracking-wide text-black">
               <div className="pl-4">CONNECT</div>
-              <div className="flex gap-6">
-                <BsLightbulbFill className="fill-green"></BsLightbulbFill>
-                <BsQuestionCircleFill className="fill-green"></BsQuestionCircleFill>
+              <div className="flex gap-6 ">
+                <BsLightbulbFill className="fill-green hover:fill-indigo-900"></BsLightbulbFill>
+                <BsQuestionCircleFill className="fill-green hover:fill-indigo-900"></BsQuestionCircleFill>
                 <a href="https://twitter.com/ImmGridironNFL">
-                  <BsTwitter className="fill-green"></BsTwitter>
+                  <BsTwitter className="fill-green hover:fill-indigo-900"></BsTwitter>
                 </a>
-                <BsGearFill className="fill-green"></BsGearFill>
+                <Setting></Setting>
               </div>
             </div>
           </div>
@@ -255,7 +260,7 @@ export default function Home() {
               guessesLeft: guessesLeft,
               setGuessesLeft: setGuessesLeft,
               teams: teams,
-              mode: mode,
+              isEndless: isEndless,
             }}
           >
             <div>
@@ -274,46 +279,66 @@ export default function Home() {
                 </div>
                 <div className="grid grid-rows-3 grid-flow-col justify-items-center overflow-hidden ">
                   {[...Array(9)].map((e, i) => (
-                    <GridBox key={i} boxId={i}></GridBox>
+                    <GridBox key={i} boxId={i} reset={reset}></GridBox>
                   ))}
                 </div>
-                <div className=" text-black sm:w-36 md:w-40 h-full flex justify-center">
-                  <div className="hidden sm:block font-freshman">
-                    <div className="text-center text-4xl">{guessesLeft}</div>
-                    <div className="text-center text-lg">GUESSES</div>
-                    {mode == "endless" && (
-                      <button
-                        onClick={() => {
-                          resetTeams();
-                        }}
-                        className=" text-yellow-400  hover:bg-indigo-900 text-center flex m-auto bg-green p-2 pl-4 pr-4 mt-2 rounded-lg"
-                      >
-                        reset
-                      </button>
-                    )}
-                  </div>
-                </div>
+                <ManageNormalGameDesktop
+                  guessesLeft={guessesLeft}
+                  resetTeams={resetTeams}
+                  isEndless={isEndless}
+                ></ManageNormalGameDesktop>
               </div>
-              <div className="h-24 sm:h-36 md:h-48 flex justify-center mt-8 sm:hidden text-black">
-                <div className="font-freshman">
-                  <div className="text-center text-4xl">{guessesLeft}</div>
-                  <div className="text-center text-lg">GUESSES</div>
-                  {mode == "endless" && (
-                    <button
-                      className="flex m-auto bg-green text-yellow-400 hover:bg-indigo-900 p-2 pl-4 pr-4 mt-2 rounded-lg"
-                      onClick={() => {
-                        resetTeams();
-                      }}
-                    >
-                      reset
-                    </button>
-                  )}
-                </div>
-              </div>
+              <ManageNormalGameMobile
+                guessesLeft={guessesLeft}
+                resetTeams={resetTeams}
+                isEndless={isEndless}
+              ></ManageNormalGameMobile>
             </div>
           </HomeContext.Provider>
         </div>
       )}
     </main>
+  );
+}
+
+function ManageNormalGameDesktop({ guessesLeft, resetTeams, isEndless }) {
+  return (
+    <div className=" text-black sm:w-36 md:w-40 h-full flex justify-center">
+      <div className="hidden sm:block font-freshman">
+        <div className="text-center text-4xl">{guessesLeft}</div>
+        <div className="text-center text-lg">GUESSES</div>
+        {isEndless && (
+          <button
+            onClick={() => {
+              resetTeams();
+            }}
+            className=" text-yellow-400  hover:bg-indigo-900 text-center flex m-auto bg-green p-2 pl-4 pr-4 mt-2 rounded-lg"
+          >
+            reset
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ManageNormalGameMobile({ guessesLeft, resetTeams, isEndless }) {
+  return (
+    <div className="h-24 sm:h-36 md:h-48 flex justify-center mt-8 sm:hidden text-black">
+      <div className="font-freshman">
+        <div className="text-center text-4xl">{guessesLeft}</div>
+        <div className="text-center text-lg">GUESSES</div>
+        {isEndless && (
+          <button
+            className="flex m-auto bg-green text-yellow-400 hover:bg-indigo-900 p-2 pl-4 pr-4 mt-2 rounded-lg"
+            onClick={() => {
+              resetTeams();
+            }}
+          >
+            reset
+          </button>
+        )}
+      </div>
+    </div>
   );
 }

@@ -3,11 +3,13 @@ datasource db {
   url               = env("MY_POSTGRES_PRISMA_URL") // uses connection pooling
   directUrl         = env("MY_POSTGRES_URL_NON_POOLING") // uses a direct connection
   shadowDatabaseUrl = env("MY_POSTGRES_URL_NON_POOLING") // used for migrations
+  extensions = [pg_trgm]
+
 }
 
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["jsonProtocol"]
+  previewFeatures = ["jsonProtocol", "postgresqlExtensions"]
 }
 
 model Player {

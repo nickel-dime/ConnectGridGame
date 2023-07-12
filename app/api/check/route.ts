@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
   const grid_ids = MAP_BOX_ID_TO_GRID_ID[parseInt(boxId)];
 
-  if (data["mode"] == "endless") {
+  if (data["isEndless"]) {
     const teams = data["teams"];
     const success = await check_if_player_fits_teams(
       data["player"],
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: success,
     });
-  } else if (data["mode"] == "normal") {
+  } else if (!data["isEndless"]) {
     return (
       NextResponse.error(),
       {

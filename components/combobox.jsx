@@ -4,7 +4,8 @@ import { CheckIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 export const HomeContext = React.createContext(null);
 
 export default function Example({ setClose, setPlayerSelected, boxId }) {
-  const { guessesLeft, setGuessesLeft, mode, teams } = useContext(HomeContext);
+  const { guessesLeft, setGuessesLeft, isEndless, teams } =
+    useContext(HomeContext);
 
   const [selected, setSelected] = useState({});
   const [query, setQuery] = useState("");
@@ -78,7 +79,7 @@ export default function Example({ setClose, setPlayerSelected, boxId }) {
       method: "POST",
       body: JSON.stringify({
         player: player,
-        mode: mode,
+        isEndless: isEndless,
         teams: teams,
       }),
     };
@@ -98,7 +99,7 @@ export default function Example({ setClose, setPlayerSelected, boxId }) {
   };
 
   return (
-    <div className="top-16 w-60 sm:w-96">
+    <div className="top-16 w-80 sm:w-96">
       <Combobox
         value={selected}
         onChange={(value) => {
@@ -138,6 +139,7 @@ export default function Example({ setClose, setPlayerSelected, boxId }) {
                 onChange={(event) => {
                   setQuery(event.target.value);
                 }}
+                autoFocus
                 autoComplete="off"
                 onFocus={(e) => {
                   if (
@@ -189,8 +191,8 @@ export default function Example({ setClose, setPlayerSelected, boxId }) {
                               selected ? "font-medium" : "font-normal"
                             }`}
                           >
-                            <div>
-                              <div className=" font-medium">
+                            <div className="text-sm sm:text-base">
+                              <div className="font-medium">
                                 {person.firstName} {person.lastName} (
                                 {person.position})
                               </div>

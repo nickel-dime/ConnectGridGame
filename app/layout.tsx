@@ -22,12 +22,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className="bg-background">
       <head>
         <link rel="shortcut icon" href="/logo.png" />
         <link rel="preload" href="/fonts/Freshman.ttf" as="font" />
         <title>Immaculate Gridiron</title>
         <meta property="og:title" content="Immaculate Gridiron NFL" />
+        <meta name="theme-color" content="#fff0e6" />
         <meta
           property="og:description"
           content="The Immaculate Grid you know and love, NFL edition!"
