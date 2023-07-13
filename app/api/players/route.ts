@@ -7,49 +7,20 @@ export async function GET(request: Request) {
   var firstName = url.searchParams.get("firstName");
   var lastName = url.searchParams.get("lastName");
 
-  let query_where = {};
+  let result: Player[] = [];
 
   if (firstName == null) {
     return NextResponse.json([]);
   } else if (lastName == null) {
-    query_where = {
-      OR: [
-        {
-          firstName: {
-            startsWith: firstName,
-            mode: "insensitive",
-          },
-        },
-        {
-          lastName: {
-            startsWith: firstName,
-            mode: "insensitive",
-          },
-        },
-      ],
-    };
+    const query = `SELECT "firstName", "lastName", "id", "yearEnd", "yearStart", "profilePic", "position" FROM "Player" WHERE "Player"."firstName" % '${firstName}' OR "Player"."lastName" % '${firstName}' ORDER BY "yearEnd" desc LIMIT 25;`;
+    result = await prisma.$queryRawUnsafe(query);
   } else {
-    query_where = {
-      firstName: {
-        startsWith: firstName,
-        mode: "insensitive",
-      },
-      lastName: {
-        startsWith: lastName,
-        mode: "insensitive",
-      },
-    };
+    const query = `SELECT "firstName", "lastName", "id", "yearEnd", "yearStart", "profilePic", "position" FROM "Player" WHERE "Player"."firstName" % '${firstName}' AND UPPER("Player"."lastName") LIKE '${lastName.toUpperCase()}%' ORDER BY "yearEnd" desc LIMIT 25;`;
+    result = await prisma.$queryRawUnsafe(query);
   }
-  const result = await prisma.player.findMany({
-    where: query_where,
-    take: 25,
-    orderBy: {
-      yearEnd: "desc",
-    },
-  });
 
   if (result === undefined || result.length == 0) {
-    const result = await prisma.player.findMany({
+    result = await prisma.player.findMany({
       where: {
         lastName: {
           startsWith: firstName,
