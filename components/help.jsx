@@ -1,6 +1,6 @@
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { BsGearFill } from "react-icons/bs";
+import { BsQuestionCircleFill } from "react-icons/bs";
 import {
   ExclamationTriangleIcon,
   XMarkIcon,
@@ -17,7 +17,7 @@ export default function Help({}) {
           setOpen(true);
         }}
       >
-        <BsGearFill className="fill-green hover:fill-indigo-900"></BsGearFill>
+        <BsQuestionCircleFill className="fill-green-500 sm:hover:fill-purple"></BsQuestionCircleFill>
       </button>
     </div>
   );
@@ -51,39 +51,57 @@ function HelpModal({ open, setOpen }) {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl sm:p-6">
-                <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
-                  <button
-                    type="button"
-                    className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    onClick={() => setOpen(false)}
-                  >
-                    <span className="sr-only">Close</span>
-                    <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-                  </button>
-                </div>
-                <div className="sm:flex sm:items-start">
-                  <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+                <div>
+                  <div className="mt-3 sm:mt-5">
                     <Dialog.Title
-                      as="h3"
+                      as="h1"
                       className="text-2xl font-semibold leading-6 text-gray-900"
                     >
-                      Settings
+                      How To Play
                     </Dialog.Title>
                     <div className="mt-2">
                       <p className="text-sm text-gray-500">
-                        Change the settings for the connect grid.
+                        There are 3 modes in CONNECT! Your goal is to find
+                        players fitting the traits for a cells row and column.
+                        If a cell has a stat as a hint as long as the player
+                        played for the team and also achieved that stat at ANY
+                        point their career it will count.
                       </p>
+                      <div className="mt-4 font-bold">1. Normal Mode</div>
+                      <div className="text-sm text-gray-500">
+                        In this mode you have 9 guesses. You lose a guess
+                        whether you get it right or wrong - so you have to be
+                        perfect to win.
+                      </div>
+                      <div className="mt-4 font-bold text-gray-500">
+                        2. Timer Mode (coming soon)
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        In this mode you have 5 minutes and unlimited guesses.
+                        However, each wrong guess knocks 5 seconds off your
+                        clock!
+                      </div>
+                      <div className="mt-4 font-bold text-gray-500">
+                        3. Backwards Mode (coming soon)
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        In this mode you are given a grid full of players. It is
+                        your job to find the correct criteria that makes the
+                        grid complete. There might be multiple right answers,
+                        and your guesses don&apos;t lock in until you hit
+                        submit.
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="mt-5 sm:mt-8 sm:flex sm:flex-row-reverse">
+                <div className="mt-5 sm:mt-6">
                   <button
                     type="button"
-                    className="inline-flex w-full justify-center rounded-md bg-green px-3 py-2 text-sm font-semibold text-white shadow-sm sm:hover:bg-indigo-900 sm:ml-3 sm:w-auto"
+                    className="inline-flex w-full justify-center rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
                     onClick={() => setOpen(false)}
                   >
-                    Save
+                    Close
                   </button>
                 </div>
               </Dialog.Panel>

@@ -22,6 +22,7 @@ import {
 
 import Setting from "../components/settings";
 import MyModal from "../components/modal";
+import Help from "../components/help";
 
 function GridLogo({ width, logo, hidden }) {
   return (
@@ -109,8 +110,8 @@ function GridBox({ boxId, reset }) {
       ></MyModal>
       <button
         className={` transition-colors duration-75 focus-visible:z-50 col-1 flex items-center border-x border-y border-[#fff0e6] justify-center ${isRounded()} ${
-          playerSelected ? "bg-indigo-900" : "bg-green"
-        } sm:hover:bg-indigo-900 disabled: w-24 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40 `}
+          playerSelected ? "bg-purple" : "bg-green-500"
+        } sm:hover:bg-purple disabled: w-24 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40 `}
         onClick={() => {
           setIsOpen(true);
         }}
@@ -149,9 +150,13 @@ export default function Home() {
   const [guessesLeft, setGuessesLeft] = useState(9);
 
   let [teams, setTeams] = useState([]);
-  let [isEndless, setIsEndless] = useState(true);
+  let [isEndless, setIsEndless] = useState(false);
 
   let [reset, setReset] = useState(false);
+
+  useEffect(() => {
+    resetTeams();
+  }, [isEndless]);
 
   function resetTeams() {
     setReset(!reset);
@@ -175,7 +180,7 @@ export default function Home() {
     const guessesLeft = localStorage.getItem("guessesLeft") || 9;
     setGuessesLeft(guessesLeft);
 
-    const isEndless = localStorage.getItem("isEndless") || true;
+    const isEndless = localStorage.getItem("isEndless") || false;
     setIsEndless(isEndless);
 
     const teamsLocalStorage = JSON.parse(localStorage.getItem("teams"));
@@ -206,16 +211,19 @@ export default function Home() {
               <div className="pl-4">CONNECT</div>
               <div className="flex gap-6 ">
                 <a href="mailto:immaculategridironnfl@gmail.com?subject=Ideas%20for%20Grid">
-                  <BsLightbulbFill className="fill-green sm:hover:fill-indigo-900 hidden sm:block"></BsLightbulbFill>
+                  <BsLightbulbFill className="fill-green-500 sm:hover:fill-purple hidden sm:block"></BsLightbulbFill>
                 </a>
-                <BsQuestionCircleFill className="fill-green sm:hover:fill-indigo-900"></BsQuestionCircleFill>
+                <Help></Help>
                 <a
                   href="https://twitter.com/ImmGridironNFL"
                   className="hidden sm:block"
                 >
-                  <BsTwitter className="fill-green sm:hover:fill-indigo-900"></BsTwitter>
+                  <BsTwitter className="fill-green-500 sm:hover:fill-purple"></BsTwitter>
                 </a>
-                <Setting></Setting>
+                <Setting
+                  setIsEndless={setIsEndless}
+                  isEndless={isEndless}
+                ></Setting>
               </div>
             </div>
           </div>
@@ -249,13 +257,11 @@ export default function Home() {
                 <ManageNormalGameDesktop
                   guessesLeft={guessesLeft}
                   resetTeams={resetTeams}
-                  isEndless={isEndless}
                 ></ManageNormalGameDesktop>
               </div>
               <ManageNormalGameMobile
                 guessesLeft={guessesLeft}
                 resetTeams={resetTeams}
-                isEndless={isEndless}
               ></ManageNormalGameMobile>
             </div>
           </HomeContext.Provider>
@@ -265,18 +271,22 @@ export default function Home() {
   );
 }
 
-function ManageNormalGameDesktop({ guessesLeft, resetTeams, isEndless }) {
+function ManageNormalGameDesktop({ guessesLeft, resetTeams }) {
+  const { isEndless } = useContext(HomeContext);
+
   return (
     <div className=" text-black sm:w-36 md:w-40 h-full flex justify-center">
       <div className="hidden sm:block font-freshman">
         <div className="text-center text-4xl">{guessesLeft}</div>
         <div className="text-center text-lg">GUESSES</div>
+        <div className="text-center text-lg">DAILY</div>
+
         {isEndless && (
           <button
             onClick={() => {
               resetTeams();
             }}
-            className=" text-yellow-400  sm:hover:bg-indigo-900 text-center flex m-auto bg-green p-2 pl-4 pr-4 mt-2 rounded-lg"
+            className=" text-yellow-400  sm:hover:bg-purple text-center flex m-auto bg-green-500 p-2 pl-4 pr-4 mt-2 rounded-lg"
           >
             reset
           </button>
@@ -286,15 +296,19 @@ function ManageNormalGameDesktop({ guessesLeft, resetTeams, isEndless }) {
   );
 }
 
-function ManageNormalGameMobile({ guessesLeft, resetTeams, isEndless }) {
+function ManageNormalGameMobile({ guessesLeft, resetTeams }) {
+  const { isEndless } = useContext(HomeContext);
+
   return (
     <div className="h-24 sm:h-36 md:h-48 flex justify-center mt-8 sm:hidden text-black">
       <div className="font-freshman">
         <div className="text-center text-4xl">{guessesLeft}</div>
         <div className="text-center text-lg">GUESSES</div>
+        <div className="text-center text-lg">DAILY</div>
+
         {isEndless && (
           <button
-            className="flex m-auto bg-green text-yellow-400 sm:hover:bg-indigo-900 p-2 pl-4 pr-4 mt-2 rounded-lg"
+            className="flex m-auto bg-green-500 text-yellow-400 sm:hover:bg-purple p-2 pl-4 pr-4 mt-2 rounded-lg"
             onClick={() => {
               resetTeams();
             }}

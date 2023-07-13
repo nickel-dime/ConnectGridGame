@@ -1,33 +1,65 @@
-import { Fragment, useState } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+import {
+  Fragment,
+  useState,
+  createContext,
+  useContext,
+  useEffect,
+} from "react";
+import { Dialog, Transition, Switch } from "@headlessui/react";
 import { BsGearFill } from "react-icons/bs";
 import {
   ExclamationTriangleIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 
-export default function Setting({}) {
+const SettingContext = createContext(null);
+
+export default function Setting({ isEndless, setIsEndless }) {
   const [open, setOpen] = useState(false);
+
+  const [modalEndless, setModalEndless] = useState(isEndless);
+
+  useEffect(() => {
+    setModalEndless(isEndless);
+  }, [open]);
 
   return (
     <div>
-      <SettingModal open={open} setOpen={setOpen}></SettingModal>
-      <button
-        onClick={() => {
-          setOpen(true);
+      <SettingContext.Provider
+        value={{
+          modalEndless: modalEndless,
+          setModalEndless: setModalEndless,
+          setIsEndless: setIsEndless,
         }}
       >
-        <BsGearFill className="fill-green hover:fill-indigo-900"></BsGearFill>
-      </button>
+        <SettingModal open={open} setOpen={setOpen}></SettingModal>
+        <button
+          onClick={() => {
+            setOpen(true);
+          }}
+        >
+          <BsGearFill className="fill-green-500 hover:fill-purple"></BsGearFill>
+        </button>
+      </SettingContext.Provider>
     </div>
   );
 }
 
 function SettingModal({ open, setOpen }) {
   //   const [open, setOpen] = useState(true);
+
+  const { setIsEndless, modalEndless } = useContext(SettingContext);
+
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={setOpen}>
+      <Dialog
+        as="div"
+        className="relative z-10"
+        onClose={(e) => {
+          console.log("CLO");
+          setOpen(e);
+        }}
+      >
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -85,14 +117,21 @@ function SettingModal({ open, setOpen }) {
                           <CardChoicesMobile></CardChoicesMobile>
                         </div>
                       </div>
+                      <div className="w-full border-t border-gray-100 mt-4"></div>
+                      <div className="mt-4">
+                        <Unlimited></Unlimited>
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div className="mt-5 sm:mt-8 sm:flex sm:flex-row-reverse">
                   <button
                     type="button"
-                    className="inline-flex w-full justify-center rounded-md bg-green px-3 py-2 text-sm font-semibold text-white shadow-sm sm:hover:bg-indigo-900 sm:ml-3 sm:w-auto"
-                    onClick={() => setOpen(false)}
+                    className="inline-flex w-full justify-center rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white shadow-sm sm:hover:bg-purple sm:ml-3 sm:w-auto"
+                    onClick={() => {
+                      setIsEndless(modalEndless);
+                      setOpen(false);
+                    }}
                   >
                     Save
                   </button>
@@ -112,21 +151,23 @@ import { CheckCircleIcon } from "@heroicons/react/20/solid";
 const mailingLists = [
   {
     id: 1,
-    title: "Newsletter",
-    description: "Last message sent an hour ago",
-    users: "621 users",
+    title: "Normal",
+    description: "Given 9 guesses, fill out as much of the grid as you can.",
+    disbaled: false,
   },
   {
     id: 2,
-    title: "Existing Customers",
-    description: "Last message sent 2 weeks ago",
-    users: "1200 users",
+    title: "Timer (coming soon)",
+    description:
+      "You have 5 minutes! Be careful, every wrong guess loses you 10 seconds.",
+    disabled: true,
   },
   {
     id: 3,
-    title: "Trial Users",
-    description: "Last message sent 4 days ago",
-    users: "2740 users",
+    title: "Backwards (coming soon)",
+    description:
+      "You are given the players - fill out the clues to complete the grid.",
+    disabled: true,
   },
 ];
 
@@ -142,7 +183,7 @@ function CardChoices() {
   return (
     <RadioGroup value={selectedMailingLists} onChange={setSelectedMailingLists}>
       <RadioGroup.Label className="text-base font-semibold leading-6 text-gray-900">
-        Select a mailing list
+        Choose Mode
       </RadioGroup.Label>
 
       <div className="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-3 sm:gap-x-4">
@@ -150,6 +191,7 @@ function CardChoices() {
           <RadioGroup.Option
             key={mailingList.id}
             value={mailingList}
+            disabled={mailingList.disabled}
             className={({ active }) =>
               classNames(
                 active
@@ -165,7 +207,12 @@ function CardChoices() {
                   <span className="flex flex-col">
                     <RadioGroup.Label
                       as="span"
-                      className="block text-sm font-medium text-gray-900"
+                      className={classNames(
+                        mailingList.disabled
+                          ? "text-gray-500"
+                          : "text-gray-900",
+                        "block text-sm font-medium "
+                      )}
                     >
                       {mailingList.title}
                     </RadioGroup.Label>
@@ -174,12 +221,6 @@ function CardChoices() {
                       className="mt-1 flex items-center text-sm text-gray-500"
                     >
                       {mailingList.description}
-                    </RadioGroup.Description>
-                    <RadioGroup.Description
-                      as="span"
-                      className="mt-6 text-sm font-medium text-gray-900"
-                    >
-                      {mailingList.users}
                     </RadioGroup.Description>
                   </span>
                 </span>
@@ -209,16 +250,21 @@ function CardChoices() {
 
 const settings = [
   {
-    name: "Public access",
-    description: "This project would be available to anyone who has the link",
+    name: "Normal",
+    description: "Given 9 guesses, fill out as much of the grid as you can",
+    disabled: false,
   },
   {
-    name: "Private to Project Members",
-    description: "Only members of this project would be able to access",
+    name: "Timer (coming soon)",
+    description:
+      "You have 5 minutes! Careful though, every wrong guess loses 10 seconds",
+    disabled: true,
   },
   {
-    name: "Private to you",
-    description: "You are the only one able to access this project",
+    name: "Backwards (coming soon)",
+    description:
+      "You are given the players - fill out the clues to complete the grid.",
+    disabled: true,
   },
 ];
 
@@ -228,10 +274,11 @@ function CardChoicesMobile() {
   return (
     <RadioGroup value={selected} onChange={setSelected}>
       <RadioGroup.Label className="sr-only">Privacy setting</RadioGroup.Label>
-      <div className="-space-y-px rounded-md bg-white">
+      <div className="-space-y-px rounded-md bg-white text-left">
         {settings.map((setting, settingIdx) => (
           <RadioGroup.Option
             key={setting.name}
+            disabled={setting.disabled}
             value={setting}
             className={({ checked }) =>
               classNames(
@@ -264,7 +311,7 @@ function CardChoicesMobile() {
                   <RadioGroup.Label
                     as="span"
                     className={classNames(
-                      checked ? "text-indigo-900" : "text-gray-900",
+                      checked ? "text-purple" : "text-gray-900",
                       "block text-sm font-medium"
                     )}
                   >
@@ -286,5 +333,47 @@ function CardChoicesMobile() {
         ))}
       </div>
     </RadioGroup>
+  );
+}
+
+function Unlimited() {
+  const { modalEndless, setModalEndless } = useContext(SettingContext);
+
+  return (
+    <Switch.Group
+      as="div"
+      className="flex items-center justify-between text-left ml-1"
+    >
+      <span className="flex flex-grow flex-col">
+        <Switch.Label
+          as="span"
+          className="text-base font-semibold leading-6 text-gray-900"
+          passive
+        >
+          Unlimited Grids
+        </Switch.Label>
+        <Switch.Description as="span" className="text-sm text-gray-500 mt-1">
+          Toggle between playing only the daily grid or playing endless grids.
+        </Switch.Description>
+      </span>
+      <Switch
+        checked={modalEndless}
+        onChange={() => {
+          setModalEndless(!modalEndless);
+        }}
+        className={classNames(
+          modalEndless ? "bg-purple" : "bg-gray-200",
+          "relative ml-2 inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-offset-2"
+        )}
+      >
+        <span
+          aria-hidden="true"
+          className={classNames(
+            modalEndless ? "translate-x-5" : "translate-x-0",
+            "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+          )}
+        />
+      </Switch>
+    </Switch.Group>
   );
 }

@@ -224,7 +224,7 @@ const Example = ({ setClose, setPlayerSelected, boxId }, ref) => {
                           person.found == 2
                             ? " bg-slate-100 text-red-500"
                             : active
-                            ? "bg-slate-50 text-green"
+                            ? "bg-slate-50 text-purple"
                             : "text-gray-900"
                         }`
                       }
@@ -251,7 +251,7 @@ const Example = ({ setClose, setPlayerSelected, boxId }, ref) => {
                           {selected ? (
                             <span
                               className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                                active ? "text-slate-100" : "text-green"
+                                active ? "text-slate-100" : "text-purple"
                               }`}
                             ></span>
                           ) : null}

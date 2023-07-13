@@ -3,38 +3,27 @@ import { NextResponse } from "next/server";
 import prisma from "../../../lib/prisma";
 
 export async function GET(request: Request) {
-  //   const currentUser = await getCurrentUser();
-
-  //   if (!currentUser) {
-  //     return console.log("Hi");
-  //   }
-
-  //   const body = await request.json();
-  //   const { name, description, imageSrc } = body;
-
-  //   //   Object.keys(body).forEach((value: any) => {
-  //   //     if (!body[value]) {
-  //   //       NextResponse.error();
-  //   //     }
-  //   //   });
-
-  //   const listing = await prisma.listing.create({
-  //     data: {
-  //       name,
-  //       imageSrc,
-  //       description,
-  //       userId: currentUser.id,
-  //       //   userId: currentUser.id
-  //     },
-  //   });
   var url = new URL(request.url);
   var isEndless = url.searchParams.get("isEndless");
 
-  if (isEndless) {
+  if (isEndless == "true") {
     return NextResponse.json(getRandom(TEAMS, 6));
   } else {
-    // pull from db
-    return NextResponse.error();
+    let yourDate = new Date();
+    yourDate.toISOString().split("T")[0];
+    const teams = await prisma.grid.findUniqueOrThrow({
+      where: {
+        day: yourDate,
+      },
+    });
+    return NextResponse.json([
+      teams.a_team,
+      teams.b_team,
+      teams.c_team,
+      teams.one_team,
+      teams.two_team,
+      teams.three_team,
+    ]);
   }
 }
 
