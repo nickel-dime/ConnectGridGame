@@ -3,12 +3,11 @@ datasource db {
   url               = env("MY_POSTGRES_PRISMA_URL") // uses connection pooling
   directUrl         = env("MY_POSTGRES_URL_NON_POOLING") // uses a direct connection
   shadowDatabaseUrl = env("MY_POSTGRES_URL_NON_POOLING") // used for migrations
-  extensions = [pg_trgm]
-
+  extensions        = [pg_trgm]
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["jsonProtocol", "postgresqlExtensions"]
 }
 
@@ -23,13 +22,14 @@ model Player {
   fbdb_page   String?
   Player_Team Player_Team[]
   college     String?
-  id          Int       @default(autoincrement())
+  id          Int           @unique @default(autoincrement())
+  Answers Answers[]
 
   @@id([firstName, lastName, yearStart, yearEnd])
 }
 
 model Player_Team {
-  teamName        Team   
+  teamName        Team
   player          Player @relation(fields: [playerFirstName, playerLastName, playerYearStart, playerYearEnd], references: [firstName, lastName, yearStart, yearEnd])
   playerFirstName String
   playerLastName  String
@@ -40,13 +40,23 @@ model Player_Team {
 }
 
 model Grid {
-  day            DateTime @unique
-  a_team         Team
-  b_team         Team
-  c_team         Team
-  one_team       Team
-  two_team       Team
-  three_team     Team
+  day        DateTime @unique
+  a_team     Team
+  b_team     Team
+  c_team     Team
+  one_team   Team
+  two_team   Team
+  three_team Team
+}
+
+model Answers {
+  team1    Team
+  team2    Team
+  player   Player @relation(fields: [playerId], references: [id])
+  playerId Int
+  count    Int
+
+  @@id([team1, team2, playerId])
 }
 
 enum Team {
