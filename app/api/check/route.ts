@@ -31,51 +31,51 @@ export async function POST(request: Request) {
 
   const grid_ids = MAP_BOX_ID_TO_GRID_ID[parseInt(boxId)];
 
-  if (data["isEndless"]) {
-    const teams = data["teams"];
-    const success = await check_if_player_fits_teams(
-      data["player"],
-      teams[grid_ids[0]],
-      teams[grid_ids[1]]
-    );
+  // if (data["isEndless"]) {
+  const teams = data["teams"];
+  const success = await check_if_player_fits_teams(
+    data["player"],
+    teams[grid_ids[0]],
+    teams[grid_ids[1]]
+  );
 
-    if (success) {
-      grid_ids.sort();
+  if (success) {
+    grid_ids.sort();
 
-      await prisma.answers.upsert({
-        where: {
-          team1_team2_playerId: {
-            team1: teams[grid_ids[0]],
-            team2: teams[grid_ids[1]],
-            playerId: data["player"].id,
-          },
-        },
-        update: {
-          count: {
-            increment: 1,
-          },
-        },
-        create: {
-          playerId: data["player"].id,
+    await prisma.answers.upsert({
+      where: {
+        team1_team2_playerId: {
           team1: teams[grid_ids[0]],
           team2: teams[grid_ids[1]],
-          count: 1,
+          playerId: data["player"].id,
         },
-      });
-    }
-
-    return NextResponse.json({
-      success: success,
+      },
+      update: {
+        count: {
+          increment: 1,
+        },
+      },
+      create: {
+        playerId: data["player"].id,
+        team1: teams[grid_ids[0]],
+        team2: teams[grid_ids[1]],
+        count: 1,
+      },
     });
-  } else if (!data["isEndless"]) {
-    return (
-      NextResponse.error(),
-      {
-        status: 400,
-        statusText: "No normal mode",
-      }
-    );
   }
+
+  return NextResponse.json({
+    success: success,
+  });
+  // } else if (!data["isEndless"]) {
+  //   return (
+  //     NextResponse.error(),
+  //     {
+  //       status: 400,
+  //       statusText: "No normal mode",
+  //     }
+  //   );
+  // }
 
   return (
     NextResponse.error(),
