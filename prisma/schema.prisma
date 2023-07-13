@@ -11,7 +11,7 @@ generator client {
   previewFeatures = ["jsonProtocol", "postgresqlExtensions"]
 }
 
-model Player {
+model NFLPlayer {
   firstName   String
   lastName    String
   yearStart   String
@@ -28,9 +28,9 @@ model Player {
   @@id([firstName, lastName, yearStart, yearEnd])
 }
 
-model Player_Team {
+model NFLPlayer_Team {
   teamName        Team
-  player          Player @relation(fields: [playerFirstName, playerLastName, playerYearStart, playerYearEnd], references: [firstName, lastName, yearStart, yearEnd])
+  player          NFLPlayer @relation(fields: [playerFirstName, playerLastName, playerYearStart, playerYearEnd], references: [firstName, lastName, yearStart, yearEnd])
   playerFirstName String
   playerLastName  String
   playerYearStart String
@@ -49,7 +49,7 @@ model Grid {
   three_team Team
 }
 
-model Answers {
+model NFLAnswers {
   team1    Team
   team2    Team
   player   Player @relation(fields: [playerId], references: [id])
@@ -57,6 +57,67 @@ model Answers {
   count    Int
 
   @@id([team1, team2, playerId])
+}
+
+enum Criteria {
+    MIA
+  HOU
+  BAL
+  JAX
+  CAR
+  TB
+  SEA
+  CIN
+  NO
+  ATL
+  MIN
+  BUF
+  TEN
+  LV
+  NE
+  NYJ
+  DEN
+  LAC
+  KC
+  DAL
+  IND
+  CLE
+  SF
+  LA
+  PIT
+  PHI
+  WAS
+  DET
+  NYG
+  GB
+  CHI
+  ARI
+  Over_Games_150
+  Round_1_Pick
+  Undrafted
+  Over_6_Foot
+  Over_300_Pounds 
+  Under_180
+  RB
+  DB
+  LB
+  WR
+  DT
+  LS
+  OT
+  C
+  QB
+  DE
+  P
+  K
+  OT
+  OG
+  TE
+  AP_All_Pro
+  Over_1000_Rushing_Season
+  Over_1000_Recieving_Season
+  Over_10_TD_Season
+  
 }
 
 enum Team {

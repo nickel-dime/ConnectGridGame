@@ -16,6 +16,7 @@ export default function Help({}) {
         onClick={() => {
           setOpen(true);
         }}
+        className="p-1"
       >
         <BsQuestionCircleFill className="fill-green-500 sm:hover:fill-purple"></BsQuestionCircleFill>
       </button>
