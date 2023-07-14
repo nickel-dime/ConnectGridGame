@@ -5,11 +5,13 @@ import {
   useContext,
   useEffect,
 } from "react";
-import { Dialog, Transition, Switch } from "@headlessui/react";
+import { Dialog, Transition, Switch, Tab } from "@headlessui/react";
 import { BsGearFill } from "react-icons/bs";
 import {
   ExclamationTriangleIcon,
   XMarkIcon,
+  ChevronUpDownIcon,
+  CheckIcon,
 } from "@heroicons/react/24/outline";
 
 const SettingContext = createContext(null);
@@ -23,6 +25,7 @@ export default function Setting({
   const [open, setOpen] = useState(false);
 
   const [modalEndless, setModalEndless] = useState(isEndless);
+  const [modalLeague, setModalLeague] = useState(league);
 
   useEffect(() => {
     setModalEndless(isEndless);
@@ -35,8 +38,9 @@ export default function Setting({
           modalEndless: modalEndless,
           setModalEndless: setModalEndless,
           setIsEndless: setIsEndless,
-          league: league,
           setLeague: setLeague,
+          modalLeague: modalLeague,
+          setModalLeague: setModalLeague,
         }}
       >
         <SettingModal open={open} setOpen={setOpen}></SettingModal>
@@ -56,7 +60,7 @@ export default function Setting({
 function SettingModal({ open, setOpen }) {
   //   const [open, setOpen] = useState(true);
 
-  const { setIsEndless, modalEndless, league, setLeague } =
+  const { setIsEndless, modalEndless, setLeague, modalLeague } =
     useContext(SettingContext);
 
   return (
@@ -130,6 +134,10 @@ function SettingModal({ open, setOpen }) {
                       <div className="mt-4">
                         <Unlimited></Unlimited>
                       </div>
+                      <div className="w-full border-t border-gray-100 mt-4"></div>
+                      <div className="mt-4  ">
+                        <LeagueChooser></LeagueChooser>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -139,10 +147,10 @@ function SettingModal({ open, setOpen }) {
                     className="inline-flex w-full justify-center rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white shadow-sm sm:hover:bg-purple sm:ml-3 sm:w-auto"
                     onClick={() => {
                       setIsEndless(modalEndless);
-                      setOpen(false);
                       localStorage.setItem("isEndless", modalEndless);
-                      setLeague(league);
-                      localStorage.setItem("league", league);
+                      setLeague(modalLeague);
+                      localStorage.setItem("league", modalLeague);
+                      setOpen(false);
                     }}
                   >
                     Save
@@ -351,6 +359,10 @@ function CardChoicesMobile() {
 function Unlimited() {
   const { modalEndless, setModalEndless } = useContext(SettingContext);
 
+  useEffect(() => {
+    console.log(modalEndless);
+  }, []);
+
   return (
     <Switch.Group
       as="div"
@@ -387,5 +399,64 @@ function Unlimited() {
         />
       </Switch>
     </Switch.Group>
+  );
+}
+
+const leagues = [
+  { name: "NBA", disbaled: false },
+  { name: "NFL", disabled: false },
+  { name: "MLB", disabled: true },
+  { name: "NHL", disabled: true },
+];
+
+function LeagueChooser() {
+  const { modalLeague, setModalLeague } = useContext(SettingContext);
+
+  function getIndex() {
+    if (modalLeague == "NBA") {
+      return 0;
+    } else if (modalLeague == "NFL") {
+      return 1;
+    } else if (modalLeague == "MLB") {
+      return 2;
+    } else if (modalLeague == "NHL") {
+      return 3;
+    }
+  }
+
+  return (
+    <div className="w-full max-w-md px-2 sm:px-0 ml-1 ">
+      <Tab.Group
+        onChange={(index) => {
+          console.log("Changed selected tab to:", leagues[index].name);
+          setModalLeague(leagues[index].name);
+        }}
+        selectedIndex={getIndex()}
+      >
+        <span className="text-base font-semibold leading-6  text-gray-900">
+          Choose Mode
+        </span>
+        <Tab.List className="flex space-x-1 rounded-xl text-white mt-4">
+          {leagues.map((league) => (
+            <Tab
+              key={league.name}
+              className={({ selected }) =>
+                classNames(
+                  "w-full rounded-lg py-2.5 text-sm font-medium leading-5",
+                  "ring-white ring-opacity-60 ",
+                  selected ? " shadow bg-indigo-900" : "text-white ",
+                  league.disabled
+                    ? "text-gray-500 bg-gray-500"
+                    : " hover:bg-indigo-900 bg-green-500"
+                )
+              }
+              disabled={league.disabled}
+            >
+              {league.name}
+            </Tab>
+          ))}
+        </Tab.List>
+      </Tab.Group>
+    </div>
   );
 }

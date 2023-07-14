@@ -15,12 +15,18 @@ export async function GET(request: Request) {
     return NextResponse.json(final_grid);
   } else {
     let yourDate = new Date();
-    yourDate.toISOString().split("T")[0];
-    const teams = await prisma.nBAGrid.findUniqueOrThrow({
+
+    const teams = await prisma.nBAGrid.findUnique({
       where: {
         day: yourDate,
       },
     });
+
+    if (teams == null) {
+      console.log("ERRROR TEAMS NULL");
+      return NextResponse.json(getRandom(TEAMS, 6));
+    }
+
     return NextResponse.json([
       teams.a_hint,
       teams.b_hint,
@@ -47,38 +53,36 @@ function getRandom(arr: String[], n: number) {
 }
 
 const TEAMS = [
-  "MIA",
-  "HOU",
-  "BAL",
-  "JAX",
-  "CAR",
-  "TB",
-  "SEA",
-  "CIN",
-  "NO",
   "ATL",
-  "MIN",
-  "BUF",
-  "TEN",
-  "LV",
-  "NE",
-  "NYJ",
-  "DEN",
-  "LAC",
-  "KC",
-  "DAL",
-  "IND",
-  "CLE",
-  "SF",
-  "LA",
-  "PIT",
-  "PHI",
-  "WAS",
-  "DET",
-  "NYG",
-  "GB",
+  "BOS",
+  "BKN",
+  "CHA",
   "CHI",
-  "ARI",
+  "CLE",
+  "DAL",
+  "DEN",
+  "DET",
+  "GSW",
+  "HOU",
+  "IND",
+  "LAC",
+  "LAL",
+  "MEM",
+  "MIA",
+  "MIL",
+  "MIN",
+  "NOP",
+  "NYK",
+  "OKC",
+  "ORL",
+  "PHL",
+  "PHX",
+  "POR",
+  "SAC",
+  "SAS",
+  "TOR",
+  "UTA",
+  "WAS",
 ];
 
 const CRITERIA = [

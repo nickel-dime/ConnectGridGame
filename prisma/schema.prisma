@@ -158,12 +158,12 @@ model NBAPlayer {
   firstName      String
   lastName       String
   isActive       Boolean
-  NBAPlayer_Team NBAPlayer_Team[]
   profilePic     String
   yearStart      String
   yearEnd        String
   position       String
   NBAAnswers     NBAAnswers[]
+  NBAPlayer_Team NBAPlayer_Team[]
 }
 
 model NBAPlayer_Team {

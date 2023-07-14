@@ -151,15 +151,16 @@ export default function Home() {
 
   let [teams, setTeams] = useState([]);
   let [isEndless, setIsEndless] = useState(false);
-  let [league, setLeauge] = useState("NBA");
+  let [league, setLeague] = useState("NBA");
 
   let [reset, setReset] = useState(false);
 
   useEffect(() => {
     resetTeams();
-  }, [isEndless]);
+  }, [isEndless, league]);
 
   function resetTeams() {
+    console.log("running");
     setReset(!reset);
     fetch(`/api/teams/${league.toLowerCase()}?isEndless=${isEndless}`)
       .then((response) => response.json())
@@ -185,9 +186,11 @@ export default function Home() {
     setIsEndless(isEndless);
 
     const league = localStorage.getItem("league") || "NBA";
-    setLeauge(league);
+    setLeague(league);
 
-    const teamsLocalStorage = JSON.parse(localStorage.getItem("teams"));
+    const teamsLocalStorage = JSON.parse(
+      localStorage.getItem(`${league}teams`)
+    );
     if (teamsLocalStorage != "null" && teamsLocalStorage != null) {
       setTeams(teamsLocalStorage);
     }
@@ -230,6 +233,8 @@ export default function Home() {
                 <Setting
                   setIsEndless={setIsEndless}
                   isEndless={isEndless}
+                  league={league}
+                  setLeague={setLeague}
                 ></Setting>
               </div>
             </div>

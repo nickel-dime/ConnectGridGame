@@ -18,6 +18,7 @@ export async function GET(request: Request) {
 
 
     if (teams == null) {
+      console.log("ERRROR TEAMS NULL")
       return NextResponse.json(getRandom(TEAMS, 6));
     }
 
