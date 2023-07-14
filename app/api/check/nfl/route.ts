@@ -1,4 +1,4 @@
-import { Player, Team } from "@prisma/client";
+import { NFLPlayer, NFLTeam } from "@prisma/client";
 import next from "next";
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
@@ -42,11 +42,11 @@ export async function POST(request: Request) {
   if (success) {
     grid_ids.sort();
 
-    await prisma.answers.upsert({
+    await prisma.nFLAnswers.upsert({
       where: {
-        team1_team2_playerId: {
-          team1: teams[grid_ids[0]],
-          team2: teams[grid_ids[1]],
+        hint_one_hint_two_playerId: {
+          hint_one: teams[grid_ids[0]],
+          hint_two: teams[grid_ids[1]],
           playerId: data["player"].id,
         },
       },
@@ -57,8 +57,8 @@ export async function POST(request: Request) {
       },
       create: {
         playerId: data["player"].id,
-        team1: teams[grid_ids[0]],
-        team2: teams[grid_ids[1]],
+        hint_one: teams[grid_ids[0]],
+        hint_two: teams[grid_ids[1]],
         count: 1,
       },
     });
@@ -87,11 +87,11 @@ export async function POST(request: Request) {
 }
 
 async function check_if_player_fits_teams(
-  player: Player,
-  team1: Team,
-  team2: Team
+  player: NFLPlayer,
+  team1: NFLTeam,
+  team2: NFLTeam
 ) {
-  const teams = await prisma.player_Team.findMany({
+  const teams = await prisma.nFLPlayer_Team.findMany({
     where: {
       playerFirstName: player.firstName,
       playerLastName: player.lastName,

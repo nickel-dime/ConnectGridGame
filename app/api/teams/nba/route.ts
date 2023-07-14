@@ -6,22 +6,28 @@ export async function GET(request: Request) {
   var isEndless = url.searchParams.get("isEndless");
 
   if (isEndless == "true") {
-    return NextResponse.json(getRandom(TEAMS, 6));
+    var numTeams = Math.floor(Math.random() * (6 - 4 + 1)) + 4;
+
+    const final_grid = getRandom(TEAMS, numTeams).concat(
+      getRandom(CRITERIA, 6 - numTeams)
+    );
+
+    return NextResponse.json(final_grid);
   } else {
     let yourDate = new Date();
     yourDate.toISOString().split("T")[0];
-    const teams = await prisma.grid.findUniqueOrThrow({
+    const teams = await prisma.nBAGrid.findUniqueOrThrow({
       where: {
         day: yourDate,
       },
     });
     return NextResponse.json([
-      teams.a_team,
-      teams.b_team,
-      teams.c_team,
-      teams.one_team,
-      teams.two_team,
-      teams.three_team,
+      teams.a_hint,
+      teams.b_hint,
+      teams.c_hint,
+      teams.one_hint,
+      teams.two_hint,
+      teams.three_hint,
     ]);
   }
 }
@@ -73,4 +79,13 @@ const TEAMS = [
   "GB",
   "CHI",
   "ARI",
+];
+
+const CRITERIA = [
+  "Guard",
+  "Forward",
+  "Center",
+  "Loyal", // played with only one team
+  "All Star",
+  "Active",
 ];

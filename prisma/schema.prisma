@@ -12,24 +12,24 @@ generator client {
 }
 
 model NFLPlayer {
+  id          Int              @unique @default(autoincrement())
   firstName   String
   lastName    String
   yearStart   String
   yearEnd     String
   profilePic  String?
   position    String?
-  pff_page    String?
   fbdb_page   String?
-  Player_Team Player_Team[]
+  Player_Team NFLPlayer_Team[]
   college     String?
-  id          Int           @unique @default(autoincrement())
-  Answers Answers[]
+  weight      Int?
+  Answers     NFLAnswers[]
 
   @@id([firstName, lastName, yearStart, yearEnd])
 }
 
 model NFLPlayer_Team {
-  teamName        Team
+  teamName        NFLTeam
   player          NFLPlayer @relation(fields: [playerFirstName, playerLastName, playerYearStart, playerYearEnd], references: [firstName, lastName, yearStart, yearEnd])
   playerFirstName String
   playerLastName  String
@@ -39,28 +39,28 @@ model NFLPlayer_Team {
   @@id([teamName, playerFirstName, playerLastName, playerYearStart, playerYearEnd])
 }
 
-model Grid {
-  day        DateTime @unique @db.Date
-  a_team     Team
-  b_team     Team
-  c_team     Team
-  one_team   Team
-  two_team   Team
-  three_team Team
-}
-
 model NFLAnswers {
-  team1    Team
-  team2    Team
-  player   Player @relation(fields: [playerId], references: [id])
+  hint_one String
+  hint_two String
+  player   NFLPlayer @relation(fields: [playerId], references: [id])
   playerId Int
   count    Int
 
-  @@id([team1, team2, playerId])
+  @@id([hint_one, hint_two, playerId])
 }
 
-enum Criteria {
-    MIA
+model NFLGrid {
+  day        DateTime @unique @db.Date
+  a_hint     String
+  b_hint     String
+  c_hint     String
+  one_hint   String
+  two_hint   String
+  three_hint String
+}
+
+enum NFLCriteria {
+  MIA
   HOU
   BAL
   JAX
@@ -96,7 +96,7 @@ enum Criteria {
   Round_1_Pick
   Undrafted
   Over_6_Foot
-  Over_300_Pounds 
+  Over_300_Pounds
   Under_180
   RB
   DB
@@ -104,7 +104,6 @@ enum Criteria {
   WR
   DT
   LS
-  OT
   C
   QB
   DE
@@ -117,10 +116,9 @@ enum Criteria {
   Over_1000_Rushing_Season
   Over_1000_Recieving_Season
   Over_10_TD_Season
-  
 }
 
-enum Team {
+enum NFLTeam {
   MIA
   HOU
   BAL
@@ -153,4 +151,78 @@ enum Team {
   GB
   CHI
   ARI
+}
+
+model NBAPlayer {
+  id             Int              @id
+  firstName      String
+  lastName       String
+  isActive       Boolean
+  NBAPlayer_Team NBAPlayer_Team[]
+  profilePic     String
+  yearStart      String
+  yearEnd        String
+  position       String
+  NBAAnswers     NBAAnswers[]
+}
+
+model NBAPlayer_Team {
+  teamName NBATeam
+  player   NBAPlayer @relation(fields: [playerId], references: [id])
+  playerId Int
+
+  @@id([teamName, playerId])
+}
+
+model NBAGrid {
+  day        DateTime @unique @db.Date
+  a_hint     String
+  b_hint     String
+  c_hint     String
+  one_hint   String
+  two_hint   String
+  three_hint String
+}
+
+model NBAAnswers {
+  hint_one String
+  hint_two String
+  player   NBAPlayer @relation(fields: [playerId], references: [id])
+  playerId Int
+  count    Int
+
+  @@id([hint_one, hint_two, playerId])
+}
+
+enum NBATeam {
+  ATL
+  BOS
+  BKN
+  CHA
+  CHI
+  CLE
+  DAL
+  DEN
+  DET
+  GSW
+  HOU
+  IND
+  LAC
+  LAL
+  MEM
+  MIA
+  MIL
+  MIN
+  NOP
+  NYK
+  OKC
+  ORL
+  PHL
+  PHX
+  POR
+  SAC
+  SAS
+  TOR
+  UTA
+  WAS
 }

@@ -14,7 +14,12 @@ import {
 
 const SettingContext = createContext(null);
 
-export default function Setting({ isEndless, setIsEndless }) {
+export default function Setting({
+  isEndless,
+  setIsEndless,
+  league,
+  setLeague,
+}) {
   const [open, setOpen] = useState(false);
 
   const [modalEndless, setModalEndless] = useState(isEndless);
@@ -30,6 +35,8 @@ export default function Setting({ isEndless, setIsEndless }) {
           modalEndless: modalEndless,
           setModalEndless: setModalEndless,
           setIsEndless: setIsEndless,
+          league: league,
+          setLeague: setLeague,
         }}
       >
         <SettingModal open={open} setOpen={setOpen}></SettingModal>
@@ -37,6 +44,7 @@ export default function Setting({ isEndless, setIsEndless }) {
           onClick={() => {
             setOpen(true);
           }}
+          className="p-1"
         >
           <BsGearFill className="fill-green-500 hover:fill-purple"></BsGearFill>
         </button>
@@ -48,7 +56,8 @@ export default function Setting({ isEndless, setIsEndless }) {
 function SettingModal({ open, setOpen }) {
   //   const [open, setOpen] = useState(true);
 
-  const { setIsEndless, modalEndless } = useContext(SettingContext);
+  const { setIsEndless, modalEndless, league, setLeague } =
+    useContext(SettingContext);
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -131,6 +140,9 @@ function SettingModal({ open, setOpen }) {
                     onClick={() => {
                       setIsEndless(modalEndless);
                       setOpen(false);
+                      localStorage.setItem("isEndless", modalEndless);
+                      setLeague(league);
+                      localStorage.setItem("league", league);
                     }}
                   >
                     Save

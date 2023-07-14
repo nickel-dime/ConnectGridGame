@@ -1,4 +1,4 @@
-import { Player } from "@prisma/client";
+import { NFLPlayer, NBAPlayer } from "@prisma/client";
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
@@ -6,32 +6,18 @@ export async function GET(request: Request) {
   var url = new URL(request.url);
   var firstName = url.searchParams.get("firstName");
   var lastName = url.searchParams.get("lastName");
+  var league = url.searchParams.get("league");
 
-  let result: Player[] = [];
+  let result: NFLPlayer[] | NBAPlayer[] = [];
 
   if (firstName == null) {
     return NextResponse.json([]);
   } else if (lastName == null) {
-    const query = `SELECT "firstName", "lastName", "id", "yearEnd", "yearStart", "profilePic", "position" FROM "Player" WHERE "Player"."firstName" % '${firstName}' OR "Player"."lastName" % '${firstName}' ORDER BY "yearEnd" desc LIMIT 25;`;
+    const query = `SELECT "firstName", "lastName", "id", "yearEnd", "yearStart", "profilePic", "position" FROM "${league}Player" WHERE "${league}Player"."firstName" % '${firstName}' OR "${league}Player"."lastName" % '${firstName}' ORDER BY "yearEnd" desc LIMIT 25;`;
     result = await prisma.$queryRawUnsafe(query);
   } else {
-    const query = `SELECT "firstName", "lastName", "id", "yearEnd", "yearStart", "profilePic", "position" FROM "Player" WHERE "Player"."firstName" % '${firstName}' AND UPPER("Player"."lastName") LIKE '${lastName.toUpperCase()}%' ORDER BY "yearEnd" desc LIMIT 25;`;
+    const query = `SELECT "firstName", "lastName", "id", "yearEnd", "yearStart", "profilePic", "position" FROM "${league}Player" WHERE "${league}Player"."firstName" % '${firstName}' AND UPPER("${league}Player"."lastName") LIKE '${lastName.toUpperCase()}%' ORDER BY "yearEnd" desc LIMIT 25;`;
     result = await prisma.$queryRawUnsafe(query);
-  }
-
-  if (result === undefined || result.length == 0) {
-    result = await prisma.player.findMany({
-      where: {
-        lastName: {
-          startsWith: firstName,
-          mode: "insensitive",
-        },
-      },
-      take: 25,
-      orderBy: {
-        yearEnd: "desc",
-      },
-    });
   }
 
   let formatted_result = [];
@@ -44,9 +30,7 @@ export async function GET(request: Request) {
       yearEnd: player.yearEnd,
       position: player.position,
       id: player.id,
-      profilePic: player.profilePic
-        ? player.profilePic
-        : "https://images.fantasypros.com/images/players/nfl/22978/headshot/70x70.png",
+      profilePic: player.profilePic,
     });
   }
 

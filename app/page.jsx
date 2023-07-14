@@ -24,13 +24,13 @@ import Setting from "../components/settings";
 import MyModal from "../components/modal";
 import Help from "../components/help";
 
-function GridLogo({ width, logo, hidden }) {
+function GridLogo({ width, logo, hidden, league }) {
   return (
     <div
       className={`flex items-center justify-center ${width} sm:w-36 md:w-40 h-24 sm:h-36 md:h-40 `}
     >
       <Image
-        src={`/logos/${logo}.png`}
+        src={`/logos/${league}/${logo}.png`}
         alt={`Team logo ${logo}`}
         width={96}
         height={96}
@@ -42,14 +42,14 @@ function GridLogo({ width, logo, hidden }) {
   );
 }
 
-function SportLogo({ width, logo, hidden }) {
+function SportLogo({ width, logo, hidden, league }) {
   return (
     <div
       className={`flex items-center justify-center ${width} sm:w-36 md:w-40 h-24 sm:h-36 md:h-40 `}
     >
       {/* <button className="hover:shadow-lg rounded-lg hover:bg-emerald-300 p-2" onClick={() => { console.log("CLICK")}}> */}
       <Image
-        src={`/logos/${logo}.png`}
+        src={`/logos/${league}/${logo}.png`}
         alt={`Team logo ${logo}`}
         width={96}
         height={96}
@@ -67,7 +67,7 @@ function GridBox({ boxId, reset }) {
   let [playerSelected, setPlayerSelected] = useState(null);
   let [loaded, setLoaded] = useState(false);
 
-  const { guessesLeft, setGuessesLeft } = useContext(HomeContext);
+  const { guessesLeft, setGuessesLeft, league } = useContext(HomeContext);
   // const { reset, setReset } = useContext(HomeContext);
 
   useEffect(() => {
@@ -80,7 +80,7 @@ function GridBox({ boxId, reset }) {
   useEffect(() => {
     if (playerSelected) {
       localStorage.setItem(
-        `playerSelected${boxId}`,
+        `${league}playerSelected${boxId}`,
         JSON.stringify(playerSelected)
       );
       const image = document.createElement("img");
@@ -151,6 +151,7 @@ export default function Home() {
 
   let [teams, setTeams] = useState([]);
   let [isEndless, setIsEndless] = useState(false);
+  let [league, setLeauge] = useState("NBA");
 
   let [reset, setReset] = useState(false);
 
@@ -160,18 +161,18 @@ export default function Home() {
 
   function resetTeams() {
     setReset(!reset);
-    fetch(`/api/teams?isEndless=${isEndless}`)
+    fetch(`/api/teams/${league.toLowerCase()}?isEndless=${isEndless}`)
       .then((response) => response.json())
       .then((data) => {
         setTeams(data);
-        localStorage.setItem("teams", JSON.stringify(data));
+        localStorage.setItem(`${league}teams`, JSON.stringify(data));
       });
     setGuessesLeft(9);
-    localStorage.setItem("guessesLeft", 9);
+    localStorage.setItem(`${league}guessesLeft`, 9);
 
     for (let i = 0; i <= 8; i++) {
-      localStorage.setItem(`playerSelected${i}`, null);
-      localStorage.setItem(`previousGuesses${i}`, "[]");
+      localStorage.setItem(`${league}playerSelected${i}`, null);
+      localStorage.setItem(`${league}previousGuesses${i}`, "[]");
     }
   }
 
@@ -183,6 +184,9 @@ export default function Home() {
     const isEndless = localStorage.getItem("isEndless") || false;
     setIsEndless(isEndless);
 
+    const league = localStorage.getItem("league") || "NBA";
+    setLeauge(league);
+
     const teamsLocalStorage = JSON.parse(localStorage.getItem("teams"));
     if (teamsLocalStorage != "null" && teamsLocalStorage != null) {
       setTeams(teamsLocalStorage);
@@ -193,11 +197,11 @@ export default function Home() {
       teamsLocalStorage === null ||
       teamsLocalStorage.length == 0
     ) {
-      fetch(`/api/teams?isEndless=${isEndless}`)
+      fetch(`/api/teams/${league.toLowerCase()}?isEndless=${isEndless}`)
         .then((response) => response.json())
         .then((data) => {
           setTeams(data);
-          localStorage.setItem("teams", JSON.stringify(data));
+          localStorage.setItem(`${league}teams`, JSON.stringify(data));
         });
     }
   }, []);
@@ -236,21 +240,51 @@ export default function Home() {
               setGuessesLeft: setGuessesLeft,
               teams: teams,
               isEndless: isEndless,
+              league: league,
             }}
           >
             <div>
               <div className="flex">
                 {/* <div className="flex items-center justify-center w-24 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"></div> */}
-                <SportLogo width={"w-20"} logo="NFL" hidden={true}></SportLogo>
-                <GridLogo width={"w-24"} logo={teams[0]}></GridLogo>
-                <GridLogo width={"w-24"} logo={teams[1]}></GridLogo>
-                <GridLogo width={"w-24"} logo={teams[2]}></GridLogo>
+                <SportLogo
+                  width={"w-20"}
+                  logo={league}
+                  hidden={true}
+                  league={league}
+                ></SportLogo>
+                <GridLogo
+                  width={"w-24"}
+                  logo={teams[0]}
+                  league={league}
+                ></GridLogo>
+                <GridLogo
+                  width={"w-24"}
+                  logo={teams[1]}
+                  league={league}
+                ></GridLogo>
+                <GridLogo
+                  width={"w-24"}
+                  logo={teams[2]}
+                  league={league}
+                ></GridLogo>
               </div>
               <div className="flex items-center">
                 <div className="items-center">
-                  <GridLogo width={"w-20"} logo={teams[3]}></GridLogo>
-                  <GridLogo width={"w-20"} logo={teams[4]}></GridLogo>
-                  <GridLogo width={"w-20"} logo={teams[5]}></GridLogo>
+                  <GridLogo
+                    width={"w-20"}
+                    logo={teams[3]}
+                    league={league}
+                  ></GridLogo>
+                  <GridLogo
+                    width={"w-20"}
+                    logo={teams[4]}
+                    league={league}
+                  ></GridLogo>
+                  <GridLogo
+                    width={"w-20"}
+                    logo={teams[5]}
+                    league={league}
+                  ></GridLogo>
                 </div>
                 <div className="grid grid-rows-3 grid-flow-col justify-items-center overflow-hidden ">
                   {[...Array(9)].map((e, i) => (

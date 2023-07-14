@@ -10,7 +10,7 @@ import { CheckIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 export const HomeContext = React.createContext(null);
 
 const Example = ({ setClose, setPlayerSelected, boxId }, ref) => {
-  const { guessesLeft, setGuessesLeft, isEndless, teams } =
+  const { guessesLeft, setGuessesLeft, isEndless, teams, league } =
     useContext(HomeContext);
 
   const [selected, setSelected] = useState({});
@@ -55,9 +55,9 @@ const Example = ({ setClose, setPlayerSelected, boxId }, ref) => {
 
     if (stringArray.length > 1) {
       var lastName = stringArray[2];
-      var url = `/api/players?firstName=${firstName}&lastName=${lastName}`;
+      var url = `/api/players?firstName=${firstName}&lastName=${lastName}&league=${league}`;
     } else {
-      var url = `/api/players?firstName=${firstName}`;
+      var url = `/api/players?firstName=${firstName}&league=${league}`;
     }
 
     if (Array.isArray(previousGuesses) && previousGuesses.length == 0) {
@@ -102,7 +102,7 @@ const Example = ({ setClose, setPlayerSelected, boxId }, ref) => {
     };
 
     try {
-      fetch(`/api/check?boxId=${boxId}`, requestOptions)
+      fetch(`/api/check/${league.toLowerCase()}?boxId=${boxId}`, requestOptions)
         .then((response) => {
           return response.json();
         })
@@ -166,12 +166,12 @@ const Example = ({ setClose, setPlayerSelected, boxId }, ref) => {
             setPreviousGuesses((oldArray) => [...oldArray, value]);
             let newArray = [...previousGuesses, value];
             localStorage.setItem(
-              `previousGuesses${boxId}`,
+              `${league}previousGuesses${boxId}`,
               JSON.stringify(newArray)
             );
 
             setGuessesLeft(guessesLeft - 1);
-            localStorage.setItem("guessesLeft", guessesLeft - 1);
+            localStorage.setItem(`${league}guessesLeft`, guessesLeft - 1);
           });
         }}
       >
