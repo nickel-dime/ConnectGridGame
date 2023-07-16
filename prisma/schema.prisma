@@ -126,6 +126,7 @@ model NBAPlayer {
   yearStart      String
   yearEnd        String
   position       String
+  isAllNBA       Boolean?    @default(false)
   NBAAnswers     NBAAnswers[]
   NBAPlayer_Team NBAPlayer_Team[]
 }

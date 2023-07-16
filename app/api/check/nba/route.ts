@@ -146,40 +146,19 @@ async function checkIfHintFits(player: NBAPlayer, hint: NBAHints) {
 
     return db_player.isActive;
   } else if (hint.category == "award") {
-    const HEADERS = {
-      Host: "stats.nba.com",
-      "User-Agent":
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0",
-      Accept: "application/json, text/plain, */*",
-      "Accept-Language": "en-US,en;q=0.5",
-      "Accept-Encoding": "gzip, deflate, br",
-      "x-nba-stats-origin": "stats",
-      "x-nba-stats-token": "true",
-      Connection: "keep-alive",
-      Referer: "https://stats.nba.com/",
-      Pragma: "no-cache",
-      "Cache-Control": "no-cache",
-    };
+    const db_player = await prisma.nBAPlayer.findUnique({
+      where: {
+        id: player.id,
+      },
+    });
 
-    const awards: any = await api(
-      `https://stats.nba.com/stats/playerawards?PlayerID=${player.id}`,
-      HEADERS
-    );
-
-    console.log(awards);
-
-    let parsedAwards = awards["resultSets"][0]["rowSet"];
-
-    for (const award in parsedAwards) {
-      let format_award = parsedAwards[award];
-
-      if (format_award[4] == hint.value) {
-        return true;
-      }
+    if (db_player == null) {
+      return false;
     }
 
-    return false;
-    console.log(awards);
+    return db_player.isAllNBA;
+    // return false;
+    // console.log(awards);
   }
 }
 

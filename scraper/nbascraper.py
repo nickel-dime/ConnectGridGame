@@ -3,6 +3,7 @@ from nba_api.stats.static import players
 from nba_api.stats.endpoints import playercareerstats
 from nba_api.stats.endpoints import playerdashboardbyyearoveryear
 from nba_api.stats.endpoints import playerdashboardbyteamperformance
+from nba_api.stats.endpoints import playerawards
 from prisma import Prisma
 import asyncio
 import time
@@ -14,7 +15,7 @@ async def main() -> None:
     prisma = Prisma()
     await prisma.connect()
 
-    await add_db(prisma=prisma)
+    await awards(prisma=prisma)
 
     await prisma.disconnect()
 
@@ -114,6 +115,25 @@ TEAM_CONVERTER = {
     'KCK': 'SAC',
     'INA': 'IND'
 }
+
+
+async def awards(prisma: Prisma):
+    l_mans = players.get_players()
+    for player in l_mans:
+        awards = playerawards.PlayerAwards(player_id=player["id"])
+
+        if awards:
+            for award in awards.get_dict()["resultSets"][0]["rowSet"]:
+                if award[4] == "All-NBA":
+                    await prisma.nbaplayer.update(data={
+                        "isAllNBA": True
+                    }, where={
+                        "id": player["id"]
+                    })
+                    break
+
+        nba_cooldown = random.gammavariate(alpha=9, beta=0.4)
+        print(nba_cooldown, player)
 
 
 if __name__ == '__main__':

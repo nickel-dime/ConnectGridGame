@@ -17,12 +17,15 @@ import {
 const SettingContext = createContext(null);
 
 export default function Setting({ settings, setSettings }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(
+    localStorage.getItem("initial") == "false" ? false : true
+  );
 
   const [modalEndless, setModalEndless] = useState(settings.isEndless);
   const [modalLeague, setModalLeague] = useState(settings.league);
 
   useEffect(() => {
+    localStorage.setItem("initial", "false");
     setModalEndless(settings.isEndless);
   }, [open]);
 
