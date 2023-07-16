@@ -154,7 +154,7 @@ function GridBox({ boxId, clear }) {
               <></>
             )}
           </div>
-          <div className="mb-2  text-[8px] font-bold sm:text-base text-yellow-400 ">
+          <div className="mb-2  text-[8px] font-bold sm:text-base text-white ">
             {playerSelected && loaded
               ? `${playerSelected["firstName"]} ${playerSelected["lastName"]}`
               : ""}
