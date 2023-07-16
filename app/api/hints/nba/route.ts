@@ -230,7 +230,7 @@ const CRITERIA = [
     description: "",
   },
   {
-    category: "position",
+    category: "loyalty",
     value: "Loyal",
     description: "Played with only one team",
   },

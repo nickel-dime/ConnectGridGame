@@ -159,6 +159,20 @@ async function checkIfHintFits(player: NBAPlayer, hint: NBAHints) {
     return db_player.isAllNBA;
     // return false;
     // console.log(awards);
+  } else if (hint.category == "loyalty") {
+    const teams = await prisma.nBAPlayer_Team.findMany({
+      where: {
+        playerId: player.id,
+      },
+    });
+
+    console.log(teams);
+
+    if (teams == null) {
+      return false;
+    }
+
+    return teams.length == 1;
   }
 }
 
