@@ -13,10 +13,15 @@ export async function GET(request: Request) {
   if (firstName == null) {
     return NextResponse.json([]);
   } else if (lastName == null) {
-    const query = `SELECT "firstName", "lastName", "id", "yearEnd", "yearStart", "profilePic", "position" FROM "${league}Player" WHERE "${league}Player"."firstName" % '${firstName}' OR "${league}Player"."lastName" % '${firstName}' ORDER BY "yearEnd" desc LIMIT 25;`;
+    var new_first_name = firstName.replace(/'/g, '"');
+
+    const query = `SELECT "firstName", "lastName", "id", "yearEnd", "yearStart", "profilePic", "position" FROM "${league}Player" WHERE "${league}Player"."firstName" % '${new_first_name}' OR "${league}Player"."lastName" % '${new_first_name}' ORDER BY "yearEnd" desc LIMIT 25;`;
     result = await prisma.$queryRawUnsafe(query);
   } else {
-    const query = `SELECT "firstName", "lastName", "id", "yearEnd", "yearStart", "profilePic", "position" FROM "${league}Player" WHERE "${league}Player"."firstName" % '${firstName}' AND UPPER("${league}Player"."lastName") LIKE '${lastName.toUpperCase()}%' ORDER BY "yearEnd" desc LIMIT 25;`;
+    var new_first_name = firstName.replace(/'/g, '"');
+    var new_last_name = lastName.replace(/'/g, '"');
+
+    const query = `SELECT "firstName", "lastName", "id", "yearEnd", "yearStart", "profilePic", "position" FROM "${league}Player" WHERE "${league}Player"."firstName" % '${new_first_name}' AND UPPER("${league}Player"."lastName") LIKE '${new_last_name.toUpperCase()}%' ORDER BY "yearEnd" desc LIMIT 25;`;
     result = await prisma.$queryRawUnsafe(query);
   }
 
