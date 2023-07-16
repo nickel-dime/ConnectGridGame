@@ -42,7 +42,7 @@ module.exports = withSentryConfig(
     // Suppresses source map uploading logs during build
     silent: true,
 
-    org: "connect-grid-g6",
+    org: "connect-grid",
     project: "connect-grid",
   },
   {
