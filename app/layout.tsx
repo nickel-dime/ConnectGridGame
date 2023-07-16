@@ -3,8 +3,9 @@ import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 
 export const metadata = {
-  title: "Immaculate Gridiron NFL",
-  description: "The Immaculate Grid you know and love, NFL edition!",
+  title: "Connect Grid",
+  description:
+    "NFL, NBA, and MLB trivia based on the viral Immaculate Grid trend with different modes and settings!",
   icons: {
     icon: "../public/favicon.ico",
   },
@@ -25,9 +26,8 @@ export default function RootLayout({
     <html lang="en" className="bg-background">
       <head>
         <link rel="shortcut icon" href="/logo.png" />
-        <link rel="preload" href="/fonts/Freshman.ttf" as="font" />
-        <title>Immaculate Gridiron</title>
-        <meta property="og:title" content="Immaculate Gridiron NFL" />
+        <title>Connect Grid</title>
+        <meta property="og:title" content="Connect Grid" />
         <meta name="theme-color" content="#fff0e6" />
         <meta
           property="og:description"

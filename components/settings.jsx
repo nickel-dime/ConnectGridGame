@@ -16,19 +16,14 @@ import {
 
 const SettingContext = createContext(null);
 
-export default function Setting({
-  isEndless,
-  setIsEndless,
-  league,
-  setLeague,
-}) {
+export default function Setting({ settings, setSettings }) {
   const [open, setOpen] = useState(false);
 
-  const [modalEndless, setModalEndless] = useState(isEndless);
-  const [modalLeague, setModalLeague] = useState(league);
+  const [modalEndless, setModalEndless] = useState(settings.isEndless);
+  const [modalLeague, setModalLeague] = useState(settings.league);
 
   useEffect(() => {
-    setModalEndless(isEndless);
+    setModalEndless(settings.isEndless);
   }, [open]);
 
   return (
@@ -37,10 +32,10 @@ export default function Setting({
         value={{
           modalEndless: modalEndless,
           setModalEndless: setModalEndless,
-          setIsEndless: setIsEndless,
-          setLeague: setLeague,
+          setSettings: setSettings,
           modalLeague: modalLeague,
           setModalLeague: setModalLeague,
+          settings: settings,
         }}
       >
         <SettingModal open={open} setOpen={setOpen}></SettingModal>
@@ -60,7 +55,7 @@ export default function Setting({
 function SettingModal({ open, setOpen }) {
   //   const [open, setOpen] = useState(true);
 
-  const { setIsEndless, modalEndless, setLeague, modalLeague } =
+  const { setSettings, modalEndless, modalLeague, settings } =
     useContext(SettingContext);
 
   return (
@@ -146,10 +141,22 @@ function SettingModal({ open, setOpen }) {
                     type="button"
                     className="inline-flex w-full justify-center rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white shadow-sm sm:hover:bg-purple sm:ml-3 sm:w-auto"
                     onClick={() => {
-                      setIsEndless(modalEndless);
-                      localStorage.setItem("isEndless", modalEndless);
-                      setLeague(modalLeague);
-                      localStorage.setItem("league", modalLeague);
+                      const newSettings = {
+                        isEndless: modalEndless,
+                        league: modalLeague,
+                      };
+
+                      if (settings != newSettings) {
+                        localStorage.clear();
+                        localStorage.setItem("isEndless", modalEndless);
+                        localStorage.setItem("league", modalLeague);
+                        setSettings({
+                          isEndless: modalEndless,
+                          league: modalLeague,
+                          initial: false,
+                        });
+                      }
+
                       setOpen(false);
                     }}
                   >
@@ -383,17 +390,21 @@ function Unlimited() {
       <Switch
         checked={modalEndless}
         onChange={() => {
-          setModalEndless(!modalEndless);
+          if (modalEndless == "1") {
+            setModalEndless("0");
+          } else {
+            setModalEndless("1");
+          }
         }}
         className={classNames(
-          modalEndless ? "bg-purple" : "bg-gray-200",
+          modalEndless == "1" ? "bg-purple" : "bg-gray-200",
           "relative ml-2 inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-offset-2"
         )}
       >
         <span
           aria-hidden="true"
           className={classNames(
-            modalEndless ? "translate-x-5" : "translate-x-0",
+            modalEndless == "1" ? "translate-x-5" : "translate-x-0",
             "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
           )}
         />
@@ -425,7 +436,7 @@ function LeagueChooser() {
   }
 
   return (
-    <div className="w-full max-w-md px-2 sm:px-0 ml-1 ">
+    <div className="w-full max-w-md sm:px-0 text-left ml-1 ">
       <Tab.Group
         onChange={(index) => {
           console.log("Changed selected tab to:", leagues[index].name);
@@ -436,18 +447,20 @@ function LeagueChooser() {
         <span className="text-base font-semibold leading-6  text-gray-900">
           Choose Mode
         </span>
-        <Tab.List className="flex space-x-1 rounded-xl text-white mt-4">
+        <Tab.List className="flex space-x-1 sm:space-x-4 rounded-xl text-white mt-4">
           {leagues.map((league) => (
             <Tab
               key={league.name}
               className={({ selected }) =>
                 classNames(
-                  "w-full rounded-lg py-2.5 text-sm font-medium leading-5",
-                  "ring-white ring-opacity-60 ",
-                  selected ? " shadow bg-indigo-900" : "text-white ",
+                  "sm:w-full w-auto rounded-lg py-2.5 px-6 text-sm font-medium leading-5",
+                  "",
+                  selected
+                    ? " shadow bg-indigo-900 sm:ring-1 sm:ring-black sm:ring-offset-1 focus:ring-1 focus:ring-black focus:ring-offset-1"
+                    : "text-white hover:bg-green-600",
                   league.disabled
-                    ? "text-gray-500 bg-gray-500"
-                    : " hover:bg-indigo-900 bg-green-500"
+                    ? "text-gray-500 bg-gray-500 hover:bg-gray-500"
+                    : " bg-green-500"
                 )
               }
               disabled={league.disabled}

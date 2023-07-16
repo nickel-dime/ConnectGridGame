@@ -9,18 +9,20 @@ HEADERS = {
     'User-Agent': 'Mozilla/5.0 (iPad; CPU OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'}
 
 
-alphabet = ['a', 'd', 'e', 'f', 'h', 'i', 'j', 'k', 'm',
+alphabet = ['b', 'd', 'e', 'f', 'h', 'i', 'j', 'k', 'm',
             'o', 'p', 'q', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 
 # alphabet = ['o', 'p', 'q', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 # alphabet = ['b', 'c', 'd', 'g', 'l', 'r', 's']
 
-alphabet = [chr(i) for i in range(ord('a'), ord('z')+1)]
+alphabet = [chr(i) for i in range(ord('v'), ord('z')+1)]
 
 
 async def main() -> None:
     prisma = Prisma()
     await prisma.connect()
+
+    # await parse_page(5, 'p', prisma)
 
     for letter in alphabet:
         print("starting letter: ", letter)
@@ -176,6 +178,8 @@ async def parse_page(page, letter, prisma: Prisma):
         except Exception as e:
             print(e)
             print('Failed with', firstName, lastName)
+            with open('errornfl.txt', 'a') as f:
+                f.write(f'{e, firstName, lastName}\n')
 
     # result = await prisma.player_team.create_many(data=primsa_format, skip_duplicates=True)
     # get the next page

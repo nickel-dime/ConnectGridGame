@@ -17,12 +17,17 @@ const nextConfig = {
         port: "",
         pathname: "/headshots/NFL/**",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.nba.com",
+        port: "",
+        pathname: "/headshots/nba/latest/**",
+      },
     ],
   },
 };
 
 module.exports = nextConfig;
-
 
 // Injected content via Sentry wizard below
 

@@ -9,8 +9,8 @@ import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 export const HomeContext = React.createContext(null);
 
-const Example = ({ setClose, setPlayerSelected, boxId }, ref) => {
-  const { guessesLeft, setGuessesLeft, isEndless, teams, league } =
+const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
+  const { guessesLeft, setGuessesLeft, settings, hints } =
     useContext(HomeContext);
 
   const [selected, setSelected] = useState({});
@@ -23,7 +23,7 @@ const Example = ({ setClose, setPlayerSelected, boxId }, ref) => {
 
   function loadPreviousGuesses() {
     let previousGuesses =
-      localStorage.getItem(`previousGuesses${boxId}`) || "[]";
+      localStorage.getItem(`${settings.league}previousGuesses${boxId}`) || "[]";
     previousGuesses = JSON.parse(previousGuesses);
 
     setPreviousGuesses(previousGuesses);
@@ -31,11 +31,6 @@ const Example = ({ setClose, setPlayerSelected, boxId }, ref) => {
   }
 
   useEffect(() => {
-    setTimeout(() => {
-      var myElement = document.getElementsByTagName("input")[0];
-      console.log(myElement);
-      focusAndOpenKeyboard(myElement);
-    }, 50);
     loadPreviousGuesses();
   }, []);
 
@@ -55,9 +50,9 @@ const Example = ({ setClose, setPlayerSelected, boxId }, ref) => {
 
     if (stringArray.length > 1) {
       var lastName = stringArray[2];
-      var url = `/api/players?firstName=${firstName}&lastName=${lastName}&league=${league}`;
+      var url = `/api/players?firstName=${firstName}&lastName=${lastName}&league=${settings.league}`;
     } else {
-      var url = `/api/players?firstName=${firstName}&league=${league}`;
+      var url = `/api/players?firstName=${firstName}&league=${settings.league}`;
     }
 
     if (Array.isArray(previousGuesses) && previousGuesses.length == 0) {
@@ -96,13 +91,16 @@ const Example = ({ setClose, setPlayerSelected, boxId }, ref) => {
       method: "POST",
       body: JSON.stringify({
         player: player,
-        isEndless: isEndless,
-        teams: teams,
+        isEndless: settings.isEndless,
+        hints: hints,
       }),
     };
 
     try {
-      fetch(`/api/check/${league.toLowerCase()}?boxId=${boxId}`, requestOptions)
+      fetch(
+        `/api/check/${settings.league.toLowerCase()}?boxId=${boxId}`,
+        requestOptions
+      )
         .then((response) => {
           return response.json();
         })
@@ -114,33 +112,6 @@ const Example = ({ setClose, setPlayerSelected, boxId }, ref) => {
       console.log(error);
     }
   };
-
-  function focusAndOpenKeyboard(el, timeout) {
-    if (!timeout) {
-      timeout = 100;
-    }
-    if (el) {
-      // Align temp input element approximately where the input element is
-      // so the cursor doesn't jump around
-      var __tempEl__ = document.createElement("input");
-      __tempEl__.style.position = "absolute";
-      __tempEl__.style.top = el.offsetTop + 7 + "px";
-      __tempEl__.style.left = el.offsetLeft + "px";
-      __tempEl__.style.height = 0;
-      __tempEl__.style.opacity = 0;
-      // Put this temp element as a child of the page <body> and focus on it
-      document.body.appendChild(__tempEl__);
-      __tempEl__.focus();
-
-      // The keyboard is open. Now do a delayed focus on the target element
-      setTimeout(function () {
-        el.focus();
-        el.click();
-        // Remove the temp element
-        document.body.removeChild(__tempEl__);
-      }, timeout);
-    }
-  }
 
   return (
     <div className="top-16 w-80 sm:w-96">
@@ -166,12 +137,15 @@ const Example = ({ setClose, setPlayerSelected, boxId }, ref) => {
             setPreviousGuesses((oldArray) => [...oldArray, value]);
             let newArray = [...previousGuesses, value];
             localStorage.setItem(
-              `${league}previousGuesses${boxId}`,
+              `${settings.league}previousGuesses${boxId}`,
               JSON.stringify(newArray)
             );
 
             setGuessesLeft(guessesLeft - 1);
-            localStorage.setItem(`${league}guessesLeft`, guessesLeft - 1);
+            localStorage.setItem(
+              `${settings.league}guessesLeft`,
+              guessesLeft - 1
+            );
           });
         }}
       >
@@ -240,8 +214,7 @@ const Example = ({ setClose, setPlayerSelected, boxId }, ref) => {
                           >
                             <div className="text-sm sm:text-base">
                               <div className="font-medium">
-                                {person.firstName} {person.lastName} (
-                                {person.position})
+                                {person.firstName} {person.lastName}
                               </div>
                               <div className=" text-gray-500">
                                 {person.yearStart} - {person.yearEnd}
@@ -269,4 +242,4 @@ const Example = ({ setClose, setPlayerSelected, boxId }, ref) => {
   );
 };
 
-export default forwardRef(Example);
+export default forwardRef(SearchPlayer);

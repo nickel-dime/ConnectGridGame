@@ -1,4 +1,4 @@
-import { NFLPlayer, NFLTeam } from "@prisma/client";
+import { NFLHints, NFLPlayer, NFLTeam } from "@prisma/client";
 import next from "next";
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
@@ -32,11 +32,11 @@ export async function POST(request: Request) {
   const grid_ids = MAP_BOX_ID_TO_GRID_ID[parseInt(boxId)];
 
   // if (data["isEndless"]) {
-  const teams = data["teams"];
+  const hints = data["hints"];
   const success = await check_if_player_fits_teams(
     data["player"],
-    teams[grid_ids[0]],
-    teams[grid_ids[1]]
+    hints[grid_ids[0]],
+    hints[grid_ids[1]]
   );
 
   if (success) {
@@ -44,9 +44,9 @@ export async function POST(request: Request) {
 
     await prisma.nFLAnswers.upsert({
       where: {
-        hint_one_hint_two_playerId: {
-          hint_one: teams[grid_ids[0]],
-          hint_two: teams[grid_ids[1]],
+        hint_one_val_hint_two_val_playerId: {
+          hint_one_val: hints[grid_ids[0]].value,
+          hint_two_val: hints[grid_ids[1]].value,
           playerId: data["player"].id,
         },
       },
@@ -57,8 +57,8 @@ export async function POST(request: Request) {
       },
       create: {
         playerId: data["player"].id,
-        hint_one: teams[grid_ids[0]],
-        hint_two: teams[grid_ids[1]],
+        hint_one_val: hints[grid_ids[0]].value,
+        hint_two_val: hints[grid_ids[1]].value,
         count: 1,
       },
     });
@@ -67,29 +67,12 @@ export async function POST(request: Request) {
   return NextResponse.json({
     success: success,
   });
-  // } else if (!data["isEndless"]) {
-  //   return (
-  //     NextResponse.error(),
-  //     {
-  //       status: 400,
-  //       statusText: "No normal mode",
-  //     }
-  //   );
-  // }
-
-  return (
-    NextResponse.error(),
-    {
-      status: 400,
-      statusText: "Could not get mode for checking",
-    }
-  );
 }
 
 async function check_if_player_fits_teams(
   player: NFLPlayer,
-  team1: NFLTeam,
-  team2: NFLTeam
+  team1: NFLHints,
+  team2: NFLHints
 ) {
   const teams = await prisma.nFLPlayer_Team.findMany({
     where: {
@@ -104,7 +87,7 @@ async function check_if_player_fits_teams(
     return false;
   }
 
-  let teamNames = teams.map((v) => v.teamName);
+  let teamNames: String[] = teams.map((v) => v.teamName);
 
-  return [team1, team2].every((team) => teamNames.includes(team));
+  return [team1.value, team2.value].every((team) => teamNames.includes(team));
 }

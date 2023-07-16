@@ -9,10 +9,11 @@ import React, {
   useState,
   useRef,
   forwardRef,
+  useMemo,
 } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Combobox } from "@headlessui/react";
-import Example, { HomeContext } from "../components/combobox";
+import SearchPlayer, { HomeContext } from "../components/combobox";
 import {
   BsGearFill,
   BsTwitter,
@@ -25,19 +26,29 @@ import MyModal from "../components/modal";
 import Help from "../components/help";
 
 function GridLogo({ width, logo, hidden, league }) {
+  const isTeam = logo.category == "teams";
+
   return (
     <div
       className={`flex items-center justify-center ${width} sm:w-36 md:w-40 h-24 sm:h-36 md:h-40 `}
     >
-      <Image
-        src={`/logos/${league}/${logo}.png`}
-        alt={`Team logo ${logo}`}
-        width={96}
-        height={96}
-        className={` w-16 sm:w-20 md:w-24 h-16 sm:h-20 md:h-24 ${hidden} ? 'hidden': ""`}
-        loading="eager"
-        priority="high"
-      ></Image>
+      {isTeam && (
+        <Image
+          src={`/logos/${league}/${logo.value}.png`}
+          alt={`Hint logo ${logo}`}
+          width={96}
+          height={96}
+          className={` w-16 sm:w-20 md:w-24 h-16 sm:h-20 md:h-24 ${hidden} ? 'hidden': ""`}
+          loading="eager"
+          priority="high"
+        ></Image>
+      )}
+      {!isTeam && (
+        <div className="font-freshman text-lg text-center">
+          <div className="">{logo.value}</div>
+          <div className="text-xs text-gray-600">{logo.description}</div>
+        </div>
+      )}
     </div>
   );
 }
@@ -50,7 +61,7 @@ function SportLogo({ width, logo, hidden, league }) {
       {/* <button className="hover:shadow-lg rounded-lg hover:bg-emerald-300 p-2" onClick={() => { console.log("CLICK")}}> */}
       <Image
         src={`/logos/${league}/${logo}.png`}
-        alt={`Team logo ${logo}`}
+        alt={`Hint logo ${logo}`}
         width={96}
         height={96}
         className={`w-16 sm:w-20 md:w-24 h-16 sm:h-20 md:h-24 ${hidden} ? 'hidden': ""`}
@@ -62,25 +73,28 @@ function SportLogo({ width, logo, hidden, league }) {
   );
 }
 
-function GridBox({ boxId, reset }) {
+function GridBox({ boxId, clear }) {
   let [isOpen, setIsOpen] = useState(false);
   let [playerSelected, setPlayerSelected] = useState(null);
   let [loaded, setLoaded] = useState(false);
 
-  const { guessesLeft, setGuessesLeft, league } = useContext(HomeContext);
+  const { guessesLeft, settings } = useContext(HomeContext);
   // const { reset, setReset } = useContext(HomeContext);
 
   useEffect(() => {
     let player;
     // Get the value from local storage if it exists
-    player = JSON.parse(localStorage.getItem(`playerSelected${boxId}`)) || null;
+    player =
+      JSON.parse(
+        localStorage.getItem(`${settings.league}playerSelected${boxId}`)
+      ) || null;
     setPlayerSelected(player);
-  }, [boxId, reset]);
+  }, [boxId, clear]);
 
   useEffect(() => {
     if (playerSelected) {
       localStorage.setItem(
-        `${league}playerSelected${boxId}`,
+        `${settings.league}playerSelected${boxId}`,
         JSON.stringify(playerSelected)
       );
       const image = document.createElement("img");
@@ -124,7 +138,12 @@ function GridBox({ boxId, reset }) {
                 src={playerSelected["profilePic"]}
                 width={96}
                 height={96}
-                className="rounded-md sm:w-[92px] w-[60px]"
+                priority={true}
+                className={`rounded-md ${
+                  settings.league == "NBA"
+                    ? "sm:w-[135px] w-[70px]"
+                    : "sm:w-[92px] w-[60px]"
+                }`}
                 loading="eager"
                 onLoad={() => {
                   setLoaded(true);
@@ -148,70 +167,66 @@ function GridBox({ boxId, reset }) {
 
 export default function Home() {
   const [guessesLeft, setGuessesLeft] = useState(9);
-
-  let [teams, setTeams] = useState([]);
-  let [isEndless, setIsEndless] = useState(false);
-  let [league, setLeague] = useState("NBA");
-
-  let [reset, setReset] = useState(false);
+  const [reset, setReset] = useState(false);
+  const [hints, setHints] = useState([]);
+  const [settings, setSettings] = useState(null);
+  const [clear, setClear] = useState(false);
 
   useEffect(() => {
-    resetTeams();
-  }, [isEndless, league]);
-
-  function resetTeams() {
-    console.log("running");
-    setReset(!reset);
-    fetch(`/api/teams/${league.toLowerCase()}?isEndless=${isEndless}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setTeams(data);
-        localStorage.setItem(`${league}teams`, JSON.stringify(data));
-      });
-    setGuessesLeft(9);
-    localStorage.setItem(`${league}guessesLeft`, 9);
-
-    for (let i = 0; i <= 8; i++) {
-      localStorage.setItem(`${league}playerSelected${i}`, null);
-      localStorage.setItem(`${league}previousGuesses${i}`, "[]");
-    }
-  }
-
-  useEffect(() => {
-    // load from local storage -> teams and mode guesses left
-    const guessesLeft = localStorage.getItem("guessesLeft") || 9;
-    setGuessesLeft(guessesLeft);
-
-    const isEndless = localStorage.getItem("isEndless") || false;
-    setIsEndless(isEndless);
-
+    const isEndless = localStorage.getItem("isEndless") || 0;
     const league = localStorage.getItem("league") || "NBA";
-    setLeague(league);
 
-    const teamsLocalStorage = JSON.parse(
-      localStorage.getItem(`${league}teams`)
-    );
-    if (teamsLocalStorage != "null" && teamsLocalStorage != null) {
-      setTeams(teamsLocalStorage);
+    setSettings({
+      isEndless: isEndless,
+      league: league,
+      initial: true,
+    });
+  }, []);
+
+  useEffect(() => {
+    if (settings == null) {
+      return;
+    }
+    // if is endless changed -> we have new is endless value cuz set so get new hints
+    // if league changed we have new league value so get league
+    // if reset changed we change anwyay
+    const guessesLeft = localStorage.getItem(`${settings.league}guessesLeft`);
+
+    if (guessesLeft) {
+      setGuessesLeft(guessesLeft);
+    } else {
+      setGuessesLeft(9);
+      localStorage.setItem(`${settings.league}guessesLeft`, 9);
     }
 
-    if (
-      teamsLocalStorage === undefined ||
-      teamsLocalStorage === null ||
-      teamsLocalStorage.length == 0
-    ) {
-      fetch(`/api/teams/${league.toLowerCase()}?isEndless=${isEndless}`)
+    if (!settings.initial) {
+      setClear(!clear);
+      for (let i = 0; i <= 8; i++) {
+        localStorage.setItem(`${settings.league}playerSelected${i}`, null);
+        localStorage.setItem(`${settings.league}previousGuesses${i}`, "[]");
+      }
+    }
+
+    const hints = localStorage.getItem(`${settings.league}hints`);
+    if (hints == null || !settings.initial || !settings.isEndless) {
+      fetch(
+        `/api/hints/${settings.league.toLowerCase()}?isEndless=${
+          settings.isEndless
+        }`
+      )
         .then((response) => response.json())
         .then((data) => {
-          setTeams(data);
-          localStorage.setItem(`${league}teams`, JSON.stringify(data));
+          localStorage.setItem(`${settings.league}hints`, JSON.stringify(data));
+          setHints(data);
         });
+    } else {
+      setHints(JSON.parse(hints));
     }
-  }, []);
+  }, [settings, reset]);
 
   return (
     <main className="  bg-background min-h-screen min-w-max flex justify-center items-center">
-      {teams != undefined && teams.length > 0 && (
+      {hints != undefined && hints.length > 0 && (
         <div className="mb-10 sm:mb-0">
           <div className="absolute top-0 left-0 right-0 max-w-[750px] mr-auto ml-auto">
             <div className="p-4 mt-1 sm:mt-5 font-freshman flex justify-between font-bold text-xl md:text-3xl font-display uppercase tracking-wide text-black">
@@ -231,10 +246,8 @@ export default function Home() {
                   <BsTwitter className="fill-green-500 sm:hover:fill-purple"></BsTwitter>
                 </a>
                 <Setting
-                  setIsEndless={setIsEndless}
-                  isEndless={isEndless}
-                  league={league}
-                  setLeague={setLeague}
+                  setSettings={setSettings}
+                  settings={settings}
                 ></Setting>
               </div>
             </div>
@@ -243,9 +256,9 @@ export default function Home() {
             value={{
               guessesLeft: guessesLeft,
               setGuessesLeft: setGuessesLeft,
-              teams: teams,
-              isEndless: isEndless,
-              league: league,
+              hints: hints,
+              settings: settings,
+              setSettings: setSettings,
             }}
           >
             <div>
@@ -253,57 +266,59 @@ export default function Home() {
                 {/* <div className="flex items-center justify-center w-24 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"></div> */}
                 <SportLogo
                   width={"w-20"}
-                  logo={league}
+                  logo={settings.league}
                   hidden={true}
-                  league={league}
+                  league={settings.league}
                 ></SportLogo>
                 <GridLogo
                   width={"w-24"}
-                  logo={teams[0]}
-                  league={league}
+                  logo={hints[0]}
+                  league={settings.league}
                 ></GridLogo>
                 <GridLogo
                   width={"w-24"}
-                  logo={teams[1]}
-                  league={league}
+                  logo={hints[1]}
+                  league={settings.league}
                 ></GridLogo>
                 <GridLogo
                   width={"w-24"}
-                  logo={teams[2]}
-                  league={league}
+                  logo={hints[2]}
+                  league={settings.league}
                 ></GridLogo>
               </div>
               <div className="flex items-center">
                 <div className="items-center">
                   <GridLogo
                     width={"w-20"}
-                    logo={teams[3]}
-                    league={league}
+                    logo={hints[3]}
+                    league={settings.league}
                   ></GridLogo>
                   <GridLogo
                     width={"w-20"}
-                    logo={teams[4]}
-                    league={league}
+                    logo={hints[4]}
+                    league={settings.league}
                   ></GridLogo>
                   <GridLogo
                     width={"w-20"}
-                    logo={teams[5]}
-                    league={league}
+                    logo={hints[5]}
+                    league={settings.league}
                   ></GridLogo>
                 </div>
                 <div className="grid grid-rows-3 grid-flow-col justify-items-center overflow-hidden ">
                   {[...Array(9)].map((e, i) => (
-                    <GridBox key={i} boxId={i} reset={reset}></GridBox>
+                    <GridBox key={i} boxId={i} clear={clear}></GridBox>
                   ))}
                 </div>
                 <ManageNormalGameDesktop
                   guessesLeft={guessesLeft}
-                  resetTeams={resetTeams}
+                  reset={reset}
+                  setReset={setReset}
                 ></ManageNormalGameDesktop>
               </div>
               <ManageNormalGameMobile
                 guessesLeft={guessesLeft}
-                resetTeams={resetTeams}
+                reset={reset}
+                setReset={setReset}
               ></ManageNormalGameMobile>
             </div>
           </HomeContext.Provider>
@@ -313,20 +328,23 @@ export default function Home() {
   );
 }
 
-function ManageNormalGameDesktop({ guessesLeft, resetTeams }) {
-  const { isEndless } = useContext(HomeContext);
+function ManageNormalGameDesktop({ guessesLeft, reset, setReset }) {
+  const { settings } = useContext(HomeContext);
 
   return (
     <div className=" text-black sm:w-36 md:w-40 h-full flex justify-center">
       <div className="hidden sm:block font-freshman">
         <div className="text-center text-4xl">{guessesLeft}</div>
         <div className="text-center text-lg">GUESSES</div>
-        <div className="text-center text-lg">DAILY</div>
+        {settings.isEndless === "0" && (
+          <div className="text-center text-lg">DAILY</div>
+        )}
 
-        {isEndless && (
+        {settings.isEndless === "1" && (
           <button
             onClick={() => {
-              resetTeams();
+              localStorage.clear();
+              setReset(!reset);
             }}
             className=" text-yellow-400  sm:hover:bg-purple text-center flex m-auto bg-green-500 p-2 pl-4 pr-4 mt-2 rounded-lg"
           >
@@ -338,21 +356,32 @@ function ManageNormalGameDesktop({ guessesLeft, resetTeams }) {
   );
 }
 
-function ManageNormalGameMobile({ guessesLeft, resetTeams }) {
-  const { isEndless } = useContext(HomeContext);
+function ManageNormalGameMobile({ guessesLeft, reset, setReset }) {
+  const { settings, setSettings } = useContext(HomeContext);
 
   return (
     <div className="h-24 sm:h-36 md:h-48 flex justify-center mt-8 sm:hidden text-black">
       <div className="font-freshman">
         <div className="text-center text-4xl">{guessesLeft}</div>
         <div className="text-center text-lg">GUESSES</div>
-        <div className="text-center text-lg">DAILY</div>
+        {settings.isEndless === "0" && (
+          <div className="text-center text-lg">DAILY</div>
+        )}
 
-        {isEndless && (
+        {settings.isEndless === "1" && (
           <button
             className="flex m-auto bg-green-500 text-yellow-400 sm:hover:bg-purple p-2 pl-4 pr-4 mt-2 rounded-lg"
             onClick={() => {
-              resetTeams();
+              localStorage.clear();
+              if (settings.initial == true) {
+                setSettings({
+                  isEndless: settings.isEndless,
+                  league: settings.league,
+                  initial: false,
+                });
+              } else {
+                setReset(!reset);
+              }
             }}
           >
             reset

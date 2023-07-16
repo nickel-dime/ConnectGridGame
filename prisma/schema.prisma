@@ -39,83 +39,47 @@ model NFLPlayer_Team {
   @@id([teamName, playerFirstName, playerLastName, playerYearStart, playerYearEnd])
 }
 
+
 model NFLAnswers {
-  hint_one String
-  hint_two String
+  hint_one NFLHints @relation(fields: [hint_one_val], references: [value], name: "hint_one_answer")
+  hint_one_val String
+  hint_two NFLHints @relation(fields: [hint_two_val], references: [value], name: "hint_two_answer")
+  hint_two_val String
   player   NFLPlayer @relation(fields: [playerId], references: [id])
   playerId Int
   count    Int
 
-  @@id([hint_one, hint_two, playerId])
+  @@id([hint_one_val, hint_two_val, playerId])
 }
 
 model NFLGrid {
-  day        DateTime @unique @db.Date
-  a_hint     String
-  b_hint     String
-  c_hint     String
-  one_hint   String
-  two_hint   String
-  three_hint String
+  day            DateTime @unique @db.Date
+  a_hint         NFLHints @relation(fields: [a_hint_val], references: [value], name: "a_hint")
+  a_hint_val     String
+  b_hint         NFLHints @relation(fields: [b_hint_val], references: [value], name: "b_hint")
+  b_hint_val     String
+  c_hint         NFLHints @relation(fields: [c_hint_val], references: [value], name: "c_hint")
+  c_hint_val     String
+  one_hint       NFLHints @relation(fields: [one_hint_val], references: [value], name: "one_hint")
+  one_hint_val   String
+  two_hint       NFLHints @relation(fields: [two_hint_val], references: [value], name: "two_hint")
+  two_hint_val   String
+  three_hint     NFLHints @relation(fields: [three_hint_val], references: [value], name: "three_hint")
+  three_hint_val String
 }
 
-enum NFLCriteria {
-  MIA
-  HOU
-  BAL
-  JAX
-  CAR
-  TB
-  SEA
-  CIN
-  NO
-  ATL
-  MIN
-  BUF
-  TEN
-  LV
-  NE
-  NYJ
-  DEN
-  LAC
-  KC
-  DAL
-  IND
-  CLE
-  SF
-  LA
-  PIT
-  PHI
-  WAS
-  DET
-  NYG
-  GB
-  CHI
-  ARI
-  Over_Games_150
-  Round_1_Pick
-  Undrafted
-  Over_6_Foot
-  Over_300_Pounds
-  Under_180
-  RB
-  DB
-  LB
-  WR
-  DT
-  LS
-  C
-  QB
-  DE
-  P
-  K
-  OT
-  OG
-  TE
-  AP_All_Pro
-  Over_1000_Rushing_Season
-  Over_1000_Recieving_Season
-  Over_10_TD_Season
+model NFLHints {
+  category    String
+  value       String    @id
+  description String
+  a_hint      NFLGrid[] @relation("a_hint")
+  b_hint      NFLGrid[] @relation("b_hint")
+  c_hint      NFLGrid[] @relation("c_hint")
+  one_hint    NFLGrid[] @relation("one_hint")
+  two_hint    NFLGrid[] @relation("two_hint")
+  three_hint  NFLGrid[] @relation("three_hint")
+  hint_one    NFLAnswers[] @relation("hint_one_answer")
+  hint_two    NFLAnswers[] @relation("hint_two_answer")
 }
 
 enum NFLTeam {
@@ -175,23 +139,45 @@ model NBAPlayer_Team {
 }
 
 model NBAGrid {
-  day        DateTime @unique @db.Date
-  a_hint     String
-  b_hint     String
-  c_hint     String
-  one_hint   String
-  two_hint   String
-  three_hint String
+  day            DateTime @unique @db.Date
+  a_hint         NBAHints @relation(fields: [a_hint_val], references: [value], name: "a_hint")
+  a_hint_val     String
+  b_hint         NBAHints @relation(fields: [b_hint_val], references: [value], name: "b_hint")
+  b_hint_val     String
+  c_hint         NBAHints @relation(fields: [c_hint_val], references: [value], name: "c_hint")
+  c_hint_val     String
+  one_hint       NBAHints @relation(fields: [one_hint_val], references: [value], name: "one_hint")
+  one_hint_val   String
+  two_hint       NBAHints @relation(fields: [two_hint_val], references: [value], name: "two_hint")
+  two_hint_val   String
+  three_hint     NBAHints @relation(fields: [three_hint_val], references: [value], name: "three_hint")
+  three_hint_val String
 }
 
 model NBAAnswers {
-  hint_one String
-  hint_two String
-  player   NBAPlayer @relation(fields: [playerId], references: [id])
-  playerId Int
-  count    Int
+  hint_one     NBAHints  @relation(fields: [hint_one_val], references: [value], name: "hint_one_answer")
+  hint_one_val String
+  hint_two     NBAHints  @relation(fields: [hint_two_val], references: [value], name: "hint_two_answer")
+  hint_two_val String
+  player       NBAPlayer @relation(fields: [playerId], references: [id])
+  playerId     Int
+  count        Int
 
-  @@id([hint_one, hint_two, playerId])
+  @@id([hint_one_val, hint_two_val, playerId])
+}
+
+model NBAHints {
+  category    String
+  value       String       @id
+  description String
+  a_hint      NBAGrid[]    @relation("a_hint")
+  b_hint      NBAGrid[]    @relation("b_hint")
+  c_hint      NBAGrid[]    @relation("c_hint")
+  one_hint    NBAGrid[]    @relation("one_hint")
+  two_hint    NBAGrid[]    @relation("two_hint")
+  three_hint  NBAGrid[]    @relation("three_hint")
+  hint_one    NBAAnswers[] @relation("hint_one_answer")
+  hint_two    NBAAnswers[] @relation("hint_two_answer")
 }
 
 enum NBATeam {
