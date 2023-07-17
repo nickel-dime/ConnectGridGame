@@ -161,7 +161,6 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
                 ref={ref}
                 autoComplete="off"
                 onFocus={(e) => {
-                  console.log("FOCUSED");
                   if (
                     e.relatedTarget?.id?.includes("headlessui-combobox-button")
                   )
@@ -197,6 +196,8 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
                         `relative cursor-pointer select-none py-2 pl-3 pr-4 ${
                           person.found == 2
                             ? " bg-slate-100 text-red-500"
+                            : person.found == 1
+                            ? "bg-slate-100 text-green-500"
                             : active
                             ? "bg-slate-50 text-purple"
                             : "text-gray-900"

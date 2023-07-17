@@ -72,6 +72,7 @@ model NFLHints {
   category    String
   value       String    @id
   description String
+  teamLogo    String?
   a_hint      NFLGrid[] @relation("a_hint")
   b_hint      NFLGrid[] @relation("b_hint")
   c_hint      NFLGrid[] @relation("c_hint")
@@ -190,6 +191,7 @@ model NBAHints {
   category    String
   value       String       @id
   description String
+  teamLogo    String?
   a_hint      NBAGrid[]    @relation("a_hint")
   b_hint      NBAGrid[]    @relation("b_hint")
   c_hint      NBAGrid[]    @relation("c_hint")

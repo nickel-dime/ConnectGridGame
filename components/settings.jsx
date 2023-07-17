@@ -23,6 +23,7 @@ export default function Setting({ settings, setSettings }) {
 
   const [modalEndless, setModalEndless] = useState(settings.isEndless);
   const [modalLeague, setModalLeague] = useState(settings.league);
+  const [modalMode, setModalMode] = useState(settings.mode);
 
   useEffect(() => {
     localStorage.setItem("initial", "false");
@@ -39,6 +40,8 @@ export default function Setting({ settings, setSettings }) {
           modalLeague: modalLeague,
           setModalLeague: setModalLeague,
           settings: settings,
+          modalMode: modalMode,
+          setModalMode: setModalMode,
         }}
       >
         <SettingModal open={open} setOpen={setOpen}></SettingModal>
@@ -58,7 +61,7 @@ export default function Setting({ settings, setSettings }) {
 function SettingModal({ open, setOpen }) {
   //   const [open, setOpen] = useState(true);
 
-  const { setSettings, modalEndless, modalLeague, settings } =
+  const { setSettings, modalEndless, modalLeague, settings, modalMode } =
     useContext(SettingContext);
 
   return (
@@ -67,7 +70,6 @@ function SettingModal({ open, setOpen }) {
         as="div"
         className="relative z-10"
         onClose={(e) => {
-          console.log("CLO");
           setOpen(e);
         }}
       >
@@ -153,10 +155,13 @@ function SettingModal({ open, setOpen }) {
                         localStorage.clear();
                         localStorage.setItem("isEndless", modalEndless);
                         localStorage.setItem("league", modalLeague);
+                        localStorage.setItem("mode", modalMode);
+
                         setSettings({
                           isEndless: modalEndless,
                           league: modalLeague,
                           initial: false,
+                          mode: modalMode,
                         });
                       }
 
@@ -178,50 +183,55 @@ function SettingModal({ open, setOpen }) {
 import { RadioGroup } from "@headlessui/react";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 
-const mailingLists = [
-  {
-    id: 1,
+const modes_desktop = {
+  normal: {
     title: "Normal",
     description: "Given 9 guesses, fill out as much of the grid as you can.",
     disbaled: false,
   },
-  {
-    id: 2,
+  timer: {
     title: "Timer (coming soon)",
     description:
       "You have 5 minutes! Be careful, every wrong guess loses you 10 seconds.",
     disabled: true,
   },
-  {
-    id: 3,
+  backwards: {
     title: "Backwards (coming soon)",
     description:
       "You are given the players - fill out the clues to complete the grid.",
     disabled: true,
   },
-];
+};
+
+const modes_switch = ["normal", "timer", "backwards"];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 function CardChoices() {
-  const [selectedMailingLists, setSelectedMailingLists] = useState(
-    mailingLists[0]
-  );
+  const { modalMode, setModalMode } = useContext(SettingContext);
+
+  function getIndex() {
+    if (modalMode == "normal" || modalMode.id == "normal") {
+      return 0;
+    } else if (modalMode == "timer" || modalMode.id == "") {
+      return 1;
+    }
+  }
 
   return (
-    <RadioGroup value={selectedMailingLists} onChange={setSelectedMailingLists}>
+    <RadioGroup value={modalMode} onChange={setModalMode}>
       <RadioGroup.Label className="text-base font-semibold leading-6 text-gray-900">
         Choose Mode
       </RadioGroup.Label>
 
       <div className="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-3 sm:gap-x-4">
-        {mailingLists.map((mailingList) => (
+        {modes_switch.map((mode) => (
           <RadioGroup.Option
-            key={mailingList.id}
-            value={mailingList}
-            disabled={mailingList.disabled}
+            key={mode}
+            value={mode}
+            disabled={modes_desktop[mode].disabled}
             className={({ active }) =>
               classNames(
                 active
@@ -238,19 +248,19 @@ function CardChoices() {
                     <RadioGroup.Label
                       as="span"
                       className={classNames(
-                        mailingList.disabled
+                        modes_desktop[mode].disabled
                           ? "text-gray-500"
                           : "text-gray-900",
                         "block text-sm font-medium "
                       )}
                     >
-                      {mailingList.title}
+                      {modes_desktop[mode].title}
                     </RadioGroup.Label>
                     <RadioGroup.Description
                       as="span"
                       className="mt-1 flex items-center text-sm text-gray-500"
                     >
-                      {mailingList.description}
+                      {modes_desktop[mode].description}
                     </RadioGroup.Description>
                   </span>
                 </span>
@@ -285,7 +295,7 @@ const settings = [
     disabled: false,
   },
   {
-    name: "Timer (coming soon)",
+    name: "Timer",
     description:
       "You have 5 minutes! Careful though, every wrong guess loses 10 seconds",
     disabled: true,
@@ -369,10 +379,6 @@ function CardChoicesMobile() {
 function Unlimited() {
   const { modalEndless, setModalEndless } = useContext(SettingContext);
 
-  useEffect(() => {
-    console.log(modalEndless);
-  }, []);
-
   return (
     <Switch.Group
       as="div"
@@ -442,13 +448,12 @@ function LeagueChooser() {
     <div className="w-full max-w-md sm:px-0 text-left ml-1 ">
       <Tab.Group
         onChange={(index) => {
-          console.log("Changed selected tab to:", leagues[index].name);
           setModalLeague(leagues[index].name);
         }}
         selectedIndex={getIndex()}
       >
         <span className="text-base font-semibold leading-6  text-gray-900">
-          Choose Mode
+          Choose League
         </span>
         <Tab.List className="flex space-x-1 sm:space-x-4 rounded-xl text-white mt-4">
           {leagues.map((league) => (

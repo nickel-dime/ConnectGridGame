@@ -26,7 +26,7 @@ import MyModal from "../components/modal";
 import Help from "../components/help";
 
 function GridLogo({ width, logo, hidden, league }) {
-  const isTeam = logo.category == "teams";
+  const isTeam = logo.category == "teams" || logo.category == "college";
 
   return (
     <div
@@ -34,7 +34,7 @@ function GridLogo({ width, logo, hidden, league }) {
     >
       {isTeam && (
         <Image
-          src={`/logos/${league}/${logo.value}.png`}
+          src={logo.teamLogo}
           alt={`Hint logo ${logo}`}
           width={96}
           height={96}
@@ -79,7 +79,6 @@ function GridBox({ boxId, clear }) {
   let [loaded, setLoaded] = useState(false);
 
   const { guessesLeft, settings } = useContext(HomeContext);
-  // const { reset, setReset } = useContext(HomeContext);
 
   useEffect(() => {
     let player;
@@ -167,7 +166,6 @@ function GridBox({ boxId, clear }) {
 
 export default function Home() {
   const [guessesLeft, setGuessesLeft] = useState(9);
-  const [reset, setReset] = useState(false);
   const [hints, setHints] = useState([]);
   const [settings, setSettings] = useState(null);
   const [clear, setClear] = useState(false);
@@ -175,11 +173,13 @@ export default function Home() {
   useEffect(() => {
     const isEndless = localStorage.getItem("isEndless") || 0;
     const league = localStorage.getItem("league") || "NBA";
+    const mode = localStorage.getItem("mode") || "normal";
 
     setSettings({
       isEndless: isEndless,
       league: league,
       initial: true,
+      mode: mode,
     });
   }, []);
 
@@ -222,36 +222,38 @@ export default function Home() {
     } else {
       setHints(JSON.parse(hints));
     }
-  }, [settings, reset]);
+  }, [settings]);
 
   return (
     <main className="  bg-background min-h-screen min-w-max flex justify-center items-center">
-      {hints != undefined && hints.length > 0 && (
-        <div className="mb-10 sm:mb-0">
-          <div className="absolute top-0 left-0 right-0 max-w-[750px] mr-auto ml-auto">
-            <div className="p-4 mt-1 sm:mt-5 font-freshman flex justify-between font-bold text-xl md:text-3xl font-display uppercase tracking-wide text-black">
-              <div className="pl-4">CONNECT</div>
-              <div className="flex gap-5 ">
-                <a
-                  href="mailto:connectgridgame@proton.me?subject=Ideas%20for%20Grid"
-                  className="p-1"
-                >
-                  <BsLightbulbFill className="fill-green-500 sm:hover:fill-purple hidden sm:block"></BsLightbulbFill>
-                </a>
-                <Help></Help>
-                <a
-                  href="https://twitter.com/ConnectGridGame"
-                  className="hidden sm:block p-1"
-                >
-                  <BsTwitter className="fill-green-500 sm:hover:fill-purple"></BsTwitter>
-                </a>
+      <div className="mb-10 sm:mb-0">
+        <div className="absolute top-0 left-0 right-0 max-w-[750px] mr-auto ml-auto">
+          <div className="p-4 mt-1 sm:mt-5 font-freshman flex justify-between font-bold text-xl md:text-3xl font-display uppercase tracking-wide text-black">
+            <div className="pl-4">CONNECT</div>
+            <div className="flex gap-5 ">
+              <a
+                href="mailto:connectgridgame@proton.me?subject=Ideas%20for%20Grid"
+                className="p-1"
+              >
+                <BsLightbulbFill className="fill-green-500 sm:hover:fill-purple hidden sm:block"></BsLightbulbFill>
+              </a>
+              <Help></Help>
+              <a
+                href="https://twitter.com/ConnectGridGame"
+                className="hidden sm:block p-1"
+              >
+                <BsTwitter className="fill-green-500 sm:hover:fill-purple"></BsTwitter>
+              </a>
+              {hints != undefined && hints.length > 0 && (
                 <Setting
                   setSettings={setSettings}
                   settings={settings}
                 ></Setting>
-              </div>
+              )}
             </div>
           </div>
+        </div>
+        {hints != undefined && hints.length > 0 && (
           <HomeContext.Provider
             value={{
               guessesLeft: guessesLeft,
@@ -311,25 +313,21 @@ export default function Home() {
                 </div>
                 <ManageNormalGameDesktop
                   guessesLeft={guessesLeft}
-                  reset={reset}
-                  setReset={setReset}
                 ></ManageNormalGameDesktop>
               </div>
               <ManageNormalGameMobile
                 guessesLeft={guessesLeft}
-                reset={reset}
-                setReset={setReset}
               ></ManageNormalGameMobile>
             </div>
           </HomeContext.Provider>
-        </div>
-      )}
+        )}
+      </div>
     </main>
   );
 }
 
-function ManageNormalGameDesktop({ guessesLeft, reset, setReset }) {
-  const { settings } = useContext(HomeContext);
+function ManageNormalGameDesktop({ guessesLeft }) {
+  const { settings, setSettings } = useContext(HomeContext);
 
   return (
     <div className=" text-black sm:w-36 md:w-40 h-full flex justify-center">
@@ -343,8 +341,20 @@ function ManageNormalGameDesktop({ guessesLeft, reset, setReset }) {
         {settings.isEndless === "1" && (
           <button
             onClick={() => {
+              const mode = localStorage.getItem("mode");
+              const league = localStorage.getItem("league");
+              const isEndless = localStorage.getItem("isEndless");
               localStorage.clear();
-              setReset(!reset);
+              localStorage.setItem("initial", "false");
+              localStorage.setItem("league", league);
+              localStorage.setItem("mode", mode);
+              localStorage.setItem("isEndless", isEndless);
+
+              setSettings({
+                isEndless: settings.isEndless,
+                league: settings.league,
+                initial: false,
+              });
             }}
             className=" text-yellow-400  sm:hover:bg-purple text-center flex m-auto bg-green-500 p-2 pl-4 pr-4 mt-2 rounded-lg"
           >
@@ -356,7 +366,7 @@ function ManageNormalGameDesktop({ guessesLeft, reset, setReset }) {
   );
 }
 
-function ManageNormalGameMobile({ guessesLeft, reset, setReset }) {
+function ManageNormalGameMobile({ guessesLeft }) {
   const { settings, setSettings } = useContext(HomeContext);
 
   return (
@@ -372,16 +382,19 @@ function ManageNormalGameMobile({ guessesLeft, reset, setReset }) {
           <button
             className="flex m-auto bg-green-500 text-yellow-400 sm:hover:bg-purple p-2 pl-4 pr-4 mt-2 rounded-lg"
             onClick={() => {
+              const mode = localStorage.getItem("mode");
+              const league = localStorage.getItem("league");
+              const isEndless = localStorage.getItem("isEndless");
               localStorage.clear();
-              if (settings.initial == true) {
-                setSettings({
-                  isEndless: settings.isEndless,
-                  league: settings.league,
-                  initial: false,
-                });
-              } else {
-                setReset(!reset);
-              }
+              localStorage.setItem("initial", "false");
+              localStorage.setItem("league", league);
+              localStorage.setItem("mode", mode);
+              localStorage.setItem("isEndless", isEndless);
+              setSettings({
+                isEndless: settings.isEndless,
+                league: settings.league,
+                initial: false,
+              });
             }}
           >
             reset
