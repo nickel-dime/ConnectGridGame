@@ -11,6 +11,10 @@ export async function GET(request: Request) {
     if (isEndless == "1") {
       var numTeams = Math.floor(Math.random() * (6 - 4 + 1)) + 4;
 
+      var rand = Math.random();
+
+      await prisma.$queryRaw`SELECT setseed(${rand})::text;`;
+
       const teams: NBAHints[] =
         await prisma.$queryRaw`SELECT * FROM "NBAHints" WHERE "category" = 'teams' ORDER BY random() LIMIT ${numTeams};`;
       const criteria: NBAHints[] =
@@ -371,9 +375,10 @@ const CRITERIA = [
     category: "trait",
     value: "Top 5 Pick",
     description: "",
-  }, {
+  },
+  {
     category: "trait",
     value: "International",
-    description: "Born outside the US"
-  }
+    description: "Born outside the US",
+  },
 ];
