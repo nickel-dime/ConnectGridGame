@@ -127,6 +127,25 @@ model NBAPlayer {
   yearEnd        String
   position       String
   isAllNBA       Boolean?    @default(false)
+  birthday       DateTime?   @default(now())
+  school         String?     @default("")
+  country        String?     @default("")
+  height         String?     @default("")
+  weight         Int?        @default(0)
+  number_seasons Int?        @default(0)
+  jersey_number  String?     @default("")
+  draft          String?     @default("Undrafted")
+  greatest_75    Boolean?    @default(false)
+  games_played   Int?        @default(0)
+  minutes        Int?        @default(0)
+  fg3_pct        String?    @default("0.0")
+  ft_pct         String?    @default("0.0")
+  reb            Int?        @default(0)
+  ast            Int?        @default(0)
+  stl            Int?        @default(0)
+  blk            Int?        @default(0)
+  tov            Int?        @default(0)
+  pts            Int?        @default(0)
   NBAAnswers     NBAAnswers[]
   NBAPlayer_Team NBAPlayer_Team[]
 }
