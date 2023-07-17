@@ -15,18 +15,18 @@ export async function GET(request: Request) {
       getRandom(CRITERIA, 6 - numTeams)
     );
 
-    // const teams: NBAHints[] =
-    //   await prisma.$queryRaw`SELECT * FROM "NBAHints" WHERE "category" = 'teams' ORDER BY random() LIMIT ${numTeams};`;
-    // const criteria: NBAHints[] =
-    //   await prisma.$queryRaw`SELECT * FROM "NBAHints" WHERE "category" != 'teams' ORDER BY random() LIMIT ${
-    //     6 - numTeams
-    //   }`;
+    const teams: NBAHints[] =
+      await prisma.$queryRaw`SELECT * FROM "NBAHints" WHERE "category" = 'teams' ORDER BY random() LIMIT ${numTeams};`;
+    const criteria: NBAHints[] =
+      await prisma.$queryRaw`SELECT * FROM "NBAHints" WHERE "category" != 'teams' ORDER BY random() LIMIT ${
+        6 - numTeams
+      }`;
 
-    // const final = teams.concat(criteria).sort(function (a, b) {
-    //   return Math.random() * 2 - 1;
-    // });
+    const final = teams.concat(criteria).sort(function (a, b) {
+      return Math.random() * 2 - 1;
+    });
 
-    return NextResponse.json(final_grid);
+    return NextResponse.json(final);
   } else {
     let yourDate = new Date();
 
