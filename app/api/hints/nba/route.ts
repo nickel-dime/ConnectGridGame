@@ -236,7 +236,7 @@ const CRITERIA = [
   },
   {
     category: "award",
-    value: "All NBA",
+    value: "All-NBA",
     description: "",
   },
   {
