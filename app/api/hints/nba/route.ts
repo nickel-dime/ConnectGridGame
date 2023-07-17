@@ -11,22 +11,22 @@ export async function GET(request: Request) {
     if (isEndless == "1") {
       var numTeams = Math.floor(Math.random() * (6 - 4 + 1)) + 4;
 
-      var rand = Math.random();
+      const final_grid = getRandom(TEAMS, numTeams).concat(
+        getRandom(CRITERIA, 6 - numTeams)
+      );
 
-      await prisma.$queryRaw`SELECT setseed(${rand})::text;`;
+      // const teams: NBAHints[] =
+      //   await prisma.$queryRaw`SELECT * FROM "NBAHints" WHERE "category" = 'teams' ORDER BY random() LIMIT ${numTeams};`;
+      // const criteria: NBAHints[] =
+      //   await prisma.$queryRaw`SELECT * FROM "NBAHints" WHERE "category" != 'teams' ORDER BY random() LIMIT ${
+      //     6 - numTeams
+      //   }`;
 
-      const teams: NBAHints[] =
-        await prisma.$queryRaw`SELECT * FROM "NBAHints" WHERE "category" = 'teams' ORDER BY random() LIMIT ${numTeams};`;
-      const criteria: NBAHints[] =
-        await prisma.$queryRaw`SELECT * FROM "NBAHints" WHERE "category" != 'teams' ORDER BY random() LIMIT ${
-          6 - numTeams
-        }`;
+      // const final = teams.concat(criteria).sort(function (a, b) {
+      //   return Math.random() * 2 - 1;
+      // });
 
-      const final = teams.concat(criteria).sort(function (a, b) {
-        return Math.random() * 2 - 1;
-      });
-
-      return NextResponse.json(final);
+      return NextResponse.json(final_grid);
     } else {
       let yourDate = new Date();
 
