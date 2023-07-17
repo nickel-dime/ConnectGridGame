@@ -346,9 +346,15 @@ function ManageNormalGameDesktop({ guessesLeft }) {
               const isEndless = localStorage.getItem("isEndless");
               localStorage.clear();
               localStorage.setItem("initial", "false");
-              localStorage.setItem("league", league);
-              localStorage.setItem("mode", mode);
-              localStorage.setItem("isEndless", isEndless);
+              if (league) {
+                localStorage.setItem("league", league);
+              }
+              if (mode) {
+                localStorage.setItem("mode", mode);
+              }
+              if (isEndless) {
+                localStorage.setItem("isEndless", isEndless);
+              }
 
               setSettings({
                 isEndless: settings.isEndless,
@@ -387,9 +393,15 @@ function ManageNormalGameMobile({ guessesLeft }) {
               const isEndless = localStorage.getItem("isEndless");
               localStorage.clear();
               localStorage.setItem("initial", "false");
-              localStorage.setItem("league", league);
-              localStorage.setItem("mode", mode);
-              localStorage.setItem("isEndless", isEndless);
+              if (league) {
+                localStorage.setItem("league", league);
+              }
+              if (mode) {
+                localStorage.setItem("mode", mode);
+              }
+              if (isEndless) {
+                localStorage.setItem("isEndless", isEndless);
+              }
               setSettings({
                 isEndless: settings.isEndless,
                 league: settings.league,
