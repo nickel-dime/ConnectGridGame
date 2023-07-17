@@ -44,7 +44,7 @@ function GridLogo({ width, logo, hidden, league }) {
         ></Image>
       )}
       {!isTeam && (
-        <div className="font-freshman text-lg text-center">
+        <div className="font-freshman text-lg text-center p-2">
           <div className="">{logo.value}</div>
           <div className="text-xs text-gray-600">{logo.description}</div>
         </div>
