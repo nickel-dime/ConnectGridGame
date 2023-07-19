@@ -12,7 +12,9 @@ export async function GET(request: Request) {
     var numTeams = Math.floor(Math.random() * (6 - 4 + 1)) + 4;
 
     const final_grid = getRandom(TEAMS, numTeams).concat(
-      getRandom(CRITERIA, 6 - numTeams)
+      getRandom(CRITERIA, 6 - numTeams).sort(function (a, b) {
+        return Math.random() * 2 - 1;
+      })
     );
 
     const teams: NBAHints[] =
