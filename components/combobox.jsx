@@ -4,10 +4,12 @@ import React, {
   useState,
   useEffect,
   forwardRef,
+  useCallback,
 } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 export const HomeContext = React.createContext(null);
+import { debounce } from "lodash";
 
 const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
   const { guessesLeft, setGuessesLeft, settings, hints } =
@@ -34,56 +36,63 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
     loadPreviousGuesses();
   }, []);
 
-  useEffect(() => {
-    setIsLoading(true);
-    // setPeople([]);
-    // split up query into first and last name
-    var stringArray = query.split(/(\s+)/);
+  const debouncedApiCall = useCallback(
+    debounce((query) => {
+      setIsLoading(true);
+      // setPeople([]);
+      // split up query into first and last name
+      var stringArray = query.split(/(\s+)/);
 
-    if (query == "") {
-      setPeople([]);
-      setIsLoading(false);
-      return;
-    }
-
-    var firstName = stringArray[0];
-
-    if (stringArray.length > 1) {
-      var lastName = stringArray[2];
-      var url = `/api/players?firstName=${firstName}&lastName=${lastName}&league=${settings.league}`;
-    } else {
-      var url = `/api/players?firstName=${firstName}&league=${settings.league}`;
-    }
-
-    if (Array.isArray(previousGuesses) && previousGuesses.length == 0) {
-      previousGuesses = loadPreviousGuesses();
-    }
-
-    fetch(url)
-      .then((response) => response.json())
-      // 4. Setting *dogImage* to the image url that we received from the response above
-      .then((data) => {
-        for (const playerData of data) {
-          if (Array.isArray(previousGuesses) && previousGuesses.length) {
-            var item = previousGuesses.find(
-              (player) => player["id"] === playerData["id"]
-            );
-          }
-
-          if (item == undefined) {
-            playerData["found"] = 0;
-          } else if (item["correct"] == true) {
-            playerData["found"] = 1;
-          } else if (item["correct"] == false) {
-            playerData["found"] = 2;
-          }
-        }
-
-        setTimeout(setPeople(data), 1000);
-      })
-      .finally(() => {
+      if (query == "") {
+        setPeople([]);
         setIsLoading(false);
-      });
+        return;
+      }
+
+      var firstName = stringArray[0];
+
+      if (stringArray.length > 1) {
+        var lastName = stringArray[2];
+        var url = `/api/players?firstName=${firstName}&lastName=${lastName}&league=${settings.league}`;
+      } else {
+        var url = `/api/players?firstName=${firstName}&league=${settings.league}`;
+      }
+
+      if (Array.isArray(previousGuesses) && previousGuesses.length == 0) {
+        previousGuesses = loadPreviousGuesses();
+      }
+
+      fetch(url)
+        .then((response) => response.json())
+        // 4. Setting *dogImage* to the image url that we received from the response above
+        .then((data) => {
+          for (const playerData of data) {
+            if (Array.isArray(previousGuesses) && previousGuesses.length) {
+              var item = previousGuesses.find(
+                (player) => player["id"] === playerData["id"]
+              );
+            }
+
+            if (item == undefined) {
+              playerData["found"] = 0;
+            } else if (item["correct"] == true) {
+              playerData["found"] = 1;
+            } else if (item["correct"] == false) {
+              playerData["found"] = 2;
+            }
+          }
+
+          setTimeout(setPeople(data), 1000);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }, 400),
+    []
+  );
+
+  useEffect(() => {
+    debouncedApiCall(query);
   }, [query]);
 
   const checkPlayer = async (player, boxId, callback_after) => {
