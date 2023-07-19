@@ -185,7 +185,7 @@ async function checkIfHintFits(player: NBAPlayer, hint: NBAHints) {
         }
 
         return country == "USA";
-      } else if (hint.value == "International") {
+      } else if (hint.value == "Global") {
         const country = db_player.country;
 
         if (country == null) {

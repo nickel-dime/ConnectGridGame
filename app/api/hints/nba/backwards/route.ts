@@ -380,7 +380,7 @@ const CRITERIA = [
   },
   {
     category: "trait",
-    value: "International",
+    value: "Global",
     description: "Born outside the US",
   },
 ];
