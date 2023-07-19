@@ -59,6 +59,9 @@ export default function Home() {
 
     const hints = localStorage.getItem(`${settings.league}hints`);
     if (hints == null || !settings.initial || settings.isEndless == "0") {
+      if (settings.mode == null) {
+        settings.mode = "normal";
+      }
       fetch(
         `/api/hints/${settings.league.toLowerCase()}/${
           settings.mode

@@ -13,6 +13,8 @@ import {
   ChevronUpDownIcon,
   CheckIcon,
 } from "@heroicons/react/24/outline";
+import { RadioGroup } from "@headlessui/react";
+import { CheckCircleIcon } from "@heroicons/react/20/solid";
 
 const SettingContext = createContext(null);
 
@@ -149,6 +151,7 @@ function SettingModal({ open, setOpen }) {
                       const newSettings = {
                         isEndless: modalEndless,
                         league: modalLeague,
+                        mode: modalMode,
                       };
 
                       if (settings != newSettings) {
@@ -180,9 +183,6 @@ function SettingModal({ open, setOpen }) {
   );
 }
 
-import { RadioGroup } from "@headlessui/react";
-import { CheckCircleIcon } from "@heroicons/react/20/solid";
-
 const modes_desktop = {
   normal: {
     title: "Normal",
@@ -190,10 +190,10 @@ const modes_desktop = {
     disbaled: false,
   },
   timer: {
-    title: "Timer (coming soon)",
+    title: "Timer",
     description:
       "You have 5 minutes! Be careful, every wrong guess loses you 10 seconds.",
-    disabled: true,
+    disabled: false,
   },
   backwards: {
     title: "Backwards (coming soon)",
@@ -298,7 +298,7 @@ const settings = [
     name: "Timer",
     description:
       "You have 5 minutes! Careful though, every wrong guess loses 10 seconds",
-    disabled: true,
+    disabled: false,
   },
   {
     name: "Backwards (coming soon)",
