@@ -1,55 +1,61 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { NFLHints } from "@prisma/client";
+import { captureException } from "@sentry/nextjs";
 
 export async function GET(request: Request) {
-  var url = new URL(request.url);
-  var isEndless = url.searchParams.get("isEndless");
+  try {
+    var url = new URL(request.url);
+    var isEndless = url.searchParams.get("isEndless");
 
-  if (isEndless == "1") {
-    var numTeams = Math.floor(Math.random() * (6 - 4 + 1)) + 4;
+    if (isEndless == "1") {
+      var numTeams = Math.floor(Math.random() * (6 - 4 + 1)) + 4;
 
-    const teams: NFLHints[] =
-      await prisma.$queryRaw`SELECT * FROM "NFLHints" WHERE "category" = 'teams' ORDER BY random() LIMIT ${numTeams};`;
-    const criteria: NFLHints[] =
-      await prisma.$queryRaw`SELECT * FROM "NFLHints" WHERE "category" != 'teams' ORDER BY random() LIMIT ${
-        6 - numTeams
-      }`;
+      const teams: NFLHints[] =
+        await prisma.$queryRaw`SELECT * FROM "NFLHints" WHERE "category" = 'teams' ORDER BY random() LIMIT ${numTeams};`;
+      const criteria: NFLHints[] =
+        await prisma.$queryRaw`SELECT * FROM "NFLHints" WHERE "category" != 'teams' ORDER BY random() LIMIT ${
+          6 - numTeams
+        }`;
 
-    const final = teams.concat(criteria).sort(function (a, b) {
-      return Math.random() * 2 - 1;
-    });
-    return NextResponse.json(final);
-  } else {
-    let yourDate = new Date();
+      const final = teams.concat(criteria).sort(function (a, b) {
+        return Math.random() * 2 - 1;
+      });
+      return NextResponse.json(final);
+    } else {
+      let yourDate = new Date();
 
-    const hints = await prisma.nFLGrid.findUnique({
-      where: {
-        day: yourDate,
-      },
-      include: {
-        a_hint: true,
-        b_hint: true,
-        c_hint: true,
-        one_hint: true,
-        two_hint: true,
-        three_hint: true,
-      },
-    });
+      const hints = await prisma.nFLGrid.findUnique({
+        where: {
+          day: yourDate,
+        },
+        include: {
+          a_hint: true,
+          b_hint: true,
+          c_hint: true,
+          one_hint: true,
+          two_hint: true,
+          three_hint: true,
+        },
+      });
 
-    if (hints == null) {
-      console.log("ERRROR TEAMS NULL");
-      return NextResponse.json(getRandom(TEAMS, 6));
+      if (hints == null) {
+        console.log("ERRROR TEAMS NULL");
+        return NextResponse.json(getRandom(TEAMS, 6));
+      }
+
+      return NextResponse.json([
+        hints.a_hint,
+        hints.b_hint,
+        hints.c_hint,
+        hints.one_hint,
+        hints.two_hint,
+        hints.three_hint,
+      ]);
     }
-
-    return NextResponse.json([
-      hints.a_hint,
-      hints.b_hint,
-      hints.c_hint,
-      hints.one_hint,
-      hints.two_hint,
-      hints.three_hint,
-    ]);
+  } catch (error) {
+    captureException(error);
+    return getRandom(TEAMS, 6);
   }
 }
 
