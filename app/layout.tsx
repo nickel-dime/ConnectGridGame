@@ -1,8 +1,12 @@
+"use client";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { persistor, store } from "./store/store";
 
-export const metadata = {
+const metadata = {
   title: "Connect Grid",
   description:
     "NFL, NBA, and MLB trivia based on the viral Immaculate Grid trend with different modes and settings!",
@@ -42,8 +46,11 @@ export default function RootLayout({
           content="-7S5tqXFj6Kh14vX0mGPFK4D3v4BENDUounTdzAtEfo"
         />
       </head>
+
       <body>
-        {children}
+        <Provider store={store}>
+          <PersistGate persistor={persistor}>{children}</PersistGate>
+        </Provider>
         <Analytics />
       </body>
     </html>

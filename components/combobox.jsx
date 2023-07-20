@@ -8,33 +8,29 @@ import React, {
 } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-export const HomeContext = React.createContext(null);
+export const NormalContext = React.createContext(null);
 import { debounce } from "lodash";
+import {
+  addNBAGuess,
+  addNFLGuess,
+  boardStateSelector,
+  getBoardState,
+} from "@/app/store/normalSlice";
+import { useAppDispatch, useAppSelector } from "../app/store/hooks";
 
 const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
-  const { guessesLeft, setGuessesLeft, settings, hints } =
-    useContext(HomeContext);
+  const { guessesLeft, currentHints, previousGuesses } =
+    useAppSelector(getBoardState);
+
+  const isEndless = useAppSelector((state) => state.isEndless);
+  const league = useAppSelector((state) => state.league);
 
   const [selected, setSelected] = useState({});
   const [query, setQuery] = useState("");
   const [people, setPeople] = useState([]);
 
   const [isLoading, setIsLoading] = useState(true);
-
-  let [previousGuesses, setPreviousGuesses] = useState([]);
-
-  function loadPreviousGuesses() {
-    let previousGuesses =
-      localStorage.getItem(`${settings.league}previousGuesses${boxId}`) || "[]";
-    previousGuesses = JSON.parse(previousGuesses);
-
-    setPreviousGuesses(previousGuesses);
-    return previousGuesses;
-  }
-
-  useEffect(() => {
-    loadPreviousGuesses();
-  }, []);
+  const dispatch = useAppDispatch();
 
   const debouncedApiCall = useCallback(
     debounce((query) => {
@@ -53,13 +49,9 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
 
       if (stringArray.length > 1) {
         var lastName = stringArray[2];
-        var url = `/api/players?firstName=${firstName}&lastName=${lastName}&league=${settings.league}`;
+        var url = `/api/players?firstName=${firstName}&lastName=${lastName}&league=${league}`;
       } else {
-        var url = `/api/players?firstName=${firstName}&league=${settings.league}`;
-      }
-
-      if (Array.isArray(previousGuesses) && previousGuesses.length == 0) {
-        previousGuesses = loadPreviousGuesses();
+        var url = `/api/players?firstName=${firstName}&league=${league}`;
       }
 
       fetch(url)
@@ -67,17 +59,16 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
         // 4. Setting *dogImage* to the image url that we received from the response above
         .then((data) => {
           for (const playerData of data) {
-            if (Array.isArray(previousGuesses) && previousGuesses.length) {
-              var item = previousGuesses.find(
+            var thisBoxGuesses = previousGuesses[boxId];
+            if (Array.isArray(thisBoxGuesses) && thisBoxGuesses.length) {
+              var item = thisBoxGuesses.find(
                 (player) => player["id"] === playerData["id"]
               );
             }
 
             if (item == undefined) {
               playerData["found"] = 0;
-            } else if (item["correct"] == true) {
-              playerData["found"] = 1;
-            } else if (item["correct"] == false) {
+            } else {
               playerData["found"] = 2;
             }
           }
@@ -100,16 +91,13 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
       method: "POST",
       body: JSON.stringify({
         player: player,
-        isEndless: settings.isEndless,
-        hints: hints,
+        isEndless: isEndless ? "1" : "0",
+        hints: currentHints,
       }),
     };
 
     try {
-      fetch(
-        `/api/check/${settings.league.toLowerCase()}?boxId=${boxId}`,
-        requestOptions
-      )
+      fetch(`/api/check/${league.toLowerCase()}?boxId=${boxId}`, requestOptions)
         .then((response) => {
           return response.json();
         })
@@ -135,26 +123,28 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
           // make api call with value and box. if correct then setPlayerSelected and close else dont do either
 
           checkPlayer(value, boxId, (correct) => {
-            if (correct) {
-              value["correct"] = true;
-              setPlayerSelected(value);
-              setClose();
-            } else {
-              value["correct"] = false;
-              // setSelected({});
+            if (league == "NFL") {
+              dispatch(
+                addNFLGuess({
+                  player: value,
+                  boxId: boxId,
+                  correct: correct,
+                })
+              );
+            } else if (league == "NBA") {
+              dispatch(
+                addNBAGuess({
+                  player: value,
+                  boxId: boxId,
+                  correct: correct,
+                })
+              );
             }
-            setPreviousGuesses((oldArray) => [...oldArray, value]);
-            let newArray = [...previousGuesses, value];
-            localStorage.setItem(
-              `${settings.league}previousGuesses${boxId}`,
-              JSON.stringify(newArray)
-            );
 
-            setGuessesLeft(guessesLeft - 1);
-            localStorage.setItem(
-              `${settings.league}guessesLeft`,
-              guessesLeft - 1
-            );
+            if (correct) {
+              setSelected(value);
+              setClose();
+            }
           });
         }}
       >
