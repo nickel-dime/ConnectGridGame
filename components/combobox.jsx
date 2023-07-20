@@ -193,7 +193,8 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
             >
               <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white text-base shadow-lg ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                 {people === undefined ||
-                (people.length == 0 && (isLoading || query.length > 1)) ? (
+                (people.length == 0 &&
+                  ((isLoading && query.length > 2) || query.length > 1)) ? (
                   <div className="relative cursor-default select-none py-4 px-4 text-gray-700">
                     {isLoading ? "Loading" : "Nothing found."}
                   </div>
