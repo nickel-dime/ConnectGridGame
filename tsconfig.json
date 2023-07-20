@@ -29,6 +29,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "app/page.jsx"
-  ],
+, "app/store/storage.js"  ],
   "exclude": ["node_modules"]
 }

@@ -15,21 +15,31 @@ import {
 } from "@heroicons/react/24/outline";
 import { RadioGroup } from "@headlessui/react";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
+import { useAppDispatch, useAppSelector } from "../app/store/hooks";
+import { updateSettings } from "@/app/store/normalSlice";
 
 const SettingContext = createContext(null);
 
-export default function Setting({ settings, setSettings }) {
+export default function Setting({ mode, setMode }) {
   const [open, setOpen] = useState(
     localStorage.getItem("initial") == "false" ? false : true
   );
 
-  const [modalEndless, setModalEndless] = useState(settings.isEndless);
-  const [modalLeague, setModalLeague] = useState(settings.league);
-  const [modalMode, setModalMode] = useState(settings.mode);
+  const isEndless = useAppSelector((state) => state.isEndless);
+  const league = useAppSelector((state) => state.league);
+
+  const [modalEndless, setModalEndless] = useState(null);
+  const [modalLeague, setModalLeague] = useState(null);
+  const [modalMode, setModalMode] = useState(null);
+
+  useEffect(() => {
+    setModalEndless(isEndless);
+    setModalLeague(league);
+    setModalMode(mode);
+  }, [isEndless, league, mode]);
 
   useEffect(() => {
     localStorage.setItem("initial", "false");
-    setModalEndless(settings.isEndless);
   }, [open]);
 
   return (
@@ -38,12 +48,11 @@ export default function Setting({ settings, setSettings }) {
         value={{
           modalEndless: modalEndless,
           setModalEndless: setModalEndless,
-          setSettings: setSettings,
           modalLeague: modalLeague,
           setModalLeague: setModalLeague,
-          settings: settings,
           modalMode: modalMode,
           setModalMode: setModalMode,
+          setMode: setMode,
         }}
       >
         <SettingModal open={open} setOpen={setOpen}></SettingModal>
@@ -63,8 +72,9 @@ export default function Setting({ settings, setSettings }) {
 function SettingModal({ open, setOpen }) {
   //   const [open, setOpen] = useState(true);
 
-  const { setSettings, modalEndless, modalLeague, settings, modalMode } =
+  const { modalEndless, modalLeague, modalMode, setMode } =
     useContext(SettingContext);
+  const dispatch = useAppDispatch();
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -148,26 +158,15 @@ function SettingModal({ open, setOpen }) {
                     type="button"
                     className="inline-flex w-full justify-center rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white shadow-sm sm:hover:bg-purple sm:ml-3 sm:w-auto"
                     onClick={() => {
-                      const newSettings = {
-                        isEndless: modalEndless,
-                        league: modalLeague,
-                        mode: modalMode,
-                      };
-
-                      if (settings != newSettings) {
-                        localStorage.clear();
-                        localStorage.setItem("isEndless", modalEndless);
-                        localStorage.setItem("league", modalLeague);
-                        localStorage.setItem("mode", modalMode);
-
-                        setSettings({
-                          isEndless: modalEndless,
+                      // update settings
+                      dispatch(
+                        updateSettings({
                           league: modalLeague,
-                          initial: false,
-                          mode: modalMode,
-                        });
-                      }
-
+                          isEndless: modalEndless,
+                        })
+                      );
+                      setMode(modalMode);
+                      localStorage.setItem("mode", modalMode);
                       setOpen(false);
                     }}
                   >
@@ -193,7 +192,7 @@ const modes_desktop = {
     title: "Timer",
     description:
       "You have 5 minutes! Be careful, every wrong guess loses you 10 seconds.",
-    disabled: false,
+    disabled: true,
   },
   backwards: {
     title: "Backwards (coming soon)",
@@ -298,7 +297,7 @@ const settings = [
     name: "Timer",
     description:
       "You have 5 minutes! Careful though, every wrong guess loses 10 seconds",
-    disabled: false,
+    disabled: true,
   },
   {
     name: "Backwards (coming soon)",
@@ -399,21 +398,17 @@ function Unlimited() {
       <Switch
         checked={modalEndless}
         onChange={() => {
-          if (modalEndless == "1") {
-            setModalEndless("0");
-          } else {
-            setModalEndless("1");
-          }
+          setModalEndless(!modalEndless);
         }}
         className={classNames(
-          modalEndless == "1" ? "bg-purple" : "bg-gray-200",
+          modalEndless ? "bg-purple" : "bg-gray-200",
           "relative ml-2 inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-offset-2"
         )}
       >
         <span
           aria-hidden="true"
           className={classNames(
-            modalEndless == "1" ? "translate-x-5" : "translate-x-0",
+            modalEndless ? "translate-x-5" : "translate-x-0",
             "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
           )}
         />

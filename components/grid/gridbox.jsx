@@ -2,35 +2,36 @@
 import MyModal from "../modal";
 import Image from "next/image";
 import React, { useEffect, useState, useContext } from "react";
-import { HomeContext } from "../combobox";
+import {
+  getPlayer,
+  boardStateSelector,
+  loading,
+} from "@/app/store/normalSlice";
+import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
 
-export default function GridBox({ boxId, clear }) {
+export default function GridBox({ boxId }) {
   let [isOpen, setIsOpen] = useState(false);
-  let [playerSelected, setPlayerSelected] = useState(null);
-  let [loaded, setLoaded] = useState(false);
+  let [imageLoaded, setImageLoaded] = useState(false);
 
-  const { guessesLeft, settings } = useContext(HomeContext);
+  const { guessesLeft } = useAppSelector(boardStateSelector);
+  const playerSelected = useAppSelector((state) => getPlayer(state, boxId));
+  const league = useAppSelector((state) => state.league);
 
-  useEffect(() => {
-    let player;
-    // Get the value from local storage if it exists
-    player =
-      JSON.parse(
-        localStorage.getItem(`${settings.league}playerSelected${boxId}`)
-      ) || null;
-    setPlayerSelected(player);
-  }, [boxId, clear, settings.league]);
+  //   useEffect(() => {
+  //     if (!settings) {
+  //       return;
+  //     }
 
-  useEffect(() => {
-    if (playerSelected) {
-      localStorage.setItem(
-        `${settings.league}playerSelected${boxId}`,
-        JSON.stringify(playerSelected)
-      );
-      const image = document.createElement("img");
-      image.src = playerSelected["profilePic"];
-    }
-  }, [playerSelected, boxId, settings.league]);
+  //     if (playerSelected) {
+  //       localStorage.setItem(
+  //         `${settings.league}playerSelected${boxId}${settings.isEndless}`,
+  //         JSON.stringify(playerSelected)
+  //       );
+
+  //       const image = document.createElement("img");
+  //       image.src = playerSelected["profilePic"];
+  //     }
+  //   }, [playerSelected, boxId]);
 
   function isRounded() {
     if (boxId == 0) {
@@ -46,12 +47,7 @@ export default function GridBox({ boxId, clear }) {
 
   return (
     <div>
-      <MyModal
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        setPlayerSelected={setPlayerSelected}
-        boxId={boxId}
-      ></MyModal>
+      <MyModal isOpen={isOpen} setIsOpen={setIsOpen} boxId={boxId}></MyModal>
       <button
         className={` transition-colors duration-75 focus-visible:z-50 col-1 flex items-center border-x border-y border-[#fff0e6] justify-center ${isRounded()} ${
           playerSelected ? "bg-purple" : "bg-green-500"
@@ -70,13 +66,13 @@ export default function GridBox({ boxId, clear }) {
                 height={96}
                 priority={true}
                 className={`rounded-md ${
-                  settings.league == "NBA"
+                  league == "NBA"
                     ? "sm:w-[135px] w-[70px]"
                     : "sm:w-[92px] w-[60px]"
                 }`}
                 loading="eager"
                 onLoad={() => {
-                  setLoaded(true);
+                  setImageLoaded(true);
                 }}
                 alt="Image of player"
               ></Image>
@@ -85,7 +81,7 @@ export default function GridBox({ boxId, clear }) {
             )}
           </div>
           <div className="mb-2  text-[8px] font-bold sm:text-base text-white ">
-            {playerSelected && loaded
+            {playerSelected && imageLoaded
               ? `${playerSelected["firstName"]} ${playerSelected["lastName"]}`
               : ""}
           </div>
