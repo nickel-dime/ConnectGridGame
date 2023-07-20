@@ -120,7 +120,7 @@ function SettingModal({ open, setOpen }) {
                   </button>
                 </div>
                 <div className="sm:flex sm:items-start">
-                  <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                  <div className="text-center sm:ml-4 sm:mt-0 sm:text-left">
                     <Dialog.Title
                       as="h3"
                       className="text-2xl font-semibold leading-6 text-gray-900"
@@ -128,7 +128,7 @@ function SettingModal({ open, setOpen }) {
                       Settings
                     </Dialog.Title>
                     <div className="mt-2">
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-500 hidden sm:block">
                         Change the settings for the connect grid.
                       </p>
 
@@ -391,7 +391,10 @@ function Unlimited() {
         >
           Unlimited Grids
         </Switch.Label>
-        <Switch.Description as="span" className="text-sm text-gray-500 mt-1">
+        <Switch.Description
+          as="span"
+          className="text-sm text-gray-500 mt-1 hidden sm:block"
+        >
           Toggle between playing only the daily grid or playing endless grids.
         </Switch.Description>
       </span>
