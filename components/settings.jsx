@@ -447,7 +447,7 @@ function LeagueChooser() {
         }}
         selectedIndex={getIndex()}
       >
-        <span className="text-base font-semibold leading-6  text-gray-900 ml-1 sm:ml-0">
+        <span className="text-base font-semibold leading-6 text-gray-900">
           Choose League
         </span>
         <Tab.List className="flex space-x-4 sm:space-x-4 rounded-xl text-white mt-4">
