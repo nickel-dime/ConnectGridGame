@@ -182,11 +182,13 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
               afterLeave={() => setQuery("")}
             >
               <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white text-base shadow-lg ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                {people === undefined ||
-                (people.length == 0 &&
-                  ((isLoading && query.length > 2) || query.length > 1)) ? (
+                {people === undefined || (isLoading && query.length != 0) ? (
                   <div className="relative cursor-default select-none py-4 px-4 text-gray-700">
-                    {isLoading ? "Loading" : "Nothing found."}
+                    Loading
+                  </div>
+                ) : people.length == 0 && query.length > 1 ? (
+                  <div className="relative cursor-default select-none py-4 px-4 text-gray-700">
+                    Nothing Found
                   </div>
                 ) : (
                   people.map((person) => (
