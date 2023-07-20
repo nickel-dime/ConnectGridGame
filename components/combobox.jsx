@@ -14,12 +14,13 @@ import {
   addNBAGuess,
   addNFLGuess,
   boardStateSelector,
+  getBoardState,
 } from "@/app/store/normalSlice";
 import { useAppDispatch, useAppSelector } from "../app/store/hooks";
 
 const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
   const { guessesLeft, currentHints, previousGuesses } =
-    useAppSelector(boardStateSelector);
+    useAppSelector(getBoardState);
 
   const isEndless = useAppSelector((state) => state.isEndless);
   const league = useAppSelector((state) => state.league);
@@ -57,21 +58,20 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
         .then((response) => response.json())
         // 4. Setting *dogImage* to the image url that we received from the response above
         .then((data) => {
-          // for (const playerData of data) {
-          //   // if (Array.isArray(previousGuesses) && previousGuesses.length) {
-          //   //   var item = previousGuesses.find(
-          //   //     (player) => player["id"] === playerData["id"]
-          //   //   );
-          //   // }
+          for (const playerData of data) {
+            var thisBoxGuesses = previousGuesses[boxId];
+            if (Array.isArray(thisBoxGuesses) && thisBoxGuesses.length) {
+              var item = thisBoxGuesses.find(
+                (player) => player["id"] === playerData["id"]
+              );
+            }
 
-          //   if (item == undefined) {
-          //     playerData["found"] = 0;
-          //   } else if (item["correct"] == true) {
-          //     playerData["found"] = 1;
-          //   } else if (item["correct"] == false) {
-          //     playerData["found"] = 2;
-          //   }
-          // }
+            if (item == undefined) {
+              playerData["found"] = 0;
+            } else {
+              playerData["found"] = 2;
+            }
+          }
 
           setTimeout(setPeople(data), 1000);
         })
@@ -123,14 +123,12 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
           // make api call with value and box. if correct then setPlayerSelected and close else dont do either
 
           checkPlayer(value, boxId, (correct) => {
-            var correct = correct === "true";
-
             if (league == "NFL") {
               dispatch(
                 addNFLGuess({
                   player: value,
                   boxId: boxId,
-                  correct: true,
+                  correct: correct,
                 })
               );
             } else if (league == "NBA") {
@@ -138,13 +136,13 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
                 addNBAGuess({
                   player: value,
                   boxId: boxId,
-                  correct: true,
+                  correct: correct,
                 })
               );
             }
 
             if (correct) {
-              setPlayerSelected(value);
+              setSelected(value);
               setClose();
             }
           });

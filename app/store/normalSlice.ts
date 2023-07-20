@@ -1,4 +1,8 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  createAsyncThunk,
+  createSelector,
+} from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "./store";
 import { NFLPlayer, NBAPlayer, NBAHints, NFLHints } from "@prisma/client";
@@ -26,12 +30,6 @@ interface NormalState {
   nflLoaded: boolean;
   isEndless: boolean;
   league: String;
-  currentGuessesLeft: number;
-  currentHints: NBAHints[] | NFLHints[];
-  currentPlayersGuessed: Partial<NBAPlayer>[][] | Partial<NFLPlayer>[][];
-  currentPlayerSelected:
-    | Partial<NFLPlayer | null>[]
-    | Partial<NBAPlayer | null>[];
 }
 
 // Define the initial state using that type
@@ -96,10 +94,6 @@ const initialState: NormalState = {
   nflLoaded: false,
   isEndless: false,
   league: "NBA",
-  currentGuessesLeft: 9,
-  currentHints: [],
-  currentPlayersGuessed: [[], [], [], [], [], [], [], [], []],
-  currentPlayerSelected: [null, null, null, null, null, null, null, null, null],
 };
 
 export const fetchNFLHintsDaily = createAsyncThunk(
@@ -173,28 +167,6 @@ export const normalSlice = createSlice({
     ) => {
       state.league = action.payload.league;
       state.isEndless = action.payload.isEndless;
-
-      if (state.league == "NBA" && state.isEndless) {
-        state.currentHints = state.nbaHintsEndless;
-        state.currentGuessesLeft = state.nbaGuessesLeftEndless;
-        state.currentPlayerSelected = state.nbaPlayerSelectedEndless;
-        state.currentPlayersGuessed = state.nbaPlayerGuessedEndless;
-      } else if (state.league == "NBA" && !state.isEndless) {
-        state.currentHints = state.nbaHintsDaily;
-        state.currentGuessesLeft = state.nbaGuessesLeftDaily;
-        state.currentPlayerSelected = state.nbaPlayerSelectedDaily;
-        state.currentPlayersGuessed = state.nbaPlayerGuessedDaily;
-      } else if (state.league == "NFL" && state.isEndless) {
-        state.currentHints = state.nflHintsEndless;
-        state.currentGuessesLeft = state.nflGuessesLeftEndless;
-        state.currentPlayerSelected = state.nflPlayerSelectedEndless;
-        state.currentPlayersGuessed = state.nflPlayerGuessedEndless;
-      } else if (state.league == "NFL" && !state.isEndless) {
-        state.currentHints = state.nflHintsDaily;
-        state.currentGuessesLeft = state.nflGuessesLeftDaily;
-        state.currentPlayerSelected = state.nflPlayerSelectedDaily;
-        state.currentPlayersGuessed = state.nflPlayerGuessedDaily;
-      }
     },
     addNFLGuess: (
       state,
@@ -213,6 +185,7 @@ export const normalSlice = createSlice({
             action.payload.player
           );
         }
+        state.nflGuessesLeftEndless = state.nflGuessesLeftEndless - 1;
       } else {
         if (action.payload.correct) {
           state.nflPlayerSelectedDaily[action.payload.boxId] =
@@ -221,6 +194,7 @@ export const normalSlice = createSlice({
         state.nflPlayerGuessedDaily[action.payload.boxId].push(
           action.payload.player
         );
+        state.nflGuessesLeftDaily = state.nflGuessesLeftDaily - 1;
       }
     },
     reset: (state) => {
@@ -251,27 +225,29 @@ export const normalSlice = createSlice({
             action.payload.player
           );
         }
+        state.nbaGuessesLeftEndless = state.nbaGuessesLeftEndless - 1;
       } else {
+        console.log(action.payload.correct);
         if (action.payload.correct) {
           state.nbaPlayerSelectedDaily[action.payload.boxId] =
             action.payload.player;
+        } else {
+          state.nbaPlayerGuessedDaily[action.payload.boxId].push(
+            action.payload.player
+          );
         }
-        state.nbaPlayerGuessedDaily[action.payload.boxId].push(
-          action.payload.player
-        );
+        state.nbaGuessesLeftDaily = state.nbaGuessesLeftDaily - 1;
       }
     },
   },
   extraReducers(builder) {
     builder
       .addCase(fetchNFLHintsDaily.fulfilled, (state, action) => {
-        if (action.payload != state.nflHintsDaily) {
-          // new daily challenge
-          state.nflHintsDaily = action.payload;
-          state.nflGuessesLeftDaily = 9;
-          state.nflPlayerSelectedDaily = initialState.nflPlayerSelectedDaily;
-          state.nflPlayerGuessedDaily = initialState.nflPlayerGuessedDaily;
-        }
+        // new daily challenge
+        state.nflHintsDaily = action.payload;
+        state.nflGuessesLeftDaily = 9;
+        state.nflPlayerSelectedDaily = initialState.nflPlayerSelectedDaily;
+        state.nflPlayerGuessedDaily = initialState.nflPlayerGuessedDaily;
         state.nflLoaded = true;
       })
       .addCase(fetchNFLHintsDaily.pending, (state, action) => {
@@ -282,13 +258,11 @@ export const normalSlice = createSlice({
         captureException(`Could not load NFL hints daily ${state} ${action}`);
       })
       .addCase(fetchNBAHintsDaily.fulfilled, (state, action) => {
-        if (action.payload != state.nbaHintsDaily) {
-          // new daily challenge
-          state.nbaHintsDaily = action.payload;
-          state.nbaGuessesLeftDaily = 9;
-          state.nbaPlayerSelectedDaily = initialState.nbaPlayerSelectedDaily;
-          state.nbaPlayerGuessedDaily = initialState.nbaPlayerGuessedDaily;
-        }
+        // new daily challenge
+        state.nbaHintsDaily = action.payload;
+        state.nbaGuessesLeftDaily = 9;
+        state.nbaPlayerSelectedDaily = initialState.nbaPlayerSelectedDaily;
+        state.nbaPlayerGuessedDaily = initialState.nbaPlayerGuessedDaily;
         state.nbaLoaded = true;
       })
       .addCase(fetchNBAHintsDaily.pending, (state, action) => {
@@ -327,7 +301,92 @@ export const { addNBAGuess, addNFLGuess, reset, updateSettings } =
   normalSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
+export const getBoardState = createSelector(
+  (state: RootState) => state.league,
+  (state: RootState) => state.isEndless,
+  (state: RootState) => state.nbaGuessesLeftEndless,
+  (state: RootState) => state.nbaPlayerGuessedEndless,
+  (state: RootState) => state.nbaPlayerSelectedEndless,
+  (state: RootState) => state.nbaHintsEndless,
+  (state: RootState) => state.nbaGuessesLeftDaily,
+  (state: RootState) => state.nbaPlayerGuessedDaily,
+  (state: RootState) => state.nbaPlayerSelectedDaily,
+  (state: RootState) => state.nbaHintsDaily,
+  (state: RootState) => state.nflGuessesLeftEndless,
+  (state: RootState) => state.nflPlayerGuessedEndless,
+  (state: RootState) => state.nflPlayerSelectedEndless,
+  (state: RootState) => state.nflHintsEndless,
+  (state: RootState) => state.nflGuessesLeftDaily,
+  (state: RootState) => state.nflPlayerGuessedDaily,
+  (state: RootState) => state.nflPlayerSelectedDaily,
+  (state: RootState) => state.nflHintsDaily,
+  (
+    league,
+    isEndless,
+    nbaGuessesLeftEndless,
+    nbaPlayerGuessedEndless,
+    nbaPlayerSelectedEndless,
+    nbaHintsEndless,
+    nbaGuessesLeftDaily,
+    nbaPlayerGuessedDaily,
+    nbaPlayerSelectedDaily,
+    nbaHintsDaily,
+    nflGuessesLeftEndless,
+    nflPlayerGuessedEndless,
+    nflPlayerSelectedEndless,
+    nflHintsEndless,
+    nflGuessesLeftDaily,
+    nflPlayerGuessedDaily,
+    nflPlayerSelectedDaily,
+    nflHintsDaily
+  ) => {
+    if (league == "NBA") {
+      if (isEndless) {
+        return {
+          guessesLeft: nbaGuessesLeftEndless,
+          previousGuesses: nbaPlayerGuessedEndless,
+          playerSelected: nbaPlayerSelectedEndless,
+          currentHints: nbaHintsEndless,
+        };
+      } else {
+        return {
+          guessesLeft: nbaGuessesLeftDaily,
+          previousGuesses: nbaPlayerGuessedDaily,
+          playerSelected: nbaPlayerSelectedDaily,
+          currentHints: nbaHintsDaily,
+        };
+      }
+    } else if (league == "NFL") {
+      if (isEndless) {
+        return {
+          guessesLeft: nflGuessesLeftEndless,
+          previousGuesses: nflPlayerGuessedEndless,
+          playerSelected: nflPlayerSelectedEndless,
+          currentHints: nflHintsEndless,
+        };
+      } else {
+        return {
+          guessesLeft: nflGuessesLeftDaily,
+          previousGuesses: nflPlayerGuessedDaily,
+          playerSelected: nflPlayerSelectedDaily,
+          currentHints: nflHintsDaily,
+        };
+      }
+    } else {
+      console.log(`Incorrect league ${league}`);
+      return {
+        guessesLeft: initialState.nbaGuessesLeftDaily,
+        previousGuesses: initialState.nflPlayerGuessedEndless,
+        playerSelected: initialState.nflPlayerSelectedEndless,
+        currentHints: initialState.nflHintsEndless,
+      };
+    }
+  }
+);
+
 export const boardStateSelector = (state: RootState) => {
+  console.log(`CALLING BOARD STATE`);
+  // console.log(state);
   if (state.league == "NBA") {
     if (state.isEndless) {
       return {
@@ -357,7 +416,7 @@ export const boardStateSelector = (state: RootState) => {
         guessesLeft: state.nflGuessesLeftEndless,
         previousGuesses: state.nflPlayerGuessedEndless,
         playerSelected: state.nflPlayerSelectedEndless,
-        currentHints: state.nflHintsEndless,
+        currentHints: state.nflHintsDaily,
       };
     }
   } else {

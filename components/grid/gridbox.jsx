@@ -6,6 +6,7 @@ import {
   getPlayer,
   boardStateSelector,
   loading,
+  getBoardState,
 } from "@/app/store/normalSlice";
 import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
 
@@ -13,7 +14,7 @@ export default function GridBox({ boxId }) {
   let [isOpen, setIsOpen] = useState(false);
   let [imageLoaded, setImageLoaded] = useState(false);
 
-  const { guessesLeft } = useAppSelector(boardStateSelector);
+  const { guessesLeft } = useAppSelector(getBoardState);
   const playerSelected = useAppSelector((state) => getPlayer(state, boxId));
   const league = useAppSelector((state) => state.league);
 

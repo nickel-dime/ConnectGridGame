@@ -14,17 +14,53 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
   boardStateSelector,
   fetchNBAHintsDaily,
+  fetchNBAHintsEndless,
   fetchNFLHintsDaily,
+  fetchNFLHintsEndless,
+  getBoardState,
 } from "../store/normalSlice";
+import { captureException } from "@sentry/nextjs";
 
 export default function Normal() {
   const dispatch = useAppDispatch();
-  const { currentHints } = useAppSelector((state) => state.currentHints);
   const league = useAppSelector((state) => state.league);
+  const isEndless = useAppSelector((state) => state.isEndless);
 
-  useEffect(() => { 
-    dispatch(fetchNBAHintsDaily());
+  const { currentHints } = useAppSelector(getBoardState);
+
+  useEffect(() => {
+    var date = localStorage.getItem("date");
+
+    if (date != null) {
+      var split_date = date.split(",");
+      const today = new Date();
+
+      if (
+        !(
+          today.getUTCFullYear() == parseInt(split_date[0]) &&
+          today.getUTCMonth() == parseInt(split_date[1]) &&
+          today.getUTCDate() == parseInt(split_date[2])
+        )
+      ) {
+        dispatch(fetchNFLHintsDaily());
+        dispatch(fetchNBAHintsDaily());
+        localStorage.setItem(
+          "date",
+          `${today.getUTCFullYear()}, ${today.getUTCMonth()}, ${today.getUTCDate()}`
+        );
+      }
+      return;
+    }
+
     dispatch(fetchNFLHintsDaily());
+    dispatch(fetchNBAHintsDaily());
+    dispatch(fetchNBAHintsEndless());
+    dispatch(fetchNFLHintsEndless());
+    const today = new Date();
+    localStorage.setItem(
+      "date",
+      `${today.getUTCFullYear}, ${today.getUTCMonth()}, ${today.getUTCDate()}`
+    );
   }, []);
 
   return (

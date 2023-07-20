@@ -30,7 +30,7 @@ export default function GridLogo({ width, logo, hidden }) {
             ></Image>
           )}
           {!(logo.category == "teams" || logo.category == "college") && (
-            <div className="font-freshman sm:text-lg text-sm text-center p-2 break-all ">
+            <div className="font-freshman sm:text-lg text-sm text-center p-2 break-words">
               <div className="">{logo.value}</div>
               <div className="text-xs text-gray-600">{logo.description}</div>
             </div>

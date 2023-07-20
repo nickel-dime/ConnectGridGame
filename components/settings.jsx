@@ -21,9 +21,7 @@ import { updateSettings } from "@/app/store/normalSlice";
 const SettingContext = createContext(null);
 
 export default function Setting({ mode, setMode }) {
-  const [open, setOpen] = useState(
-    localStorage.getItem("initial") == "false" ? false : true
-  );
+  const [open, setOpen] = useState(false);
 
   const isEndless = useAppSelector((state) => state.isEndless);
   const league = useAppSelector((state) => state.league);
@@ -39,8 +37,10 @@ export default function Setting({ mode, setMode }) {
   }, [isEndless, league, mode]);
 
   useEffect(() => {
+    const localUser = localStorage.getItem("initial") ? false : true;
+    setOpen(localUser);
     localStorage.setItem("initial", "false");
-  }, [open]);
+  }, []);
 
   return (
     <div>

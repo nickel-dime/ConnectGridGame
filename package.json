@@ -18,7 +18,7 @@
     "@heroicons/react": "^2.0.18",
     "@prisma/client": "4.13.0",
     "@reduxjs/toolkit": "^1.9.5",
-    "@sentry/nextjs": "^7.58.1",
+    "@sentry/nextjs": "^7.59.3",
     "@types/node": "18.15.11",
     "@types/react": "18.0.37",
     "@types/react-dom": "18.0.11",
@@ -38,14 +38,14 @@
     "react-loading-skeleton": "^3.3.1",
     "react-redux": "^8.1.1",
     "redux-persist": "^6.0.0",
-    "sharp": "^0.32.1",
+    "sharp": "^0.32.3",
     "tailwindcss": "3.3.1",
     "ts-node": "^10.9.1",
     "typescript": "5.0.4"
   },
   "devDependencies": {
     "@types/ms": "^0.7.31",
-    "prisma": "^4.13.0",
-    "turbo": "^1.9.3"
+    "prisma": "^4.16.2",
+    "turbo": "^1.10.9"
   }
 }

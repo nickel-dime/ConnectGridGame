@@ -7,6 +7,7 @@ import {
   boardStateSelector,
   loaded,
   reset,
+  getBoardState,
 } from "@/app/store/normalSlice";
 import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
 
@@ -15,13 +16,16 @@ export function ManageNormalGameDesktop() {
   const isEndless = useAppSelector((state) => state.isEndless);
   const league = useAppSelector((state) => state.league);
 
-  const { guessesLeft } = useAppSelector(boardStateSelector);
+  const { guessesLeft } = useAppSelector(getBoardState);
   const dispatch = useAppDispatch();
 
   return (
     <div className=" text-black h-full flex justify-center">
       {!guessesLeft || !isLoaded ? (
-        <Skeleton containerClassName="flex-1 h-full p-4 rounded-lg"></Skeleton>
+        <Skeleton
+          containerClassName="w-[88px] h-[96px]"
+          height="100%"
+        ></Skeleton>
       ) : (
         <div className="hidden sm:block font-freshman">
           <div className="text-center text-4xl">{guessesLeft}</div>
@@ -32,7 +36,6 @@ export function ManageNormalGameDesktop() {
             <button
               onClick={() => {
                 // reset
-                localStorage.setItem("initial", "false");
                 dispatch(reset());
 
                 if (league == "NFL") {
@@ -57,7 +60,7 @@ export function ManageNormalGameMobile() {
   const isEndless = useAppSelector((state) => state.isEndless);
   const league = useAppSelector((state) => state.league);
 
-  const { guessesLeft } = useAppSelector(boardStateSelector);
+  const { guessesLeft } = useAppSelector(getBoardState);
   const dispatch = useAppDispatch();
 
   return (
@@ -74,7 +77,6 @@ export function ManageNormalGameMobile() {
             <button
               className="flex m-auto bg-green-500 text-yellow-400 sm:hover:bg-purple p-2 pl-4 pr-4 mt-2 rounded-lg"
               onClick={() => {
-                localStorage.setItem("initial", "false");
                 dispatch(reset());
 
                 if (league == "NFL") {
