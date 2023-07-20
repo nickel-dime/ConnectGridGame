@@ -59,7 +59,7 @@ export default function Normal() {
     const today = new Date();
     localStorage.setItem(
       "date",
-      `${today.getUTCFullYear}, ${today.getUTCMonth()}, ${today.getUTCDate()}`
+      `${today.getUTCFullYear()}, ${today.getUTCMonth()}, ${today.getUTCDate()}`
     );
   }, []);
 
