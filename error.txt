@@ -120,3 +120,5 @@
 (FieldNotFoundError('Could not find field at `createManyNBAPlayer_Team.data.teamName`'), {'id': 78628, 'full_name': 'George Yardley', 'first_name': 'George', 'last_name': 'Yardley', 'is_active': False})
 (FieldNotFoundError('Could not find field at `createManyNBAPlayer_Team.data.teamName`'), {'id': 78638, 'full_name': 'Max Zaslofsky', 'first_name': 'Max', 'last_name': 'Zaslofsky', 'is_active': False})
 (FieldNotFoundError('Could not find field at `createManyNBAPlayer_Team.data.teamName`'), {'id': 78639, 'full_name': 'Robert Zawoluk', 'first_name': 'Robert', 'last_name': 'Zawoluk', 'is_active': False})
+(UniqueViolationError('Unique constraint failed on the fields: (`id`)'), {'id': 971, 'full_name': 'Mark Hendrickson', 'first_name': 'Mark', 'last_name': 'Hendrickson', 'is_active': False})
+(UniqueViolationError('Unique constraint failed on the fields: (`id`)'), {'id': 971, 'full_name': 'Mark Hendrickson', 'first_name': 'Mark', 'last_name': 'Hendrickson', 'is_active': False})

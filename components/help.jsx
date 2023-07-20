@@ -6,7 +6,7 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 
-export default function Help({}) {
+export default function Help() {
   const [open, setOpen] = useState(false);
 
   return (
