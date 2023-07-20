@@ -120,7 +120,7 @@ function SettingModal({ open, setOpen }) {
                   </button>
                 </div>
                 <div className="sm:flex sm:items-start">
-                  <div className="text-center sm:ml-4 sm:mt-0 sm:text-left">
+                  <div className="text-center mt-2 sm:ml-4 sm:mt-0 sm:text-left">
                     <Dialog.Title
                       as="h3"
                       className="text-2xl font-semibold leading-6 text-gray-900"
@@ -189,7 +189,7 @@ const modes_desktop = {
     disbaled: false,
   },
   timer: {
-    title: "Timer",
+    title: "Timer (coming soon)",
     description:
       "You have 5 minutes! Be careful, every wrong guess loses you 10 seconds.",
     disabled: true,
@@ -424,7 +424,6 @@ const leagues = [
   { name: "NBA", disbaled: false },
   { name: "NFL", disabled: false },
   { name: "MLB", disabled: true },
-  { name: "NHL", disabled: true },
 ];
 
 function LeagueChooser() {
@@ -437,33 +436,33 @@ function LeagueChooser() {
       return 1;
     } else if (modalLeague == "MLB") {
       return 2;
-    } else if (modalLeague == "NHL") {
-      return 3;
     }
   }
 
   return (
-    <div className="w-full max-w-md sm:px-0 text-left ml-1 ">
+    <div className="w-full max-w-md sm:px-0 text-left ">
       <Tab.Group
         onChange={(index) => {
           setModalLeague(leagues[index].name);
         }}
         selectedIndex={getIndex()}
       >
-        <span className="text-base font-semibold leading-6  text-gray-900">
+        <span className="text-base font-semibold leading-6  text-gray-900 ml-1 sm:ml-0">
           Choose League
         </span>
-        <Tab.List className="flex space-x-1 sm:space-x-4 rounded-xl text-white mt-4">
+        <Tab.List className="flex space-x-4 sm:space-x-4 rounded-xl text-white mt-4">
           {leagues.map((league) => (
             <Tab
               key={league.name}
               className={({ selected }) =>
                 classNames(
-                  "sm:w-full w-auto rounded-lg py-2.5 px-6 text-sm font-medium leading-5",
+                  "w-full rounded-lg py-2.5 text-sm font-medium leading-5",
                   "",
                   selected
                     ? " shadow bg-indigo-900 sm:ring-1 sm:ring-black sm:ring-offset-1 focus:ring-1 focus:ring-black focus:ring-offset-1"
-                    : "text-white hover:bg-green-600",
+                    : league.disabled
+                    ? "text-white"
+                    : "hover:bg-green-600 text-white",
                   league.disabled
                     ? "text-gray-500 bg-gray-500 hover:bg-gray-500"
                     : " bg-green-500"
