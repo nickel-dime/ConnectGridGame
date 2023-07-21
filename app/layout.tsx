@@ -1,25 +1,38 @@
-"use client";
 import "./globals.css";
-import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
-import { Provider } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
-import { persistor, store } from "./store/store";
+import { Metadata } from "next";
+import { AppWrapper } from "./wrapper";
 
-const metadata = {
+export const metadata: Metadata = {
+  metadataBase: new URL("https://www.connectgridgame.com/"),
   title: "Connect Grid",
   description:
     "NFL, NBA, and MLB trivia based on the viral Immaculate Grid trend with different modes and settings!",
   icons: {
-    icon: "../public/favicon.ico",
+    icon: "/logo.png",
   },
+  openGraph: {
+    type: "website",
+    url: "https://www.connectgridgame.com/",
+    siteName: "Connect Grid",
+    title: "Connect Grid",
+    description:
+      "Sports trivia based on the viral Immaculate Grid with unique modes and settings",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    noarchive: true,
+    nosnippet: true,
+    noimageindex: true,
+    nocache: true,
+  },
+  referrer: "no-referrer-when-downgrade",
+  generator: "Next.js",
+  keywords:
+    "grid, immaculate, connect, mlb, nba, nfl, sports, trivia, connections",
+  themeColor: "#fff0e6",
 };
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
 
 export default function RootLayout({
   children,
@@ -29,14 +42,6 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-background">
       <head>
-        <link rel="shortcut icon" href="/logo.png" />
-        <title>Connect Grid</title>
-        <meta property="og:title" content="Connect Grid" />
-        <meta name="theme-color" content="#fff0e6" />
-        <meta
-          property="og:description"
-          content="The Immaculate Grid you know and love, NFL edition!"
-        />
         <meta
           property="og:image"
           content="https://immaculategridironnfl.com/preview.png"
@@ -46,11 +51,8 @@ export default function RootLayout({
           content="-7S5tqXFj6Kh14vX0mGPFK4D3v4BENDUounTdzAtEfo"
         />
       </head>
-
       <body>
-        <Provider store={store}>
-          <PersistGate persistor={persistor}>{children}</PersistGate>
-        </Provider>
+        <AppWrapper>{children}</AppWrapper>
         <Analytics />
       </body>
     </html>
