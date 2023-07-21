@@ -16,8 +16,8 @@ export default function Home() {
 
   return (
     <main className="  bg-background min-h-screen min-w-max flex justify-center">
-      <div className="mb-10 sm:mb-0 ">
-        <div className=" ">
+      <div className="flex flex-col">
+        <div className="">
           <div className="p-4 mt-1 sm:mt-5 font-freshman justify-between flex font-bold text-xl md:text-3xl font-display uppercase tracking-wide text-black">
             <div>CONNECT</div>
             <div className="flex gap-5 ">

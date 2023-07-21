@@ -34,7 +34,6 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
 
   const debouncedApiCall = useCallback(
     debounce((query) => {
-      setIsLoading(true);
       // setPeople([]);
       // split up query into first and last name
       var stringArray = query.split(/(\s+)/);
@@ -56,7 +55,6 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
 
       fetch(url)
         .then((response) => response.json())
-        // 4. Setting *dogImage* to the image url that we received from the response above
         .then((data) => {
           for (const playerData of data) {
             var thisBoxGuesses = previousGuesses[boxId];
@@ -73,7 +71,7 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
             }
           }
 
-          setTimeout(setPeople(data), 1000);
+          setPeople(data);
         })
         .finally(() => {
           setIsLoading(false);
@@ -83,6 +81,7 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
   );
 
   useEffect(() => {
+    setIsLoading(true);
     debouncedApiCall(query);
   }, [query]);
 
