@@ -22,10 +22,6 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-    noarchive: true,
-    nosnippet: true,
-    noimageindex: true,
-    nocache: true,
   },
   referrer: "no-referrer-when-downgrade",
   generator: "Next.js",
