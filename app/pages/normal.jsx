@@ -19,14 +19,13 @@ import {
   fetchNFLHintsEndless,
   getBoardState,
 } from "../store/normalSlice";
-import { captureException } from "@sentry/nextjs";
 
 export default function Normal() {
   const dispatch = useAppDispatch();
   const league = useAppSelector((state) => state.league);
-  const isEndless = useAppSelector((state) => state.isEndless);
 
-  const { currentHints } = useAppSelector(getBoardState);
+  const { currentHints, playerSelected, guessesLeft } =
+    useAppSelector(getBoardState);
 
   useEffect(() => {
     var date = localStorage.getItem("date");
@@ -104,7 +103,12 @@ export default function Normal() {
           </div>
           <div className="grid grid-rows-3 grid-flow-col justify-items-center overflow-hidden mr-5">
             {[...Array(9)].map((e, i) => (
-              <GridBox key={i} boxId={i}></GridBox>
+              <GridBox
+                key={i}
+                boxId={i}
+                playerSelected={playerSelected ? playerSelected[i] : null}
+                disabled={guessesLeft <= 0}
+              ></GridBox>
             ))}
           </div>
           <ManageNormalGameDesktop></ManageNormalGameDesktop>

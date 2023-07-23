@@ -112,7 +112,7 @@ function SettingModal({ open, setOpen }) {
                 <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
                   <button
                     type="button"
-                    className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    className="rounded-md bg-white text-gray-400 hover:text-gray-500"
                     onClick={() => setOpen(false)}
                   >
                     <span className="sr-only">Close</span>
@@ -120,7 +120,7 @@ function SettingModal({ open, setOpen }) {
                   </button>
                 </div>
                 <div className="sm:flex sm:items-start">
-                  <div className="text-center mt-2 sm:ml-4 sm:mt-0 sm:text-left">
+                  <div className="text-center mt-2 sm:ml-3 sm:mt-0 sm:text-left">
                     <Dialog.Title
                       as="h3"
                       className="text-2xl font-semibold leading-6 text-gray-900"
@@ -221,10 +221,6 @@ function CardChoices() {
 
   return (
     <RadioGroup value={modalMode} onChange={setModalMode}>
-      <RadioGroup.Label className="text-base font-semibold leading-6 text-gray-900">
-        Choose Mode
-      </RadioGroup.Label>
-
       <div className="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-3 sm:gap-x-4">
         {modes_switch.map((mode) => (
           <RadioGroup.Option
@@ -381,7 +377,7 @@ function Unlimited() {
   return (
     <Switch.Group
       as="div"
-      className="flex items-center justify-between text-left ml-1"
+      className="flex items-center justify-between text-left"
     >
       <span className="flex flex-grow flex-col">
         <Switch.Label
@@ -447,9 +443,6 @@ function LeagueChooser() {
         }}
         selectedIndex={getIndex()}
       >
-        <span className="text-base font-semibold leading-6 text-gray-900">
-          Choose League
-        </span>
         <Tab.List className="flex space-x-4 sm:space-x-4 rounded-xl text-white mt-4">
           {leagues.map((league) => (
             <Tab
@@ -459,13 +452,13 @@ function LeagueChooser() {
                   "w-full rounded-lg py-2.5 text-sm font-medium leading-5",
                   "",
                   selected
-                    ? " shadow bg-indigo-900 sm:ring-1 sm:ring-black sm:ring-offset-1 focus:ring-1 focus:ring-black focus:ring-offset-1"
+                    ? " bg-indigo-800 shadow-md"
                     : league.disabled
                     ? "text-white"
-                    : "hover:bg-green-600 text-white",
+                    : "hover:bg-[#795E94] bg-[#957DAD] text-white",
                   league.disabled
                     ? "text-gray-500 bg-gray-500 hover:bg-gray-500"
-                    : " bg-green-500"
+                    : " "
                 )
               }
               disabled={league.disabled}

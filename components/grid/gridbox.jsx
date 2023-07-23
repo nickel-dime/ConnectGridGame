@@ -10,29 +10,12 @@ import {
 } from "@/app/store/normalSlice";
 import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
 
-export default function GridBox({ boxId }) {
+export default function GridBox({ boxId, playerSelected, disabled }) {
   let [isOpen, setIsOpen] = useState(false);
   let [imageLoaded, setImageLoaded] = useState(false);
 
-  const { guessesLeft } = useAppSelector(getBoardState);
-  const playerSelected = useAppSelector((state) => getPlayer(state, boxId));
+  // const playerSelected = useAppSelector((state) => getPlayer(state, boxId));
   const league = useAppSelector((state) => state.league);
-
-  //   useEffect(() => {
-  //     if (!settings) {
-  //       return;
-  //     }
-
-  //     if (playerSelected) {
-  //       localStorage.setItem(
-  //         `${settings.league}playerSelected${boxId}${settings.isEndless}`,
-  //         JSON.stringify(playerSelected)
-  //       );
-
-  //       const image = document.createElement("img");
-  //       image.src = playerSelected["profilePic"];
-  //     }
-  //   }, [playerSelected, boxId]);
 
   function isRounded() {
     if (boxId == 0) {
@@ -56,7 +39,7 @@ export default function GridBox({ boxId }) {
         onClick={() => {
           setIsOpen(true);
         }}
-        disabled={guessesLeft <= 0 || playerSelected}
+        disabled={disabled || playerSelected}
       >
         <div className="relative h-full w-full overflow flex flex-col justify-center items-center ">
           <div className="grow mt-4">
@@ -66,7 +49,7 @@ export default function GridBox({ boxId }) {
                 width={96}
                 height={96}
                 priority={true}
-                className={`rounded-md ${
+                className={`rounded-lg ${
                   league == "NBA"
                     ? "sm:w-[135px] w-[70px]"
                     : "sm:w-[92px] w-[60px]"
