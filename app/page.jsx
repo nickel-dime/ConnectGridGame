@@ -23,14 +23,14 @@ export default function Home() {
             <div className="flex gap-5 ">
               <a
                 href="mailto:connectgridgame@proton.me?subject=Ideas%20for%20Grid"
-                className="p-1"
+                className="sm:p-1"
               >
                 <BsLightbulbFill className="fill-green-500 sm:hover:fill-purple hidden sm:block"></BsLightbulbFill>
               </a>
               <Help></Help>
               <a
                 href="https://twitter.com/ConnectGridGame"
-                className="hidden sm:block p-1"
+                className="hidden sm:block sm:p-1"
               >
                 <BsTwitter className="fill-green-500 sm:hover:fill-purple"></BsTwitter>
               </a>

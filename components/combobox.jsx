@@ -30,7 +30,7 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
   const [people, setPeople] = useState([]);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [disabled, setDisabled] = useState(false)
+  const [disabled, setDisabled] = useState(false);
   const dispatch = useAppDispatch();
 
   const debouncedApiCall = useCallback(
@@ -149,7 +149,7 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
               setSelected(value);
               setClose();
             } else {
-              setDisabled(false)
+              setDisabled(false);
             }
           });
         }}
@@ -163,6 +163,7 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
                 onChange={(event) => {
                   setQuery(event.target.value);
                 }}
+                autoFocus
                 ref={ref}
                 autoComplete="off"
                 onFocus={(e) => {

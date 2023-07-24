@@ -72,7 +72,7 @@ export default function RootLayout({
       />
       <body>
         <AppWrapper>{children}</AppWrapper>
-        <Analytics />
+        {/* <Analytics /> */}
       </body>
     </html>
   );
