@@ -30,6 +30,7 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
   const [people, setPeople] = useState([]);
 
   const [isLoading, setIsLoading] = useState(true);
+  const [disabled, setDisabled] = useState(false)
   const dispatch = useAppDispatch();
 
   const debouncedApiCall = useCallback(
@@ -86,6 +87,9 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
   }, [query]);
 
   const checkPlayer = async (player, boxId, callback_after) => {
+    if (disabled) {
+      return;
+    }
     const requestOptions = {
       method: "POST",
       body: JSON.stringify({
@@ -114,6 +118,7 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
       <Combobox
         value={selected}
         onChange={(value) => {
+          setDisabled(true);
           if (guessesLeft <= 0) {
             return;
           }
@@ -143,6 +148,8 @@ const SearchPlayer = ({ setClose, setPlayerSelected, boxId }, ref) => {
             if (correct) {
               setSelected(value);
               setClose();
+            } else {
+              setDisabled(false)
             }
           });
         }}

@@ -21,7 +21,7 @@ export function ManageNormalGameDesktop() {
 
   return (
     <div className=" text-black h-full flex justify-center">
-      {!guessesLeft || !isLoaded ? (
+      {!isLoaded ? (
         <Skeleton
           containerClassName="w-[88px] h-[96px]"
           height="100%"

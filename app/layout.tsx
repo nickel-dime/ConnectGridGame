@@ -46,6 +46,10 @@ export default function RootLayout({
           name="google-site-verification"
           content="-7S5tqXFj6Kh14vX0mGPFK4D3v4BENDUounTdzAtEfo"
         />
+        <meta
+          property="description"
+          content="NFL, NBA, and MLB trivia based on the viral Immaculate Grid trend with different modes and settings!"
+        />
       </head>
       <body>
         <AppWrapper>{children}</AppWrapper>
