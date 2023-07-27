@@ -17,6 +17,7 @@ import { createAutocomplete } from "@algolia/autocomplete-core";
 import { Dialog } from "@headlessui/react";
 import clsx from "clsx";
 import { store } from "@/app/store/store";
+import { captureException } from "@sentry/nextjs";
 
 function SearchIcon(props) {
   return (
@@ -99,8 +100,13 @@ function useAutocomplete(boxId, setOpen) {
           return response.json();
         })
         .then((data) => {
-          player["found"] = data["success"] ? 1 : 2;
-          callback_after(data["success"]);
+          try {
+            player["found"] = data["success"] ? 1 : 2;
+            callback_after(data["success"]);
+          } catch (e) {
+            callback_after(data["success"]);
+            captureException(e);
+          }
         });
     } catch (error) {
       console.log(error);
@@ -149,7 +155,7 @@ function useAutocomplete(boxId, setOpen) {
               getItems() {
                 const { previousGuesses } = getStuff();
 
-                for (const playerData of resp.data) {
+                for (let playerData of resp.data) {
                   // get prev guesses
                   var thisBoxGuesses = previousGuesses[boxId];
                   if (Array.isArray(thisBoxGuesses) && thisBoxGuesses.length) {
@@ -282,9 +288,7 @@ function SearchResult({ result, autocomplete, collection, query }) {
         id={`${id}-title`}
         aria-hidden="true"
         className={`text-md font-medium ${
-          result.found == 2
-            ? "text-red-500"
-            : "text-slate-700 group-aria-selected:text-green-500 "
+          result.found == 2 ? "text-red-500" : "text-slate-700  "
         }`}
       >
         <HighlightQuery
