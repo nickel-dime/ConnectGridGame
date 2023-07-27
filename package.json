@@ -14,6 +14,7 @@
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
+    "@algolia/autocomplete-core": "^1.10.0",
     "@headlessui/react": "^1.7.15",
     "@heroicons/react": "^2.0.18",
     "@prisma/client": "4.13.0",
@@ -23,7 +24,10 @@
     "@types/react": "18.0.37",
     "@types/react-dom": "18.0.11",
     "@vercel/analytics": "^1.0.1",
+    "algoliasearch": "^4.19.1",
     "autoprefixer": "10.4.14",
+    "axios": "^1.4.0",
+    "clsx": "^2.0.0",
     "eslint": "8.38.0",
     "eslint-config-next": "13.3.0",
     "heroicons": "^2.0.18",
@@ -34,6 +38,7 @@
     "react": "18.2.0",
     "react-bootstrap": "^2.8.0",
     "react-dom": "18.2.0",
+    "react-highlight-words": "^0.20.0",
     "react-icons": "^4.10.1",
     "react-loading-skeleton": "^3.3.1",
     "react-redux": "^8.1.1",

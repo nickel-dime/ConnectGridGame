@@ -12,7 +12,6 @@ import {
 } from "@/components/normal/managegame";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
-  boardStateSelector,
   fetchNBAHintsDaily,
   fetchNBAHintsEndless,
   fetchNFLHintsDaily,
