@@ -208,7 +208,6 @@ function useAutocomplete(boxId, setOpen) {
                     setOpen(false);
                   } else {
                     refresh();
-                    setAutocompleteState(state);
                     setDisabled(false);
                     if (guessesLeft <= 1) {
                       setOpen(false);
