@@ -3,12 +3,11 @@ import { Analytics } from "@vercel/analytics/react";
 import { Metadata } from "next";
 import { AppWrapper } from "./wrapper";
 import Script from "next/script";
+import Head from "next/head";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.connectgridgame.com/"),
   title: "Connect Grid",
-  description:
-    "NFL, NBA, and MLB trivia based on the viral Immaculate Grid trend with different modes and settings!",
   icons: {
     icon: "/logo.png",
   },
@@ -38,7 +37,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="bg-background">
-      <head>
+      <Head>
         <meta
           property="og:image"
           content="https://immaculategridironnfl.com/preview.png"
@@ -51,7 +50,7 @@ export default function RootLayout({
           property="description"
           content="NFL, NBA, and MLB trivia based on the viral Immaculate Grid trend with different modes and settings!"
         />
-      </head>
+      </Head>
       <Script
         strategy="afterInteractive"
         src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"
