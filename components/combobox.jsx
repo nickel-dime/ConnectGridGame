@@ -271,7 +271,7 @@ function SearchResult({ result, autocomplete, collection, query }) {
 
   return (
     <li
-      className="group block cursor-pointer rounded-lg px-3 py-2 aria-selected:bg-slate-100"
+      className="group block cursor-pointer rounded-lg py-1 px-2 sm:px-3 sm:py-2 aria-selected:bg-slate-100"
       aria-labelledby={`${id}-hierarchy ${id}-title`}
       {...autocomplete.getItemProps({
         item: result,
