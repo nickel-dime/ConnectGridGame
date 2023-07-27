@@ -134,7 +134,7 @@ function useAutocomplete(boxId, setOpen) {
   let [autocomplete] = useState(() =>
     createAutocomplete({
       id,
-      placeholder: "Find something...",
+      placeholder: "Search Player...",
       onStateChange({ state }) {
         setAutocompleteState(state);
       },
@@ -174,12 +174,11 @@ function useAutocomplete(boxId, setOpen) {
                 setStatus,
                 setActiveItemId,
               }) {
-                setStatus("stalled");
                 setIsOpen(true);
-
                 if (item["found"] > 0) {
                   return;
                 }
+                setStatus("stalled");
 
                 const { guessesLeft } = getStuff();
 
