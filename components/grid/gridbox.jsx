@@ -2,17 +2,15 @@
 import MyModal from "../modal";
 import Image from "next/image";
 import React, { useEffect, useState, useContext } from "react";
-import {
-  getPlayer,
-  boardStateSelector,
-  loading,
-  getBoardState,
-} from "@/app/store/normalSlice";
+import { getPlayer, loading, getBoardState } from "@/app/store/normalSlice";
 import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
+import { Search, SearchDialog, useSearchProps } from "../combobox";
 
 export default function GridBox({ boxId, playerSelected, disabled }) {
   let [isOpen, setIsOpen] = useState(false);
   let [imageLoaded, setImageLoaded] = useState(false);
+
+  let { buttonProps, dialogProps } = useSearchProps(boxId);
 
   const league = useAppSelector((state) => state.league);
 
@@ -30,15 +28,17 @@ export default function GridBox({ boxId, playerSelected, disabled }) {
 
   return (
     <div>
-      <MyModal isOpen={isOpen} setIsOpen={setIsOpen} boxId={boxId}></MyModal>
+      {/* <MyModal isOpen={isOpen} setIsOpen={setIsOpen} boxId={boxId}></MyModal> */}
+      <SearchDialog {...dialogProps} />
       <button
         className={` transition-colors duration-75 focus-visible:z-50 col-1 flex items-center border-x border-y border-[#fff0e6] justify-center ${isRounded()} ${
           playerSelected ? "bg-purple" : "bg-green-500"
         } sm:hover:bg-purple disabled: w-24 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40 `}
-        onClick={() => {
-          setIsOpen(true);
-        }}
+        // onClick={() => {
+        //   setIsOpen(true);
+        // }}
         disabled={disabled || playerSelected}
+        {...buttonProps}
       >
         <div className="relative h-full w-full overflow flex flex-col justify-center items-center ">
           <div className="grow mt-4">
