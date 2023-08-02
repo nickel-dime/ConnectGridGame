@@ -111,6 +111,7 @@ export function AnswersDesktop() {
                 <img
                   src={boxAnswers[selectedBox]["playerGuessed"]["profilePic"]}
                   alt="Image of player"
+                  fetchPriority="high"
                   className="flex self-center h-[40px] w-[40px] rounded-full overflow-hidden object-cover object-top"
                 ></img>
               )}
