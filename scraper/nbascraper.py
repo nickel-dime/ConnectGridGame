@@ -94,7 +94,7 @@ async def update_info(prisma: Prisma):
             res = []
             [res.append(x) for x in formatted_teams if x not in res]
 
-            await prisma.nbaplayer_team.create_many(data=res, skip_duplicates=True)
+            # await prisma.nbaplayer_team.create_many(data=res, skip_duplicates=True)
             await prisma.nbaplayer.update(data={
                 "birthday": birthday,
                 "school": school,

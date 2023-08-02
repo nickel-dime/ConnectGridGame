@@ -4,12 +4,12 @@ import "react-loading-skeleton/dist/skeleton.css";
 import {
   fetchNFLHintsEndless,
   fetchNBAHintsEndless,
-  boardStateSelector,
   loaded,
   reset,
   getBoardState,
 } from "@/app/store/normalSlice";
 import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
+import { AnswersDesktop } from "../answers";
 
 export function ManageNormalGameDesktop() {
   const isLoaded = useAppSelector(loaded);
@@ -30,7 +30,7 @@ export function ManageNormalGameDesktop() {
         <div className="hidden sm:block font-freshman">
           <div className="text-center text-4xl">{guessesLeft}</div>
           <div className="text-center text-lg">GUESSES</div>
-          {!isEndless && <div className="text-center text-lg">DAILY</div>}
+          {!isEndless && <AnswersDesktop></AnswersDesktop>}
 
           {isEndless && (
             <button
@@ -46,7 +46,7 @@ export function ManageNormalGameDesktop() {
               }}
               className=" text-yellow-400  sm:hover:bg-purple text-center flex m-auto bg-green-500 p-2 pl-4 pr-4 mt-2 rounded-lg"
             >
-              reset
+              end
             </button>
           )}
         </div>

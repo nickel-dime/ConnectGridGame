@@ -68,37 +68,44 @@ export default function Normal() {
         <div className="flex mt-6">
           {/* <div className="flex items-center justify-center w-24 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"></div> */}
           <SportLogo
-            width={"w-20"}
+            width={"sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"}
+            imageSize={96}
             logo={league ? league : null}
             hidden={true}
             league={league ? league : null}
           ></SportLogo>
           <GridLogo
-            width={"w-24"}
+            width={"sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"}
             logo={currentHints ? currentHints[0] : null}
+            imageSize={96}
           ></GridLogo>
           <GridLogo
-            width={"w-24"}
+            width={"sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"}
             logo={currentHints ? currentHints[1] : null}
+            imageSize={96}
           ></GridLogo>
           <GridLogo
-            width={"w-24"}
+            width={"sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"}
             logo={currentHints ? currentHints[2] : null}
+            imageSize={96}
           ></GridLogo>
         </div>
         <div className="flex items-center">
           <div className="items-center">
             <GridLogo
-              width={"w-20"}
+              width={"sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"}
               logo={currentHints ? currentHints[3] : null}
+              imageSize={96}
             ></GridLogo>
             <GridLogo
-              width={"w-20"}
+              width={"sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"}
               logo={currentHints ? currentHints[4] : null}
+              imageSize={96}
             ></GridLogo>
             <GridLogo
-              width={"w-20"}
+              width={"sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"}
               logo={currentHints ? currentHints[5] : null}
+              imageSize={96}
             ></GridLogo>
           </div>
           <div className="grid grid-rows-3 grid-flow-col justify-items-center overflow-hidden mr-5">
