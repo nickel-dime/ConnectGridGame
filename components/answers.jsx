@@ -5,6 +5,7 @@ import {
   fetchNBAHintsEndless,
   fetchNFLHintsEndless,
   getBoardState,
+  reset,
   updateSettings,
 } from "@/app/store/normalSlice";
 import SportLogo from "./grid/sportlogo";
@@ -108,10 +109,10 @@ export function AnswersDesktop({ open, setOpen, setDisabled }) {
           ></Table>
           <div className="flex flex-col gap-4">
             <div
-              className={`relative overflow-hidden rounded-md pl-6 shadow-md py-3 ${
+              className={`relative overflow-hidden rounded-md shadow-md py-3 ${
                 boxAnswers && boxAnswers[selectedBox]["playerGuessed"] == null
                   ? ""
-                  : "pl-6 gap-4"
+                  : "gap-4 pl-6"
               } flex self-stretch bg-white`}
             >
               {loading ? (
@@ -140,7 +141,7 @@ export function AnswersDesktop({ open, setOpen, setDisabled }) {
                 {loading ? (
                   <Skeleton containerClassName="flex-1 text-center pr-44"></Skeleton>
                 ) : boxAnswers[selectedBox]["playerGuessed"] == null ? (
-                  <div className="text-xl flex-1 flex justify-center items-center font-medium">
+                  <div className=" flex-1 flex justify-center items-center font-extrabold text-base">
                     No Player Guessed
                   </div>
                 ) : (
@@ -268,6 +269,10 @@ export function AnswersDesktop({ open, setOpen, setDisabled }) {
                 type="button"
                 className="inline-flex w-full justify-center rounded-md bg-green-500 px-3 py-2 text-sm text-yellow-400 shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
                 onClick={() => {
+                  if (isEndless) {
+                    dispatch(reset());
+                  }
+
                   if (league == "NFL") {
                     dispatch(fetchNFLHintsEndless());
                   } else if (league == "NBA") {
@@ -420,9 +425,9 @@ function Table({ boxAnswers, isEndless }) {
                     }`}
                   >
                     <td
-                      className={`whitespace-nowrap pb-5 pl-4 text-sm rounded-md w-[281px]`}
+                      className={`whitespace-nowrap pl-4 text-sm rounded-md w-[281px]`}
                     >
-                      <div className="flex items-center">
+                      <div className="flex items-center py-4">
                         <div className="h-11 w-11 flex-shrink-0">
                           {person.profilePic && (
                             <img
@@ -448,13 +453,13 @@ function Table({ boxAnswers, isEndless }) {
                         </div>
                       </div>
                     </td>
-                    <td className="whitespace-nowrap pb-5 text-sm  w-[108px]">
+                    <td className="whitespace-nowrap py-4 text-sm  w-[108px]">
                       <div className="text-gray-900">
                         {person.percentGuessed}
                       </div>
                     </td>
                     {person.yearStart && (
-                      <td className="whitespace-nowrap pl-4 pb-5 text-sm w-[142px]">
+                      <td className="whitespace-nowrap pl-4 py-4 text-sm w-[142px]">
                         {person.yearStart} - {person.yearEnd}
                       </td>
                     )}

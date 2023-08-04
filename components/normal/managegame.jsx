@@ -53,8 +53,6 @@ export function ManageNormalGameDesktop({ disabled, setDisabled }) {
                 onClick={() => {
                   setOpen(true);
                   setTimeout(() => {
-                    dispatch(reset());
-
                     // if (league == "NFL") {
                     //   dispatch(fetchNFLHintsEndless());
                     // } else if (league == "NBA") {
@@ -69,11 +67,13 @@ export function ManageNormalGameDesktop({ disabled, setDisabled }) {
               </button>
             )}
           </div>
-          <AnswersDesktop
-            open={open}
-            setOpen={setOpen}
-            setDisabled={setDisabled}
-          ></AnswersDesktop>
+          {open && (
+            <AnswersDesktop
+              open={open}
+              setOpen={setOpen}
+              setDisabled={setDisabled}
+            ></AnswersDesktop>
+          )}
         </div>
       )}
     </div>
