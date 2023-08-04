@@ -131,6 +131,7 @@ export async function POST(request: Request) {
           yearEnd: player.yearEnd,
           profilePic: player.profilePic,
           percentGuessed: ((answer.count / total) * 100).toFixed(2),
+          link: player.bbref_page,
         });
       }
       break;
@@ -164,6 +165,7 @@ export async function POST(request: Request) {
             yearEnd: player.yearEnd,
             profilePic: player.profilePic,
             percentGuessed: 0.0,
+            link: player.bbref_page,
           });
         }
         break;
@@ -180,6 +182,7 @@ export async function POST(request: Request) {
         yearEnd: boxPlayer.yearEnd,
         profilePic: boxPlayer.profilePic,
         percentGuessed: ((boxPlayerGuessed / total) * 100).toFixed(2),
+        link: boxPlayer.bbref_page,
       };
     } else {
       currentBoxAnswer["playerGuessed"] = null;

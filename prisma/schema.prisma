@@ -127,6 +127,7 @@ model NBAPlayer {
   yearStart      String
   yearEnd        String
   position       String
+  bbref_page     String?
   isAllNBA       Boolean?    @default(false)
   birthday       DateTime?   @default(now())
   school         String?     @default("")

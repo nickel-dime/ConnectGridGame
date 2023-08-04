@@ -92,13 +92,19 @@ export function AnswersDesktop() {
           Answers
         </Dialog.Title>
 
-        <div className="flex flex-row gap-6 mt-4 ">
+        <div className="flex flex-row gap-6 mt-4">
           <Table
             people={boxAnswers ? boxAnswers[selectedBox]["answers"] : []}
             loading={loading}
           ></Table>
           <div className="flex flex-col gap-4">
-            <div className="relative overflow-hidden rounded-md  pl-6 pr-28 shadow-md py-3 flex gap-3 self-stretch bg-white">
+            <div
+              className={`relative overflow-hidden rounded-md pl-6 shadow-md py-3 ${
+                boxAnswers && boxAnswers[selectedBox]["playerGuessed"] == null
+                  ? ""
+                  : "pl-6 gap-3"
+              } flex self-stretch bg-white`}
+            >
               {loading ? (
                 <Skeleton
                   circle="true"
@@ -115,21 +121,30 @@ export function AnswersDesktop() {
                   className="flex self-center h-[40px] w-[40px] rounded-full overflow-hidden object-cover object-top"
                 ></img>
               )}
-              <div className="flex flex-col text-sm">
+              <div
+                className={`flex flex-col text-sm flex-1 ${
+                  boxAnswers && boxAnswers[selectedBox]["playerGuessed"] == null
+                    ? "h-[44px]"
+                    : ""
+                }`}
+              >
                 {loading ? (
-                  <Skeleton containerClassName="h-[40px] w-[150px] flex-1"></Skeleton>
+                  <Skeleton containerClassName="flex-1 text-center pr-44"></Skeleton>
                 ) : boxAnswers[selectedBox]["playerGuessed"] == null ? (
-                  <div></div>
+                  <div className="font-semibold text-xl flex-1 flex justify-center items-center">
+                    No Player Guessed
+                  </div>
                 ) : (
                   <div className="font-semibold text-xl">{`${boxAnswers[selectedBox]["playerGuessed"]["firstName"]} ${boxAnswers[selectedBox]["playerGuessed"]["lastName"]}`}</div>
                 )}
                 {loading ? (
-                  <Skeleton></Skeleton>
+                  <Skeleton containerClassName="pr-40"></Skeleton>
                 ) : boxAnswers[selectedBox]["playerGuessed"] == null ? (
                   <div></div>
                 ) : (
                   <div className=" text-gray-500 text-xs font-semibold">
                     {boxAnswers[selectedBox]["playerGuessed"]["percentGuessed"]}
+                    % Guessed
                   </div>
                 )}
               </div>
@@ -319,7 +334,7 @@ function Modal({ open, setOpen, children }) {
         >
           <div className="fixed inset-0 bg-gray-500 bg-opacity-75 backdrop-blur-md transition-opacity" />
         </Transition.Child>
-        <div className="fixed inset-0 z-10 overflow-y-auto">
+        <div className="fixed inset-0 z-10 overflow-y-auto ">
           <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
             <Transition.Child
               as={Fragment}
@@ -344,84 +359,93 @@ function Modal({ open, setOpen, children }) {
 function Table({ people, loading }) {
   return (
     <div className=" bg-white rounded-md shadow-md">
-      <div className="flow-root">
-        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <table className="min-w-full divide-y divide-gray-300 overflow-scroll">
-              <thead>
-                <tr>
-                  <th
-                    scope="col"
-                    className="py-3.5 pl-4 pr-8 text-left text-sm font-semibold text-gray-900"
-                  >
-                    Name
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
-                    % Guessed
-                  </th>
-                  <th
-                    scope="col"
-                    className="pr-6 pl-8 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
-                    Years Played
-                  </th>
-                </tr>
-              </thead>
-              {people && people.length > 0 ? (
-                <tbody className="divide-y divide-gray-200 overflow-scroll">
-                  {people.map((person) => (
-                    <tr key={person.id}>
-                      <td className="whitespace-nowrap py-5 pl-4 pr-8 text-sm rounded-md overflow-scroll">
-                        <div className="flex items-center">
-                          <div className="h-11 w-11 flex-shrink-0">
-                            {person.profilePic && (
-                              <img
-                                className="flex self-center h-[40px] w-[40px] rounded-full overflow-hidden object-cover object-top"
-                                src={person.profilePic}
-                                alt=""
-                              />
-                            )}
-                          </div>
-                          <div className="ml-4">
+      <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
+        <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+          <table className="min-w-full divide-y divide-gray-300 overflow-y-scroll max-h-[590px] block table-fixed">
+            <thead className="">
+              <tr className="">
+                <th
+                  scope="col"
+                  className="py-3.5 pl-4 w-[281px] text-left text-sm font-semibold text-gray-900"
+                >
+                  Name
+                </th>
+                <th
+                  scope="col"
+                  className="py-3.5 text-left w-[108px] text-sm font-semibold text-gray-900"
+                >
+                  % Guessed
+                </th>
+                <th
+                  scope="col"
+                  className="pr-6 pl-4 py-3.5 w-[142px] text-left text-sm font-semibold text-gray-900"
+                >
+                  Years Played
+                </th>
+              </tr>
+            </thead>
+            {people && people.length > 0 ? (
+              <tbody className="divide-y divide-gray-200">
+                {people.map((person) => (
+                  <tr key={person.id}>
+                    <td className="whitespace-nowrap py-5 pl-4 text-sm rounded-md w-[281px] ">
+                      <div className="flex items-center">
+                        <div className="h-11 w-11 flex-shrink-0">
+                          {person.profilePic && (
+                            <img
+                              className="flex self-center h-[40px] w-[40px] rounded-full object-cover object-top"
+                              src={person.profilePic}
+                              alt=""
+                            />
+                          )}
+                        </div>
+                        <div className="ml-4">
+                          {person.link ? (
+                            <a
+                              className="font-medium text-blue-500"
+                              href={person.link}
+                            >
+                              {person.firstName} {person.lastName}
+                            </a>
+                          ) : (
                             <div className="font-medium text-gray-900">
                               {person.firstName} {person.lastName}
                             </div>
-                          </div>
+                          )}
                         </div>
+                      </div>
+                    </td>
+                    <td className="whitespace-nowrap py-5 text-sm  w-[108px]">
+                      <div className="text-gray-900">
+                        {person.percentGuessed}
+                      </div>
+                    </td>
+                    {person.yearStart && (
+                      <td className="whitespace-nowrap pl-4 py-5 text-sm w-[142px]">
+                        {person.yearStart} - {person.yearEnd}
                       </td>
-                      <td className="whitespace-nowrap px-4 py-5 text-sm ">
-                        <div className="text-gray-900">
-                          {person.percentGuessed}
-                        </div>
-                      </td>
-                      {person.yearStart && (
-                        <td className="whitespace-nowrap pl-8 pr-6 py-5 text-sm">
-                          {person.yearStart} - {person.yearEnd}
-                        </td>
-                      )}
-                    </tr>
-                  ))}
-                </tbody>
-              ) : (
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            ) : (
+              <tbody>
                 <tr className="p-4">
-                  <td className=" py-5 pl-4 ">
+                  <td className=" py-5 pl-4 pr-4 ">
                     {" "}
-                    <Skeleton count={20}></Skeleton>
+                    <Skeleton count={20} className="h-6 mt-2"></Skeleton>
                   </td>
-                  <td className="text-center px-4 py-5 font-inter">
-                    <Skeleton count={20}></Skeleton>
+                  <td className="text-center py-5 font-inter">
+                    <Skeleton count={20} className="h-6 mt-2"></Skeleton>
                   </td>
-                  <td className=" pr-6 py-5">
+                  <td className="pr-6 pl-4 py-5">
                     {" "}
-                    <Skeleton count={20}></Skeleton>
+                    <Skeleton count={20} className="h-6 mt-2"></Skeleton>
                   </td>
                 </tr>
-              )}
-            </table>
-          </div>
+              </tbody>
+            )}
+          </table>
         </div>
       </div>
     </div>
