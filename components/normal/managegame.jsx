@@ -69,7 +69,11 @@ export function ManageNormalGameDesktop({ disabled, setDisabled }) {
               </button>
             )}
           </div>
-          <AnswersDesktop open={open} setOpen={setOpen}></AnswersDesktop>
+          <AnswersDesktop
+            open={open}
+            setOpen={setOpen}
+            setDisabled={setDisabled}
+          ></AnswersDesktop>
         </div>
       )}
     </div>

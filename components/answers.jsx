@@ -57,7 +57,7 @@ const SAMPLE = {
   },
 };
 
-export function AnswersDesktop({ open, setOpen }) {
+export function AnswersDesktop({ open, setOpen, setDisabled }) {
   const [selectedBox, setSelectedBox] = useState(0);
 
   const [dailyStats, setDailyStats] = useState(null);
@@ -281,6 +281,7 @@ export function AnswersDesktop({ open, setOpen }) {
                     dispatch(fetchNBAHintsEndless());
                   }
                   setOpen(false);
+                  setDisabled(false);
                 }}
               >
                 {isEndless ? "play again" : "play endless"}
