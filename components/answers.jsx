@@ -1,7 +1,12 @@
 import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { useAppSelector } from "../app/store/hooks";
-import { getBoardState } from "@/app/store/normalSlice";
+import { useAppDispatch, useAppSelector } from "../app/store/hooks";
+import {
+  fetchNBAHintsEndless,
+  fetchNFLHintsEndless,
+  getBoardState,
+  updateSettings,
+} from "@/app/store/normalSlice";
 import SportLogo from "./grid/sportlogo";
 import GridLogo from "./grid/gridlogo";
 import axios from "axios";
@@ -52,8 +57,7 @@ const SAMPLE = {
   },
 };
 
-export function AnswersDesktop() {
-  const [open, setOpen] = useState(false);
+export function AnswersDesktop({ open, setOpen }) {
   const [selectedBox, setSelectedBox] = useState(0);
 
   const [dailyStats, setDailyStats] = useState(null);
@@ -64,8 +68,13 @@ export function AnswersDesktop() {
   const league = useAppSelector((state) => state.league);
   const isEndless = useAppSelector((state) => state.isEndless);
   const [loading, setLoading] = useState(true);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
+    if (currentHints == []) {
+      return;
+    }
+
     axios
       .post("api/answers", {
         league: league,
@@ -94,15 +103,15 @@ export function AnswersDesktop() {
 
         <div className="flex flex-row gap-6 mt-4">
           <Table
-            people={boxAnswers ? boxAnswers[selectedBox]["answers"] : []}
-            loading={loading}
+            boxAnswers={boxAnswers ? boxAnswers[selectedBox] : []}
+            isEndless={isEndless}
           ></Table>
           <div className="flex flex-col gap-4">
             <div
               className={`relative overflow-hidden rounded-md pl-6 shadow-md py-3 ${
                 boxAnswers && boxAnswers[selectedBox]["playerGuessed"] == null
                   ? ""
-                  : "pl-6 gap-3"
+                  : "pl-6 gap-4"
               } flex self-stretch bg-white`}
             >
               {loading ? (
@@ -190,48 +199,46 @@ export function AnswersDesktop() {
               </div>
             )}
             <div className="bg-white shadow-md p-4 rounded-md">
-              <div className="flex mb-5">
+              <div className="flex">
                 <SportLogo
-                  width={"w-[60px]"}
-                  imageSize={60}
+                  width={"w-[80px] h-[80px]"}
+                  imageSize={"w-[60px]"}
                   logo={league ? league : null}
-                  hidden={true}
+                  hidden={false}
                   league={league ? league : null}
                 ></SportLogo>
-                <div className="ml-5">
-                  <GridLogo
-                    width={"w-20"}
-                    logo={currentHints ? currentHints[0] : null}
-                    imageSize={60}
-                  ></GridLogo>
-                </div>
                 <GridLogo
-                  width={"w-20"}
-                  logo={currentHints ? currentHints[1] : null}
-                  imageSize={60}
+                  width={"w-[80px] h-[80px]"}
+                  logo={currentHints ? currentHints[0] : null}
+                  imageSize={"w-[60px]"}
                 ></GridLogo>
                 <GridLogo
-                  width={"w-20"}
+                  width={"w-[80px] h-[80px]"}
+                  logo={currentHints ? currentHints[1] : null}
+                  imageSize={"w-[60px]"}
+                ></GridLogo>
+                <GridLogo
+                  width={"w-[80px] h-[80px]"}
                   logo={currentHints ? currentHints[2] : null}
-                  imageSize={60}
+                  imageSize={"w-[60px]"}
                 ></GridLogo>
               </div>
               <div className="flex">
-                <div className="mr-5">
+                <div className="">
                   <GridLogo
-                    width={"h-20"}
+                    width={"h-[80px] w-[80px]"}
                     logo={currentHints ? currentHints[3] : null}
-                    imageSize={60}
+                    imageSize={"w-[60px]"}
                   ></GridLogo>
                   <GridLogo
-                    width={"h-20"}
+                    width={"h-[80px] w-[80px]"}
                     logo={currentHints ? currentHints[4] : null}
-                    imageSize={60}
+                    imageSize={"w-[60px]"}
                   ></GridLogo>
                   <GridLogo
-                    width={"h-20"}
+                    width={"h-[80px] w-[80px]"}
                     logo={currentHints ? currentHints[5] : null}
-                    imageSize={60}
+                    imageSize={"w-[60px]"}
                   ></GridLogo>
                 </div>
                 <div className="grid grid-rows-3 grid-cols-3 overflow-hidden">
@@ -249,41 +256,46 @@ export function AnswersDesktop() {
                 </div>
               </div>
             </div>
-            <div className="flex flex-row gap-4">
+            <div className="flex flex-row gap-4 font-freshman">
               <button
                 type="button"
-                className="inline-flex w-full justify-center rounded-md bg-[#1DA1F2] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
+                className="inline-flex w-full justify-center rounded-md bg-[#1DA1F2] hover:bg-[#1780C2] px-3 py-2 text-sm text-white shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1DA1F2]"
                 onClick={() => setOpen(false)}
               >
-                Tweet
+                tweet
               </button>
               <button
                 type="button"
-                className="inline-flex w-full justify-center rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
-                onClick={() => setOpen(false)}
+                className="inline-flex w-full justify-center rounded-md bg-green-500 px-3 py-2 text-sm text-yellow-400 shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
+                onClick={() => {
+                  dispatch(
+                    updateSettings({
+                      league: null,
+                      isEndless: true,
+                    })
+                  );
+
+                  if (league == "NFL") {
+                    dispatch(fetchNFLHintsEndless());
+                  } else if (league == "NBA") {
+                    dispatch(fetchNBAHintsEndless());
+                  }
+                  setOpen(false);
+                }}
               >
-                Play Endless
+                {isEndless ? "play again" : "play endless"}
               </button>
             </div>
             <button
               type="button"
-              className="inline-flex w-full justify-center rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
+              className="inline-flex w-full justify-center rounded-md bg-green-500 px-3 py-2 text-sm text-yellow-400 shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500 font-freshman"
               onClick={() => setOpen(false)}
             >
-              Close
+              close
             </button>
           </div>
         </div>
       </Modal>
-      <button
-        onClick={() => {
-          // end -> fetch answers (array of players with % played, place, rarity score,)
-          setOpen(true);
-        }}
-        className=" text-yellow-400  sm:hover:bg-purple text-center flex m-auto bg-green-500 p-2 pl-4 pr-4 mt-2 rounded-lg"
-      >
-        end
-      </button>
     </div>
   );
 }
@@ -356,12 +368,19 @@ function Modal({ open, setOpen, children }) {
   );
 }
 
-function Table({ people, loading }) {
+function Table({ boxAnswers, isEndless }) {
+  useEffect(() => {
+    console.log(boxAnswers);
+  }, [boxAnswers]);
   return (
     <div className=" bg-white rounded-md shadow-md">
       <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
         <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-          <table className="min-w-full divide-y divide-gray-300 overflow-y-scroll max-h-[590px] block table-fixed">
+          <table
+            className={`min-w-full divide-y divide-gray-300 overflow-auto ${
+              isEndless ? "max-h-[536px]" : "max-h-[615px]"
+            } block table-fixed`}
+          >
             <thead className="">
               <tr className="">
                 <th
@@ -384,11 +403,23 @@ function Table({ people, loading }) {
                 </th>
               </tr>
             </thead>
-            {people && people.length > 0 ? (
+            {boxAnswers &&
+            boxAnswers["answers"] &&
+            boxAnswers["answers"].length > 0 ? (
               <tbody className="divide-y divide-gray-200">
-                {people.map((person) => (
-                  <tr key={person.id}>
-                    <td className="whitespace-nowrap py-5 pl-4 text-sm rounded-md w-[281px] ">
+                {boxAnswers["answers"].map((person) => (
+                  <tr
+                    key={person.id}
+                    className={`${
+                      boxAnswers["playerGuessed"] &&
+                      person.id == boxAnswers["playerGuessed"]["id"]
+                        ? "  bg-emerald-50"
+                        : ""
+                    }`}
+                  >
+                    <td
+                      className={`whitespace-nowrap pb-5 pl-4 text-sm rounded-md w-[281px]`}
+                    >
                       <div className="flex items-center">
                         <div className="h-11 w-11 flex-shrink-0">
                           {person.profilePic && (
@@ -415,13 +446,13 @@ function Table({ people, loading }) {
                         </div>
                       </div>
                     </td>
-                    <td className="whitespace-nowrap py-5 text-sm  w-[108px]">
+                    <td className="whitespace-nowrap pb-5 text-sm  w-[108px]">
                       <div className="text-gray-900">
                         {person.percentGuessed}
                       </div>
                     </td>
                     {person.yearStart && (
-                      <td className="whitespace-nowrap pl-4 py-5 text-sm w-[142px]">
+                      <td className="whitespace-nowrap pl-4 pb-5 text-sm w-[142px]">
                         {person.yearStart} - {person.yearEnd}
                       </td>
                     )}
@@ -431,14 +462,14 @@ function Table({ people, loading }) {
             ) : (
               <tbody>
                 <tr className="p-4">
-                  <td className=" py-5 pl-4 pr-4 ">
+                  <td className=" pb-5 pl-4 pr-4 ">
                     {" "}
                     <Skeleton count={20} className="h-6 mt-2"></Skeleton>
                   </td>
-                  <td className="text-center py-5 font-inter">
+                  <td className="text-center pb-5 font-inter">
                     <Skeleton count={20} className="h-6 mt-2"></Skeleton>
                   </td>
-                  <td className="pr-6 pl-4 py-5">
+                  <td className="pr-6 pl-4 pb-5">
                     {" "}
                     <Skeleton count={20} className="h-6 mt-2"></Skeleton>
                   </td>

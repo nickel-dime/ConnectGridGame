@@ -27,6 +27,8 @@ export default function Normal() {
   const { currentHints, playerSelected, guessesLeft } =
     useAppSelector(getBoardState);
 
+  const [disabled, setDisabled] = useState(false);
+
   useEffect(() => {
     var date = localStorage.getItem("date");
 
@@ -68,44 +70,44 @@ export default function Normal() {
         <div className="flex mt-6">
           {/* <div className="flex items-center justify-center w-24 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"></div> */}
           <SportLogo
-            width={"sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"}
-            imageSize={96}
+            width={"w-20 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"}
+            imageSize={"sm:w-[96px] w-[64px]"}
             logo={league ? league : null}
-            hidden={true}
+            hidden={false}
             league={league ? league : null}
           ></SportLogo>
           <GridLogo
-            width={"sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"}
+            width={"w-24 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"}
             logo={currentHints ? currentHints[0] : null}
-            imageSize={96}
+            imageSize={"sm:w-[96px] w-[64px]"}
           ></GridLogo>
           <GridLogo
-            width={"sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"}
+            width={"w-24 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"}
             logo={currentHints ? currentHints[1] : null}
-            imageSize={96}
+            imageSize={"sm:w-[96px] w-[64px]"}
           ></GridLogo>
           <GridLogo
-            width={"sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"}
+            width={"w-24 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"}
             logo={currentHints ? currentHints[2] : null}
-            imageSize={96}
+            imageSize={"sm:w-[96px] w-[64px]"}
           ></GridLogo>
         </div>
         <div className="flex items-center">
           <div className="items-center">
             <GridLogo
-              width={"sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"}
+              width={"w-20 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"}
               logo={currentHints ? currentHints[3] : null}
-              imageSize={96}
+              imageSize={"sm:w-[96px] w-[64px]"}
             ></GridLogo>
             <GridLogo
-              width={"sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"}
+              width={"w-20 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"}
               logo={currentHints ? currentHints[4] : null}
-              imageSize={96}
+              imageSize={"sm:w-[96px] w-[64px]"}
             ></GridLogo>
             <GridLogo
-              width={"sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"}
+              width={"w-20 sm:w-36 md:w-40 h-24 sm:h-36 md:h-40"}
               logo={currentHints ? currentHints[5] : null}
-              imageSize={96}
+              imageSize={"sm:w-[96px] w-[64px]"}
             ></GridLogo>
           </div>
           <div className="grid grid-rows-3 grid-flow-col justify-items-center overflow-hidden mr-5">
@@ -114,11 +116,14 @@ export default function Normal() {
                 key={i}
                 boxId={i}
                 playerSelected={playerSelected ? playerSelected[i] : null}
-                disabled={guessesLeft <= 0}
+                disabled={guessesLeft <= 0 || disabled}
               ></GridBox>
             ))}
           </div>
-          <ManageNormalGameDesktop></ManageNormalGameDesktop>
+          <ManageNormalGameDesktop
+            setDisabled={setDisabled}
+            disabled={disabled}
+          ></ManageNormalGameDesktop>
         </div>
         <ManageNormalGameMobile></ManageNormalGameMobile>
       </div>

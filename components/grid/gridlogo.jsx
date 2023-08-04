@@ -17,15 +17,13 @@ export default function GridLogo({ width, logo, hidden, imageSize }) {
       ) : (
         <div>
           {(logo.category == "teams" || logo.category == "college") && (
-            <Image
+            <img
               src={logo.teamLogo}
               alt={`Hint logo ${logo}`}
-              width={imageSize}
-              height={imageSize}
-              className={` ${hidden} ? 'hidden': ""`}
+              className={` ${hidden ? "hidden" : imageSize}`}
               loading="eager"
               priority="high"
-            ></Image>
+            ></img>
           )}
           {!(logo.category == "teams" || logo.category == "college") && (
             <div

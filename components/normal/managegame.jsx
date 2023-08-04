@@ -10,14 +10,17 @@ import {
 } from "@/app/store/normalSlice";
 import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
 import { AnswersDesktop } from "../answers";
+import { useState } from "react";
 
-export function ManageNormalGameDesktop() {
+export function ManageNormalGameDesktop({ disabled, setDisabled }) {
   const isLoaded = useAppSelector(loaded);
   const isEndless = useAppSelector((state) => state.isEndless);
   const league = useAppSelector((state) => state.league);
 
   const { guessesLeft } = useAppSelector(getBoardState);
   const dispatch = useAppDispatch();
+
+  const [open, setOpen] = useState(false);
 
   return (
     <div className=" text-black h-full flex justify-center">
@@ -30,25 +33,43 @@ export function ManageNormalGameDesktop() {
         <div className="hidden sm:block font-freshman">
           <div className="text-center text-4xl">{guessesLeft}</div>
           <div className="text-center text-lg">GUESSES</div>
-          {!isEndless && <AnswersDesktop></AnswersDesktop>}
+          <div>
+            {!isEndless && (
+              <button
+                onClick={() => {
+                  setOpen(true);
+                  setTimeout(() => {
+                    setDisabled(true);
+                  }, 500);
+                }}
+                className=" text-yellow-400  sm:hover:bg-purple text-center flex m-auto bg-green-500 p-2 pl-4 pr-4 mt-2 rounded-lg"
+              >
+                {disabled ? "answers" : "end"}
+              </button>
+            )}
 
-          {isEndless && (
-            <button
-              onClick={() => {
-                // reset
-                dispatch(reset());
+            {isEndless && (
+              <button
+                onClick={() => {
+                  setOpen(true);
+                  setTimeout(() => {
+                    dispatch(reset());
 
-                if (league == "NFL") {
-                  dispatch(fetchNFLHintsEndless());
-                } else if (league == "NBA") {
-                  dispatch(fetchNBAHintsEndless());
-                }
-              }}
-              className=" text-yellow-400  sm:hover:bg-purple text-center flex m-auto bg-green-500 p-2 pl-4 pr-4 mt-2 rounded-lg"
-            >
-              end
-            </button>
-          )}
+                    // if (league == "NFL") {
+                    //   dispatch(fetchNFLHintsEndless());
+                    // } else if (league == "NBA") {
+                    //   dispatch(fetchNBAHintsEndless());
+                    // }
+                    setDisabled(true);
+                  }, 500);
+                }}
+                className=" text-yellow-400  sm:hover:bg-purple text-center flex m-auto bg-green-500 p-2 pl-4 pr-4 mt-2 rounded-lg"
+              >
+                {disabled ? "answers" : "end"}
+              </button>
+            )}
+          </div>
+          <AnswersDesktop open={open} setOpen={setOpen}></AnswersDesktop>
         </div>
       )}
     </div>

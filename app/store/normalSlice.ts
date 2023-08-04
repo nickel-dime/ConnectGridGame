@@ -161,12 +161,16 @@ export const normalSlice = createSlice({
     updateSettings: (
       state,
       action: PayloadAction<{
-        league: String;
-        isEndless: boolean;
+        league: String | null;
+        isEndless: boolean | null;
       }>
     ) => {
-      state.league = action.payload.league;
-      state.isEndless = action.payload.isEndless;
+      if (action.payload.league != null) {
+        state.league = action.payload.league;
+      }
+      if (action.payload.isEndless != null) {
+        state.isEndless = action.payload.isEndless;
+      }
     },
     addNFLGuess: (
       state,
