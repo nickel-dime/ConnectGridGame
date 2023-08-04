@@ -131,7 +131,7 @@ export function AnswersDesktop() {
                 {loading ? (
                   <Skeleton containerClassName="flex-1 text-center pr-44"></Skeleton>
                 ) : boxAnswers[selectedBox]["playerGuessed"] == null ? (
-                  <div className="font-semibold text-xl flex-1 flex justify-center items-center">
+                  <div className="text-xl flex-1 flex justify-center items-center font-medium">
                     No Player Guessed
                   </div>
                 ) : (

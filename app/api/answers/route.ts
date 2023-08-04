@@ -19,13 +19,13 @@ import prisma from "@/lib/prisma";
 
 const MAP_BOX_ID_TO_GRID_ID = [
   [0, 3],
-  [0, 4],
-  [0, 5],
   [1, 3],
-  [1, 4],
-  [1, 5],
   [2, 3],
+  [0, 4],
+  [1, 4],
   [2, 4],
+  [0, 5],
+  [1, 5],
   [2, 5],
 ];
 
@@ -97,8 +97,20 @@ export async function POST(request: Request) {
 
     const currentAnswers = await prisma.nBAAnswers.findMany({
       where: {
-        hint_one: hint1,
-        hint_two: hint2,
+        OR: [
+          {
+            AND: {
+              hint_one: hint1,
+              hint_two: hint2,
+            },
+          },
+          {
+            AND: {
+              hint_one: hint2,
+              hint_two: hint1,
+            },
+          },
+        ],
       },
       include: {
         player: true,
@@ -120,7 +132,6 @@ export async function POST(request: Request) {
         let player = answer.player;
         if (boxPlayer && player.id == boxPlayer.id) {
           boxPlayerGuessed = answer.count / total;
-          continue;
         }
 
         formatted_answers.push({
@@ -181,7 +192,7 @@ export async function POST(request: Request) {
         yearStart: boxPlayer.yearStart,
         yearEnd: boxPlayer.yearEnd,
         profilePic: boxPlayer.profilePic,
-        percentGuessed: ((boxPlayerGuessed / total) * 100).toFixed(2),
+        percentGuessed: (boxPlayerGuessed * 100).toFixed(2),
         link: boxPlayer.bbref_page,
       };
     } else {
