@@ -171,6 +171,7 @@ export const normalSlice = createSlice({
       if (action.payload.isEndless != null) {
         state.isEndless = action.payload.isEndless;
       }
+      console.log(state.league);
     },
     addNFLGuess: (
       state,

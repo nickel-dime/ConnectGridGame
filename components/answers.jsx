@@ -268,6 +268,12 @@ export function AnswersDesktop({ open, setOpen, setDisabled }) {
                 type="button"
                 className="inline-flex w-full justify-center rounded-md bg-green-500 px-3 py-2 text-sm text-yellow-400 shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
                 onClick={() => {
+                  if (league == "NFL") {
+                    dispatch(fetchNFLHintsEndless());
+                  } else if (league == "NBA") {
+                    dispatch(fetchNBAHintsEndless());
+                  }
+
                   dispatch(
                     updateSettings({
                       league: null,
@@ -275,11 +281,6 @@ export function AnswersDesktop({ open, setOpen, setDisabled }) {
                     })
                   );
 
-                  if (league == "NFL") {
-                    dispatch(fetchNFLHintsEndless());
-                  } else if (league == "NBA") {
-                    dispatch(fetchNBAHintsEndless());
-                  }
                   setOpen(false);
                   setDisabled(false);
                 }}
