@@ -9,6 +9,7 @@ import {
 import next from "next";
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { captureException } from "@sentry/nextjs";
 
 // {
 //         league: league,
@@ -35,59 +36,55 @@ interface AnswerData {
 }
 
 interface PlayerData {
-  playerGuessed: Object | null;
+  playerGuessed: Player | null;
   answers: any[];
 }
 
 interface DailyData {
-  place: number;
-  rarity: number;
-  average_score: number;
+  place: string;
+  rarity: string;
+  average_score: string;
 }
 
-function getQuery(hint: NBAHints | NFLHints) {
-  if (hint.category == "teams") {
-    return {
-      NBAPlayer_Team: {
-        some: {
-          teamName: hint.value as NBATeam,
-        },
-      },
-    };
-  }
+export interface Player {
+  id: number;
+  firstName: string;
+  lastName: string;
+  yearStart: string;
+  yearEnd: string;
+  profilePic: string;
+  percentGuessed: string;
+  link: string;
+}
+
+function getQuery(hint: NBAHints) {
   return {
     NBAPlayer_Team: {
       some: {
-        teamName: NBATeam.CHI,
+        teamName: hint.value as NBATeam,
       },
     },
   };
 }
 
-const MAP_HINT_QUERY = {
-  blk: "blk: { gt: 10000 }",
-  tm: "NBAPlayer_Team: {some: {teamName: NBATeam.CHI,},}",
-};
-
 export async function POST(request: Request) {
   const data = await request.json();
   const currentHints = data["currentHints"];
   const playerSelected = data["playerSelected"];
-  const league = data["league"];
   const isEndless = data["isEndless"];
 
   const boxData: PlayerData[] = [];
 
   for (let i = 0; i <= 8; i++) {
     const currentBoxAnswer: PlayerData = {
-      playerGuessed: {},
+      playerGuessed: null,
       answers: [],
     };
 
     let hints = MAP_BOX_ID_TO_GRID_ID[i];
 
-    const hint1: NBAHints | NFLHints = currentHints[hints[0]];
-    const hint2: NBAHints | NFLHints = currentHints[hints[1]];
+    const hint1: NBAHints = currentHints[hints[0]];
+    const hint2: NBAHints = currentHints[hints[1]];
 
     const boxPlayer = playerSelected[i];
     let boxPlayerGuessed = 0.0;
@@ -125,7 +122,7 @@ export async function POST(request: Request) {
       total += answer.count;
     }
 
-    const formatted_answers = [];
+    const formatted_answers: Player[] = [];
 
     while (formatted_answers.length < 10) {
       for (let answer of currentAnswers) {
@@ -142,16 +139,28 @@ export async function POST(request: Request) {
           yearEnd: player.yearEnd,
           profilePic: player.profilePic,
           percentGuessed: ((answer.count / total) * 100).toFixed(2),
-          link: player.bbref_page,
+          link: player.bbref_page!,
         });
       }
       break;
     }
 
-    if (formatted_answers.length < 10) {
+    if (
+      formatted_answers.length < 10 &&
+      hint1.category == "teams" &&
+      hint2.category == "teams"
+    ) {
       const notAnswered = await prisma.nBAPlayer.findMany({
         where: {
-          AND: [query1, query2],
+          AND: [
+            query1,
+            query2,
+            {
+              number_seasons: {
+                gt: 4,
+              },
+            },
+          ],
           NBAAnswers: {
             none: {
               playerId: {
@@ -162,7 +171,7 @@ export async function POST(request: Request) {
         },
         take: 10,
         orderBy: {
-          pts: "desc",
+          yearEnd: "desc",
         },
       });
 
@@ -175,8 +184,8 @@ export async function POST(request: Request) {
             yearStart: player.yearStart,
             yearEnd: player.yearEnd,
             profilePic: player.profilePic,
-            percentGuessed: 0.0,
-            link: player.bbref_page,
+            percentGuessed: "0.0",
+            link: player.bbref_page!,
           });
         }
         break;
@@ -205,18 +214,57 @@ export async function POST(request: Request) {
     });
 
     boxData.push(currentBoxAnswer);
-    console.log("Finished box number %d ", i);
+  }
+
+  let totalCorrect = 0;
+  let totalRarity = 0;
+
+  for (const player of boxData) {
+    if (player.playerGuessed) {
+      totalCorrect += 1;
+      totalRarity += parseFloat(player.playerGuessed.percentGuessed);
+    }
   }
 
   // do daily data calculations
-
+  // total, place,
   let daily: DailyData | false = false;
 
-  if (!isEndless) {
+  try {
+    const today = new Date();
+    const day = `${today.getUTCFullYear()}-${today.getUTCMonth()}-${today.getUTCDate()}`;
+    const result = await prisma.nBAGrid.update({
+      where: {
+        day: day,
+      },
+      data: {
+        scores: {
+          increment: totalCorrect,
+        },
+        place: {
+          increment: 1,
+        },
+      },
+    });
+
+    let average_score = result.scores / result.place;
+    let rarity = (100 - totalRarity / totalCorrect).toFixed(0);
+
+    if (!isEndless) {
+      daily = {
+        rarity: rarity.toString(),
+        place: result.place.toString(),
+        average_score: average_score.toString(),
+      };
+    }
+  } catch (e) {
+    captureException(e);
+    console.log(e);
+
     daily = {
-      rarity: 0,
-      place: 0,
-      average_score: 0,
+      rarity: "-",
+      place: "-",
+      average_score: "-",
     };
   }
 

@@ -19,7 +19,7 @@ export default function GridLogo({ width, logo, hidden, imageSize }) {
           {(logo.category == "teams" || logo.category == "college") && (
             <img
               src={logo.teamLogo}
-              alt={`Hint logo ${logo}`}
+              alt={`${logo.teamLogo} logo`}
               className={` ${hidden ? "hidden" : imageSize}`}
               loading="eager"
               priority="high"
@@ -30,13 +30,13 @@ export default function GridLogo({ width, logo, hidden, imageSize }) {
               className={`font-freshman ${
                 logo.value.length < 3
                   ? "sm:text-3xl text-xl"
-                  : imageSize > 70
-                  ? "sm:text-xl text-sm"
-                  : "text-sm sm:text-md"
-              } text-center p-2 break-words`}
+                  : imageSize.includes("60")
+                  ? "sm:text-md text-sm"
+                  : "text-sm sm:text-xl"
+              } text-center  break-words overflow-hidden`}
             >
               <div className="">{logo.value}</div>
-              {imageSize > 70 && (
+              {imageSize.includes("96") && (
                 <div className="text-xs text-gray-600">{logo.description}</div>
               )}
             </div>

@@ -77,8 +77,7 @@ export function AnswersDesktop({ open, setOpen, setDisabled }) {
     }
 
     axios
-      .post("api/answers", {
-        league: league,
+      .post(`api/answers/${league.toLowerCase()}`, {
         isEndless: isEndless,
         currentHints: currentHints,
         playerSelected: playerSelected,
@@ -92,6 +91,8 @@ export function AnswersDesktop({ open, setOpen, setDisabled }) {
       .catch(function (error) {
         console.log(error);
         captureException(error);
+        alert("Unknown Error - Please have patience :)");
+        setOpen(false);
       });
   }, []);
 
@@ -385,7 +386,7 @@ function Table({ boxAnswers, isEndless }) {
         <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
           <table
             className={`min-w-full divide-y divide-gray-300 overflow-auto ${
-              isEndless ? "max-h-[536px]" : "max-h-[615px]"
+              isEndless ? "max-h-[536px]" : "max-h-[631px]"
             } block table-fixed`}
           >
             <thead className="">
@@ -471,14 +472,14 @@ function Table({ boxAnswers, isEndless }) {
                 <tr className="p-4">
                   <td className=" pb-5 pl-4 pr-4 ">
                     {" "}
-                    <Skeleton count={20} className="h-6 mt-2"></Skeleton>
+                    <Skeleton count={20} className="h-10 mt-2"></Skeleton>
                   </td>
                   <td className="text-center pb-5 font-inter">
-                    <Skeleton count={20} className="h-6 mt-2"></Skeleton>
+                    <Skeleton count={20} className="h-10 mt-2"></Skeleton>
                   </td>
                   <td className="pr-6 pl-4 pb-5">
                     {" "}
-                    <Skeleton count={20} className="h-6 mt-2"></Skeleton>
+                    <Skeleton count={20} className="h-10 mt-2"></Skeleton>
                   </td>
                 </tr>
               </tbody>
