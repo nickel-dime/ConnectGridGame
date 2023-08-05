@@ -272,6 +272,13 @@ export function AnswersDesktop({ open, setOpen, setDisabled }) {
                 onClick={() => {
                   if (isEndless) {
                     dispatch(reset());
+                  } else {
+                    dispatch(
+                      updateSettings({
+                        league: null,
+                        isEndless: true,
+                      })
+                    );
                   }
 
                   if (league == "NFL") {
@@ -279,13 +286,6 @@ export function AnswersDesktop({ open, setOpen, setDisabled }) {
                   } else if (league == "NBA") {
                     dispatch(fetchNBAHintsEndless());
                   }
-
-                  dispatch(
-                    updateSettings({
-                      league: null,
-                      isEndless: true,
-                    })
-                  );
 
                   setOpen(false);
                   setDisabled(false);
