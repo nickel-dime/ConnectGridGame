@@ -116,7 +116,7 @@ export default function Normal() {
                 key={i}
                 boxId={i}
                 playerSelected={playerSelected ? playerSelected[i] : null}
-                disabled={guessesLeft <= 0 || disabled}
+                disabled={guessesLeft <= 0}
               ></GridBox>
             ))}
           </div>
