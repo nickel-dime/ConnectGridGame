@@ -16,13 +16,13 @@ import httplib2
 async def main() -> None:
     prisma = Prisma()
     await prisma.connect()
-    l_mans = players.get_players()
+    # l_mans = players.get_players()
 
-    for play in l_mans:
-        await add_link_to_person(prisma, play['id'], play['first_name'], play['last_name'], 1)
+    # for play in l_mans:
+    #     await add_link_to_person(prisma, play['id'], play['first_name'], play['last_name'], 1)
         
         
-    # await update_info(prisma=prisma)
+    await update_info(prisma=prisma)
 
     # await awards(prisma=prisma)
     # await add_db(prisma=prisma, id=201593)

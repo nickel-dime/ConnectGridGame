@@ -29,7 +29,9 @@ export default function GridLogo({ width, logo, hidden, imageSize }) {
             <div
               className={`font-freshman ${
                 logo.value.length < 3
-                  ? "sm:text-3xl text-xl"
+                  ? imageSize.includes("60")
+                    ? "text-xl"
+                    : "sm:text-3xl text-xl"
                   : imageSize.includes("60")
                   ? "sm:text-md text-sm"
                   : "text-sm sm:text-xl"
