@@ -215,30 +215,36 @@ export async function POST(request: Request) {
   // do daily data calculations
   // total, place,
   try {
-    const today = new Date();
-    const day = `${today.getUTCFullYear()}-${today.getUTCMonth()}-${today.getUTCDate()}`;
-    const result = await prisma.nFLGrid.update({
-      where: {
-        day: Date(),
-      },
-      data: {
-        scores: {
-          increment: totalCorrect,
-        },
-        place: {
-          increment: 1,
-        },
-      },
-    });
-
-    let average_score = result.scores / result.place;
-    let rarity = (100 - totalRarity / totalCorrect).toFixed(0);
-
     if (!isEndless) {
+      const today = new Date();
+      const day = `${today.getUTCFullYear()}-${today.getUTCMonth()}-${today.getUTCDate()}`;
+      const result = await prisma.nFLGrid.update({
+        where: {
+          day: Date(),
+        },
+        data: {
+          scores: {
+            increment: totalCorrect,
+          },
+          place: {
+            increment: 1,
+          },
+        },
+      });
+
+      let average_score = result.scores / result.place;
+      let rarity = (100 - totalRarity / totalCorrect).toFixed(0);
+
       daily = {
         rarity: rarity.toString(),
         place: result.place.toString(),
         average_score: average_score.toString(),
+      };
+    } else {
+      daily = {
+        rarity: "-",
+        place: "-",
+        average_score: "-",
       };
     }
   } catch (e) {

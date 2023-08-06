@@ -20,15 +20,17 @@ import { captureException } from "@sentry/nextjs";
 
 const MAP_BOX_ID_TO_GRID_ID = [
   [0, 3],
-  [0, 4],
-  [0, 5],
   [1, 3],
-  [1, 4],
-  [1, 5],
   [2, 3],
+  [0, 4],
+  [1, 4],
   [2, 4],
+  [0, 5],
+  [1, 5],
   [2, 5],
 ];
+
+const MAP_PLAYER = [0, 3, 6, 1, 4, 7, 2, 5, 8];
 
 interface AnswerData {
   boxData: PlayerData[];
@@ -86,7 +88,7 @@ export async function POST(request: Request) {
     const hint1: NBAHints = currentHints[hints[0]];
     const hint2: NBAHints = currentHints[hints[1]];
 
-    const boxPlayer = playerSelected[i];
+    const boxPlayer = playerSelected[MAP_PLAYER[i]];
     let boxPlayerGuessed = 0.0;
     const query1 = getQuery(hint1);
     const query2 = getQuery(hint2);
@@ -231,30 +233,36 @@ export async function POST(request: Request) {
   let daily: DailyData | false = false;
 
   try {
-    const today = new Date();
-    const day = `${today.getUTCFullYear()}-${today.getUTCMonth()}-${today.getUTCDate()}`;
-    const result = await prisma.nBAGrid.update({
-      where: {
-        day: Date(),
-      },
-      data: {
-        scores: {
-          increment: totalCorrect,
-        },
-        place: {
-          increment: 1,
-        },
-      },
-    });
-
-    let average_score = result.scores / result.place;
-    let rarity = (100 - totalRarity / totalCorrect).toFixed(0);
-
     if (!isEndless) {
+      const today = new Date();
+      const day = `${today.getUTCFullYear()}-${today.getUTCMonth()}-${today.getUTCDate()}`;
+      const result = await prisma.nBAGrid.update({
+        where: {
+          day: Date(),
+        },
+        data: {
+          scores: {
+            increment: totalCorrect,
+          },
+          place: {
+            increment: 1,
+          },
+        },
+      });
+
+      let average_score = result.scores / result.place;
+      let rarity = (100 - totalRarity / totalCorrect).toFixed(0);
+
       daily = {
         rarity: rarity.toString(),
         place: result.place.toString(),
         average_score: average_score.toString(),
+      };
+    } else {
+      daily = {
+        rarity: "-",
+        place: "-",
+        average_score: "-",
       };
     }
   } catch (e) {
