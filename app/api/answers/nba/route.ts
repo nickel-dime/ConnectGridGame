@@ -234,11 +234,10 @@ export async function POST(request: Request) {
 
   try {
     if (!isEndless) {
-      const today = new Date();
-      const day = `${today.getUTCFullYear()}-${today.getUTCMonth()}-${today.getUTCDate()}`;
+      let yourDate = new Date();
       const result = await prisma.nBAGrid.update({
         where: {
-          day: Date(),
+          day: yourDate,
         },
         data: {
           scores: {
