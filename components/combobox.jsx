@@ -60,8 +60,8 @@ function useAutocomplete(boxId, setOpen) {
         };
       } else {
         return {
-          guessesLeft: store.getState().nflGuessesLeftEndless,
-          previousGuesses: store.getState().nflPlayerGuessedEndless,
+          guessesLeft: store.getState().nflGuessesLeftDaily,
+          previousGuesses: store.getState().nflPlayerGuessedDaily,
           currentHints: store.getState().nflHintsDaily,
         };
       }

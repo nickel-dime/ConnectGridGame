@@ -16,13 +16,36 @@ import httplib2
 async def main() -> None:
     prisma = Prisma()
     await prisma.connect()
+    # l_mans = players.get_players()
 
+    # for play in l_mans:
+    #     await add_link_to_person(prisma, play['id'], play['first_name'], play['last_name'], 1)
+        
+        
     await update_info(prisma=prisma)
 
     # await awards(prisma=prisma)
     # await add_db(prisma=prisma, id=201593)
 
     await prisma.disconnect()
+
+async def add_link_to_person(prisma: Prisma, id, firstName, lastName, number): 
+    if number > 4:
+        print(f'Error for {id} {firstName} {lastName}')
+    first_letter_last_name = lastName[0].lower()
+
+    # first 5 letters (or less if name shorter) of last name
+    first_5_letters_last_name = lastName[0:5].lower()
+    first_2_letters_first_name = firstName[0:2].lower()
+    link = f'https://www.basketball-reference.com/players/{first_letter_last_name}/{first_5_letters_last_name}{first_2_letters_first_name}0{number}.html'
+
+    await prisma.nbaplayer.update(data={
+                        "bbref_page": link
+                    }, where={
+                        "id": id
+                    })
+    return link
+
 
 
 async def update_info(prisma: Prisma):
@@ -94,7 +117,7 @@ async def update_info(prisma: Prisma):
             res = []
             [res.append(x) for x in formatted_teams if x not in res]
 
-            await prisma.nbaplayer_team.create_many(data=res, skip_duplicates=True)
+            # await prisma.nbaplayer_team.create_many(data=res, skip_duplicates=True)
             await prisma.nbaplayer.update(data={
                 "birthday": birthday,
                 "school": school,

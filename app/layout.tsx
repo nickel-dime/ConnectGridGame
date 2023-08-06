@@ -25,6 +25,8 @@ export const metadata: Metadata = {
   },
   referrer: "no-referrer-when-downgrade",
   generator: "Next.js",
+  description:
+    "NFL, NBA, and MLB trivia based on the viral Immaculate Grid trend with different modes and settings!",
   keywords:
     "grid, immaculate, connect, mlb, nba, nfl, sports, trivia, connections",
   themeColor: "#fff0e6",

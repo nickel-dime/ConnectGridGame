@@ -4,20 +4,25 @@ import "react-loading-skeleton/dist/skeleton.css";
 import {
   fetchNFLHintsEndless,
   fetchNBAHintsEndless,
-  boardStateSelector,
   loaded,
   reset,
   getBoardState,
+  getAnswers,
 } from "@/app/store/normalSlice";
 import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
+import { AnswersDesktop } from "../answers";
+import { useState } from "react";
 
-export function ManageNormalGameDesktop() {
+export function ManageNormalGameDesktop({ disabled, setDisabled }) {
   const isLoaded = useAppSelector(loaded);
   const isEndless = useAppSelector((state) => state.isEndless);
   const league = useAppSelector((state) => state.league);
 
   const { guessesLeft } = useAppSelector(getBoardState);
-  const dispatch = useAppDispatch();
+
+  const answers = useAppSelector(getAnswers);
+
+  const [open, setOpen] = useState(false);
 
   return (
     <div className=" text-black h-full flex justify-center">
@@ -30,24 +35,31 @@ export function ManageNormalGameDesktop() {
         <div className="hidden sm:block font-freshman">
           <div className="text-center text-4xl">{guessesLeft}</div>
           <div className="text-center text-lg">GUESSES</div>
-          {!isEndless && <div className="text-center text-lg">DAILY</div>}
+          <div>
+            {!isEndless && (
+              <button
+                onClick={() => {
+                  setOpen(true);
+                }}
+                className=" text-yellow-400  sm:hover:bg-purple text-center flex m-auto bg-green-500 p-2 pl-4 pr-4 mt-2 rounded-lg"
+              >
+                {answers == null ? "end" : "answers"}
+              </button>
+            )}
 
-          {isEndless && (
-            <button
-              onClick={() => {
-                // reset
-                dispatch(reset());
-
-                if (league == "NFL") {
-                  dispatch(fetchNFLHintsEndless());
-                } else if (league == "NBA") {
-                  dispatch(fetchNBAHintsEndless());
-                }
-              }}
-              className=" text-yellow-400  sm:hover:bg-purple text-center flex m-auto bg-green-500 p-2 pl-4 pr-4 mt-2 rounded-lg"
-            >
-              reset
-            </button>
+            {isEndless && (
+              <button
+                onClick={() => {
+                  setOpen(true);
+                }}
+                className=" text-yellow-400  sm:hover:bg-purple text-center flex m-auto bg-green-500 p-2 pl-4 pr-4 mt-2 rounded-lg"
+              >
+                end
+              </button>
+            )}
+          </div>
+          {open && (
+            <AnswersDesktop open={open} setOpen={setOpen}></AnswersDesktop>
           )}
         </div>
       )}

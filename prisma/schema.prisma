@@ -66,6 +66,9 @@ model NFLGrid {
   two_hint_val   String
   three_hint     NFLHints @relation(fields: [three_hint_val], references: [value], name: "three_hint")
   three_hint_val String
+  place          Int @default(0)
+  scores         Int @default(0)
+  attempts       Int @default(0)
 }
 
 model NFLHints {
@@ -127,6 +130,7 @@ model NBAPlayer {
   yearStart      String
   yearEnd        String
   position       String
+  bbref_page     String?
   isAllNBA       Boolean?    @default(false)
   birthday       DateTime?   @default(now())
   school         String?     @default("")
@@ -173,6 +177,9 @@ model NBAGrid {
   two_hint_val   String
   three_hint     NBAHints @relation(fields: [three_hint_val], references: [value], name: "three_hint")
   three_hint_val String
+  place          Int @default(0)
+  scores         Int @default(0)
+  attempts       Int @default(0)
 }
 
 model NBAAnswers {
