@@ -219,7 +219,7 @@ export async function POST(request: Request) {
     const day = `${today.getUTCFullYear()}-${today.getUTCMonth()}-${today.getUTCDate()}`;
     const result = await prisma.nFLGrid.update({
       where: {
-        day: day,
+        day: Date(),
       },
       data: {
         scores: {
