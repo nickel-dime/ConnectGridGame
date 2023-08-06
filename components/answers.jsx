@@ -34,12 +34,13 @@ export function AnswersDesktop({ open, setOpen }) {
   const answers = useAppSelector(getAnswers);
 
   useEffect(() => {
-    if (currentHints == [] || answers != null) {
-      if (answers != null) {
-        setBoxAnswers(answers["boxData"]);
-        setDailyStats(answers["daily"]);
-        setLoading(false);
-      }
+    if (currentHints == []) {
+      return;
+    }
+    if (!isEndless && answers != null) {
+      setBoxAnswers(answers["boxData"]);
+      setDailyStats(answers["daily"]);
+      setLoading(false);
       return;
     }
 
@@ -268,6 +269,11 @@ export function AnswersDesktop({ open, setOpen }) {
                 onClick={() => {
                   if (isEndless) {
                     dispatch(reset());
+                    if (league == "NFL") {
+                      dispatch(fetchNFLHintsEndless());
+                    } else if (league == "NBA") {
+                      dispatch(fetchNBAHintsEndless());
+                    }
                   } else {
                     dispatch(
                       updateSettings({
@@ -275,12 +281,6 @@ export function AnswersDesktop({ open, setOpen }) {
                         isEndless: true,
                       })
                     );
-                  }
-
-                  if (league == "NFL") {
-                    dispatch(fetchNFLHintsEndless());
-                  } else if (league == "NBA") {
-                    dispatch(fetchNBAHintsEndless());
                   }
 
                   setOpen(false);
