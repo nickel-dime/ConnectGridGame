@@ -4,9 +4,11 @@ import { useAppDispatch, useAppSelector } from "../app/store/hooks";
 import {
   fetchNBAHintsEndless,
   fetchNFLHintsEndless,
+  getAnswers,
   getBoardState,
   reset,
   updateSettings,
+  addAnswers,
 } from "@/app/store/normalSlice";
 import SportLogo from "./grid/sportlogo";
 import GridLogo from "./grid/gridlogo";
@@ -14,8 +16,9 @@ import axios from "axios";
 import { captureException } from "@sentry/nextjs";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { store } from "@/app/store/store";
 
-export function AnswersDesktop({ open, setOpen, setDisabled }) {
+export function AnswersDesktop({ open, setOpen }) {
   const [selectedBox, setSelectedBox] = useState(0);
 
   const [dailyStats, setDailyStats] = useState(null);
@@ -28,8 +31,15 @@ export function AnswersDesktop({ open, setOpen, setDisabled }) {
   const [loading, setLoading] = useState(true);
   const dispatch = useAppDispatch();
 
+  const answers = useAppSelector(getAnswers);
+
   useEffect(() => {
-    if (currentHints == []) {
+    if (currentHints == [] || answers != null) {
+      if (answers != null) {
+        setBoxAnswers(answers["boxData"]);
+        setDailyStats(answers["daily"]);
+        setLoading(false);
+      }
       return;
     }
 
@@ -43,6 +53,11 @@ export function AnswersDesktop({ open, setOpen, setDisabled }) {
         const data = response.data;
         setDailyStats(data["daily"]);
         setBoxAnswers(data["boxData"]);
+        dispatch(
+          addAnswers({
+            answers: data,
+          })
+        );
         setLoading(false);
       })
       .catch(function (error) {
@@ -269,7 +284,6 @@ export function AnswersDesktop({ open, setOpen, setDisabled }) {
                   }
 
                   setOpen(false);
-                  setDisabled(false);
                 }}
               >
                 {isEndless ? "play again" : "play endless"}

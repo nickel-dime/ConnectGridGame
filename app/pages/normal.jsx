@@ -16,6 +16,7 @@ import {
   fetchNBAHintsEndless,
   fetchNFLHintsDaily,
   fetchNFLHintsEndless,
+  getAnswers,
   getBoardState,
 } from "../store/normalSlice";
 import { captureException } from "@sentry/nextjs";
@@ -23,11 +24,12 @@ import { captureException } from "@sentry/nextjs";
 export default function Normal() {
   const dispatch = useAppDispatch();
   const league = useAppSelector((state) => state.league);
+  const isEndless = useAppSelector((state) => state.isEndless);
 
   const { currentHints, playerSelected, guessesLeft } =
     useAppSelector(getBoardState);
 
-  const [disabled, setDisabled] = useState(false);
+  const answers = useAppSelector(getAnswers);
 
   useEffect(() => {
     var date = localStorage.getItem("date");
@@ -116,14 +118,11 @@ export default function Normal() {
                 key={i}
                 boxId={i}
                 playerSelected={playerSelected ? playerSelected[i] : null}
-                disabled={guessesLeft <= 0 || disabled}
+                disabled={guessesLeft <= 0 || (answers != null && !isEndless)}
               ></GridBox>
             ))}
           </div>
-          <ManageNormalGameDesktop
-            setDisabled={setDisabled}
-            disabled={disabled}
-          ></ManageNormalGameDesktop>
+          <ManageNormalGameDesktop></ManageNormalGameDesktop>
         </div>
         <ManageNormalGameMobile></ManageNormalGameMobile>
       </div>

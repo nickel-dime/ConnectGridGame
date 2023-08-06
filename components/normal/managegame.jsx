@@ -7,6 +7,7 @@ import {
   loaded,
   reset,
   getBoardState,
+  getAnswers,
 } from "@/app/store/normalSlice";
 import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
 import { AnswersDesktop } from "../answers";
@@ -18,7 +19,8 @@ export function ManageNormalGameDesktop({ disabled, setDisabled }) {
   const league = useAppSelector((state) => state.league);
 
   const { guessesLeft } = useAppSelector(getBoardState);
-  const dispatch = useAppDispatch();
+
+  const answers = useAppSelector(getAnswers);
 
   const [open, setOpen] = useState(false);
 
@@ -38,13 +40,10 @@ export function ManageNormalGameDesktop({ disabled, setDisabled }) {
               <button
                 onClick={() => {
                   setOpen(true);
-                  setTimeout(() => {
-                    setDisabled(true);
-                  }, 500);
                 }}
                 className=" text-yellow-400  sm:hover:bg-purple text-center flex m-auto bg-green-500 p-2 pl-4 pr-4 mt-2 rounded-lg"
               >
-                {disabled ? "answers" : "end"}
+                {answers == null ? "end" : "answers"}
               </button>
             )}
 
@@ -52,27 +51,15 @@ export function ManageNormalGameDesktop({ disabled, setDisabled }) {
               <button
                 onClick={() => {
                   setOpen(true);
-                  setTimeout(() => {
-                    // if (league == "NFL") {
-                    //   dispatch(fetchNFLHintsEndless());
-                    // } else if (league == "NBA") {
-                    //   dispatch(fetchNBAHintsEndless());
-                    // }
-                    setDisabled(true);
-                  }, 500);
                 }}
                 className=" text-yellow-400  sm:hover:bg-purple text-center flex m-auto bg-green-500 p-2 pl-4 pr-4 mt-2 rounded-lg"
               >
-                {disabled ? "answers" : "end"}
+                end
               </button>
             )}
           </div>
           {open && (
-            <AnswersDesktop
-              open={open}
-              setOpen={setOpen}
-              setDisabled={setDisabled}
-            ></AnswersDesktop>
+            <AnswersDesktop open={open} setOpen={setOpen}></AnswersDesktop>
           )}
         </div>
       )}

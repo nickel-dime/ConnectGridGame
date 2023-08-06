@@ -11,12 +11,6 @@ export async function GET(request: Request) {
   if (isEndless == "1") {
     var numTeams = Math.floor(Math.random() * (6 - 4 + 1)) + 4;
 
-    const final_grid = getRandom(TEAMS, numTeams).concat(
-      getRandom(CRITERIA, 6 - numTeams).sort(function (a, b) {
-        return Math.random() * 2 - 1;
-      })
-    );
-
     const teams: NBAHints[] =
       await prisma.$queryRaw`SELECT * FROM "NBAHints" WHERE "category" = 'teams' ORDER BY random() LIMIT ${numTeams};`;
     const criteria: NBAHints[] =

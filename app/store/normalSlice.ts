@@ -7,6 +7,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "./store";
 import { NFLPlayer, NBAPlayer, NBAHints, NFLHints } from "@prisma/client";
 import { captureException } from "@sentry/nextjs";
+import { AnswerData } from "../api/answers/model";
 
 // Define a type for the slice state
 interface NormalState {
@@ -18,6 +19,7 @@ interface NormalState {
   nbaHintsEndless: NBAHints[]; // persist and reset on reset button
   nbaGuessesLeftDaily: number; // persist and reset on new nba hints
   nbaGuessesLeftEndless: number;
+  nbaAnswersDaily: AnswerData | null;
   nbaLoaded: boolean;
   nflPlayerSelectedDaily: Partial<NFLPlayer | null>[]; // persist, and reset on new nflHints
   nflPlayerGuessedDaily: Partial<NFLPlayer>[][]; // persist and reset on new nflHints
@@ -27,6 +29,7 @@ interface NormalState {
   nflHintsEndless: NFLHints[]; // persist and reset on reset button
   nflGuessesLeftDaily: number; // persist and reset on new nflHints
   nflGuessesLeftEndless: number;
+  nflAnswersDaily: AnswerData | null;
   nflLoaded: boolean;
   isEndless: boolean;
   league: String;
@@ -62,6 +65,7 @@ const initialState: NormalState = {
   nbaHintsEndless: [],
   nbaGuessesLeftDaily: 9,
   nbaGuessesLeftEndless: 9,
+  nbaAnswersDaily: null,
   nbaLoaded: false,
   nflPlayerSelectedDaily: [
     null,
@@ -91,6 +95,7 @@ const initialState: NormalState = {
   nflHintsEndless: [],
   nflGuessesLeftDaily: 9,
   nflGuessesLeftEndless: 9,
+  nflAnswersDaily: null,
   nflLoaded: false,
   isEndless: false,
   league: "NBA",
@@ -213,6 +218,13 @@ export const normalSlice = createSlice({
         state.nflPlayerGuessedEndless = initialState.nflPlayerGuessedEndless;
       }
     },
+    addAnswers: (state, action: PayloadAction<{ answers: AnswerData }>) => {
+      if (state.league == "NFL") {
+        state.nflAnswersDaily = action.payload.answers;
+      } else if (state.league == "NBA") {
+        state.nbaAnswersDaily = action.payload.answers;
+      }
+    },
     addNBAGuess: (
       state,
       action: PayloadAction<{
@@ -302,7 +314,7 @@ export const normalSlice = createSlice({
   },
 });
 
-export const { addNBAGuess, addNFLGuess, reset, updateSettings } =
+export const { addNBAGuess, addNFLGuess, reset, updateSettings, addAnswers } =
   normalSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
@@ -450,6 +462,14 @@ export const getPlayer = (state: RootState, boxId: number) => {
     return state.nflPlayerSelectedEndless[boxId];
   } else {
     console.log(`Error getting player ${boxId} ${state}`);
+  }
+};
+
+export const getAnswers = (state: RootState) => {
+  if (state.league == "NBA") {
+    return state.nbaAnswersDaily;
+  } else {
+    return state.nflAnswersDaily;
   }
 };
 

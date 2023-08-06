@@ -10,6 +10,7 @@ import next from "next";
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { captureException } from "@sentry/nextjs";
+import { PlayerData, Player, AnswerData, DailyData } from "../model";
 
 // {
 //         league: league,
@@ -31,33 +32,6 @@ const MAP_BOX_ID_TO_GRID_ID = [
 ];
 
 const MAP_PLAYER = [0, 3, 6, 1, 4, 7, 2, 5, 8];
-
-interface AnswerData {
-  boxData: PlayerData[];
-  daily: DailyData | false;
-}
-
-interface PlayerData {
-  playerGuessed: Player | null;
-  answers: any[];
-}
-
-interface DailyData {
-  place: string;
-  rarity: string;
-  average_score: string;
-}
-
-export interface Player {
-  id: number;
-  firstName: string;
-  lastName: string;
-  yearStart: string;
-  yearEnd: string;
-  profilePic: string;
-  percentGuessed: string;
-  link: string;
-}
 
 function getQuery(hint: NBAHints) {
   return {
@@ -235,26 +209,42 @@ export async function POST(request: Request) {
   try {
     if (!isEndless) {
       let yourDate = new Date();
-      const result = await prisma.nBAGrid.update({
-        where: {
-          day: yourDate,
-        },
-        data: {
+      let data = {};
+      if (totalCorrect == 9) {
+        data = {
           scores: {
             increment: totalCorrect,
           },
           place: {
             increment: 1,
           },
+          attempts: {
+            increment: 1,
+          },
+        };
+      } else {
+        data = {
+          scores: {
+            increment: totalCorrect,
+          },
+          attempts: {
+            increment: 1,
+          },
+        };
+      }
+      const result = await prisma.nBAGrid.update({
+        where: {
+          day: yourDate,
         },
+        data: data,
       });
 
-      let average_score = result.scores / result.place;
-      let rarity = (100 - totalRarity / totalCorrect).toFixed(0);
+      let average_score = (result.scores / result.attempts).toFixed(1);
+      let rarity = (100 - totalRarity / totalCorrect).toFixed(1);
 
       daily = {
-        rarity: rarity.toString(),
-        place: result.place.toString(),
+        rarity: totalCorrect > 0 ? rarity.toString() : "-",
+        place: totalCorrect == 9 ? result.place.toString() : "-",
         average_score: average_score.toString(),
       };
     } else {
