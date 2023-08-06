@@ -54,11 +54,13 @@ export function AnswersDesktop({ open, setOpen }) {
         const data = response.data;
         setDailyStats(data["daily"]);
         setBoxAnswers(data["boxData"]);
-        dispatch(
-          addAnswers({
-            answers: data,
-          })
-        );
+        if (!isEndless) {
+          dispatch(
+            addAnswers({
+              answers: data,
+            })
+          );
+        }
         setLoading(false);
       })
       .catch(function (error) {
