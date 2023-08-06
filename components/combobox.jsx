@@ -153,7 +153,6 @@ function useAutocomplete(boxId, setOpen) {
             {
               sourceId: "documentation",
               getItems() {
-                debugger;
                 const { previousGuesses } = getStuff();
 
                 for (let playerData of resp.data) {
