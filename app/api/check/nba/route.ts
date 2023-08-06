@@ -220,13 +220,9 @@ async function checkIfHintFits(player: NBAPlayer, hint: NBAHints) {
 
         const parsed_height = height?.split("-");
 
-        console.log(parsed_height);
-
         if (parsed_height == undefined || parsed_height.length < 2) {
           return false;
         }
-
-        console.log(parsed_height, parseInt(parsed_height[0]));
 
         return parseInt(parsed_height[0]) >= 7;
       } else if (hint.value == "Played 13+ Seasons") {
