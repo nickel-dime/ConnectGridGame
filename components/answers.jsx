@@ -15,7 +15,6 @@ import { captureException } from "@sentry/nextjs";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-
 export function AnswersDesktop({ open, setOpen, setDisabled }) {
   const [selectedBox, setSelectedBox] = useState(0);
 
@@ -124,7 +123,15 @@ export function AnswersDesktop({ open, setOpen, setDisabled }) {
                   {loading ? (
                     <Skeleton width={50}></Skeleton>
                   ) : (
-                    <div className=" font-semibold text-xl">
+                    <div
+                      className={`font-semibold text-xl ${
+                        dailyStats["place"] < 100
+                          ? " text-green-500"
+                          : dailyStats["place"] < 500
+                          ? "text-yellow-500"
+                          : "text-red-500"
+                      }`}
+                    >
                       {dailyStats["place"]}
                     </div>
                   )}
@@ -136,7 +143,15 @@ export function AnswersDesktop({ open, setOpen, setDisabled }) {
                   {loading ? (
                     <Skeleton width={50}></Skeleton>
                   ) : (
-                    <div className=" font-semibold text-xl">
+                    <div
+                      className={`font-semibold text-xl ${
+                        dailyStats["rarity"] > 80
+                          ? " text-green-500"
+                          : dailyStats["rarity"] > 50
+                          ? "text-yellow-500"
+                          : "text-red-500"
+                      }`}
+                    >
                       {dailyStats["rarity"]}
                     </div>
                   )}
@@ -148,7 +163,15 @@ export function AnswersDesktop({ open, setOpen, setDisabled }) {
                   {loading ? (
                     <Skeleton width={50}></Skeleton>
                   ) : (
-                    <div className=" font-semibold text-xl">
+                    <div
+                      className={`font-semibold text-xl ${
+                        dailyStats["average_score"] > 7
+                          ? " text-green-500"
+                          : dailyStats["place"] > 5
+                          ? "text-yellow-500"
+                          : "text-red-500"
+                      }`}
+                    >
                       {dailyStats["average_score"]}
                     </div>
                   )}
