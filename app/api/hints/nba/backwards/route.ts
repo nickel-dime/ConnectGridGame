@@ -4,7 +4,7 @@ import * as Sentry from "@sentry/nextjs";
 import { NBAHints } from "@prisma/client";
 
 export async function GET(request: Request) {
-  // try {
+  // try {as
   var url = new URL(request.url);
   var isEndless = url.searchParams.get("isEndless");
 
