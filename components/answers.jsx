@@ -15,48 +15,6 @@ import { captureException } from "@sentry/nextjs";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-const PLAYER = {
-  firstName: "Jalen",
-  lastName: "Hurts",
-  yearStart: "2020",
-  yearEnd: "2023",
-  position: "QB",
-  id: 10987,
-  profilePic: "https://cdn.footballdb.com/headshots/NFL/2022/hurtsja01.jpg",
-  found: 1,
-};
-
-// currentHints, isEndless, playersGuessed ->
-
-const SAMPLE = {
-  boxData: {
-    0: {
-      playerGuessed: {
-        // player stuff + guess percenage
-      },
-      answers: [
-        {
-          // player stuff + guess percentage
-        },
-      ],
-    },
-    1: {
-      playerGuessed: {
-        // player stuff + guess percenage
-      },
-      answers: [
-        {
-          // player stuff + guess percentage
-        },
-      ],
-    },
-  },
-  daily: {
-    place: 123,
-    rarity: 4.53,
-    average_score: 6.2,
-  },
-};
 
 export function AnswersDesktop({ open, setOpen, setDisabled }) {
   const [selectedBox, setSelectedBox] = useState(0);
@@ -411,9 +369,7 @@ function Table({ boxAnswers, isEndless }) {
                 </th>
               </tr>
             </thead>
-            {boxAnswers &&
-            boxAnswers["answers"] &&
-            boxAnswers["answers"].length > 0 ? (
+            {boxAnswers && boxAnswers["answers"] ? (
               <tbody className="divide-y divide-gray-200">
                 {boxAnswers["answers"].map((person) => (
                   <tr

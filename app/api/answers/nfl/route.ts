@@ -21,13 +21,13 @@ import { captureException } from "@sentry/nextjs";
 
 const MAP_BOX_ID_TO_GRID_ID = [
   [0, 3],
-  [1, 3],
-  [2, 3],
   [0, 4],
-  [1, 4],
-  [2, 4],
   [0, 5],
+  [1, 3],
+  [1, 4],
   [1, 5],
+  [2, 3],
+  [2, 4],
   [2, 5],
 ];
 
