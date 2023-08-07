@@ -1,3 +1,5 @@
+import { NBAHints, NFLHints, Prisma } from "@prisma/client";
+
 export interface AnswerData {
   boxData: PlayerData[];
   daily: DailyData | false;

@@ -234,7 +234,7 @@ export async function POST(request: Request) {
       });
 
       let average_score = (result.scores / result.attempts).toFixed(1);
-      let rarity = (100 - totalRarity / totalCorrect).toFixed(1);
+      let rarity = scaleRarity(100 - totalRarity / totalCorrect).toFixed(1);
 
       daily = {
         rarity: totalCorrect > 0 ? rarity.toString() : "-",
@@ -264,4 +264,10 @@ export async function POST(request: Request) {
   };
 
   return NextResponse.json(response);
+}
+
+function scaleRarity(rarity: number) {
+  const subt = 100 - rarity;
+
+  return Math.max(rarity - subt, 0);
 }
