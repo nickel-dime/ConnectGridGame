@@ -258,13 +258,13 @@ export function AnswersDesktop({ open, setOpen }) {
               </div>
             </div>
             <div className="flex flex-row gap-4 font-freshman">
-              <button
+              <a
                 type="button"
                 className="inline-flex w-full justify-center rounded-md bg-[#1DA1F2] hover:bg-[#1780C2] px-3 py-2 text-sm text-white shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1DA1F2]"
-                onClick={() => setOpen(false)}
+                href="x.com"
               >
                 tweet
-              </button>
+              </a>
               <button
                 type="button"
                 className="inline-flex w-full justify-center rounded-md bg-green-500 px-3 py-2 text-sm text-yellow-400 shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
