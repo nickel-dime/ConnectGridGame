@@ -261,7 +261,7 @@ export function AnswersDesktop({ open, setOpen }) {
               <a
                 type="button"
                 className="inline-flex w-full justify-center rounded-md bg-[#1DA1F2] hover:bg-[#1780C2] px-3 py-2 text-sm text-white shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1DA1F2]"
-                href="x.com"
+                href="https://www.x.com"
               >
                 tweet
               </a>

@@ -225,6 +225,10 @@ export const normalSlice = createSlice({
         state.nbaAnswersDaily = action.payload.answers;
       }
     },
+    resetAnswers: (state) => {
+      state.nflAnswersDaily = null;
+      state.nbaAnswersDaily = null;
+    },
     addNBAGuess: (
       state,
       action: PayloadAction<{
@@ -314,8 +318,14 @@ export const normalSlice = createSlice({
   },
 });
 
-export const { addNBAGuess, addNFLGuess, reset, updateSettings, addAnswers } =
-  normalSlice.actions;
+export const {
+  addNBAGuess,
+  addNFLGuess,
+  reset,
+  updateSettings,
+  addAnswers,
+  resetAnswers,
+} = normalSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const getBoardState = createSelector(

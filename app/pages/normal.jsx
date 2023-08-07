@@ -18,6 +18,7 @@ import {
   fetchNFLHintsEndless,
   getAnswers,
   getBoardState,
+  resetAnswers,
 } from "../store/normalSlice";
 import { captureException } from "@sentry/nextjs";
 
@@ -47,6 +48,8 @@ export default function Normal() {
       ) {
         dispatch(fetchNFLHintsDaily());
         dispatch(fetchNBAHintsDaily());
+        dispatch(resetAnswers());
+        // reset answers
         localStorage.setItem(
           "date",
           `${today.getUTCFullYear()}, ${today.getUTCMonth()}, ${today.getUTCDate()}`
