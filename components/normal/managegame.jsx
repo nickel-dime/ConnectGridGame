@@ -10,7 +10,8 @@ import {
   getAnswers,
 } from "@/app/store/normalSlice";
 import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
-import { AnswersDesktop } from "../answers";
+import { AnswersDesktop } from "../answersdesktop";
+import { AnswersMobile } from "../answersmobile";
 import { useState } from "react";
 
 export function ManageNormalGameDesktop({ disabled, setDisabled }) {
@@ -75,6 +76,10 @@ export function ManageNormalGameMobile() {
   const { guessesLeft } = useAppSelector(getBoardState);
   const dispatch = useAppDispatch();
 
+  const answers = useAppSelector(getAnswers);
+
+  const [open, setOpen] = useState(false);
+
   return (
     <div className="h-24 sm:h-36 md:h-48 flex justify-center mt-8 sm:hidden text-black">
       {!guessesLeft || !isLoaded ? (
@@ -83,23 +88,29 @@ export function ManageNormalGameMobile() {
         <div className="font-freshman">
           <div className="text-center text-4xl">{guessesLeft}</div>
           <div className="text-center text-lg">GUESSES</div>
-          {!isEndless && <div className="text-center text-lg">DAILY</div>}
+          {!isEndless && (
+            <button
+              onClick={() => {
+                setOpen(true);
+              }}
+              className=" text-yellow-400  sm:hover:bg-purple text-center flex m-auto bg-green-500 p-2 pl-4 pr-4 mt-2 rounded-lg"
+            >
+              {answers == null ? "end" : "answers"}
+            </button>
+          )}
 
           {isEndless && (
             <button
-              className="flex m-auto bg-green-500 text-yellow-400 sm:hover:bg-purple p-2 pl-4 pr-4 mt-2 rounded-lg"
               onClick={() => {
-                dispatch(reset());
-
-                if (league == "NFL") {
-                  dispatch(fetchNFLHintsEndless());
-                } else if (league == "NBA") {
-                  dispatch(fetchNBAHintsEndless());
-                }
+                setOpen(true);
               }}
+              className=" text-yellow-400  sm:hover:bg-purple text-center flex m-auto bg-green-500 p-2 pl-4 pr-4 mt-2 rounded-lg"
             >
-              reset
+              end
             </button>
+          )}
+          {open && (
+            <AnswersMobile open={open} setOpen={setOpen}></AnswersMobile>
           )}
         </div>
       )}

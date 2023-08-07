@@ -27,7 +27,7 @@ export default function GridLogo({ width, logo, hidden, imageSize }) {
           )}
           {!(logo.category == "teams" || logo.category == "college") && (
             <div
-              className={`font-freshman ${
+              className={`font-freshman px-2 ${
                 logo.value.length < 3
                   ? imageSize.includes("60")
                     ? "text-xl"
