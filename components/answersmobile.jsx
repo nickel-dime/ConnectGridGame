@@ -292,94 +292,36 @@ function GridBox({ rounded, color, boxId }) {
 
 function Table({ boxAnswers, isEndless }) {
   return (
-    <div className=" bg-white rounded-md shadow-md">
-      <div className="inline-block py-2 align-middle w-full">
-        <table
-          className={`divide-y divide-gray-300 block overflow-auto table-auto box-content`}
-        >
-          <thead className="">
-            <tr className="">
-              <th
-                scope="col"
-                className="text-left text-sm font-semibold py-4 pl-4 pr-8 text-gray-900"
-              >
-                Name
-              </th>
-              <th
-                scope="col"
-                className="text-left text-sm py-4 pl-8 font-semibold w-44  text-gray-900"
-              >
-                % Guessed
-              </th>
-            </tr>
-          </thead>
-          {boxAnswers && boxAnswers["answers"] ? (
-            <tbody className="divide-y divide-gray-200">
-              {boxAnswers["answers"].map((person) => (
-                <tr
-                  key={person.id}
-                  className={`${
-                    boxAnswers["playerGuessed"] &&
-                    person.id == boxAnswers["playerGuessed"]["id"]
-                      ? "  bg-emerald-50"
-                      : ""
-                  }`}
-                >
-                  <td className={` whitespace-nowrap pl-4 text-sm rounded-md`}>
-                    <div className="flex items-center py-4">
-                      <div className=" h-8 w-8 flex-shrink-0">
-                        {person.profilePic && (
-                          <img
-                            className="flex self-center h-[32px] w-[32px] rounded-full object-cover object-top"
-                            src={person.profilePic}
-                            alt=""
-                          />
-                        )}
-                      </div>
-                      <div className="ml-4">
-                        {person.link ? (
-                          <a
-                            className="font-medium text-blue-500"
-                            href={person.link}
-                          >
-                            {person.firstName} {person.lastName}
-                          </a>
-                        ) : (
-                          <div className="font-medium text-gray-900">
-                            {person.firstName} {person.lastName}
-                          </div>
-                        )}
-                        <div className="text-sm text-gray-500">
-                          {person.yearStart} - {person.yearEnd}
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="whitespace-nowrap py-4 text-sm pl-8 ">
-                    <div className="text-gray-900">{person.percentGuessed}</div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          ) : (
-            <tbody>
-              <tr className="p-4">
-                <td className=" pb-5 pl-4 pr-4 ">
-                  {" "}
-                  <Skeleton count={20} className="h-10 mt-2"></Skeleton>
-                </td>
-                <td className="text-center pb-5 font-inter">
-                  <Skeleton count={20} className="h-10 mt-2"></Skeleton>
-                </td>
-                <td className="pr-6 pl-4 pb-5">
-                  {" "}
-                  <Skeleton count={20} className="h-10 mt-2"></Skeleton>
-                </td>
-              </tr>
-            </tbody>
-          )}
-        </table>
-      </div>
+    <div>
+      {boxAnswers["answers"] &&
+        boxAnswers["answers"].map((person) => (
+          <div key={person.id} className="ml-4">
+            <div className=" h-8 w-8 flex-shrink-0">
+              {person.profilePic && (
+                <img
+                  className="flex self-center h-[32px] w-[32px] rounded-full object-cover object-top"
+                  src={person.profilePic}
+                  alt=""
+                />
+              )}
+            </div>
+            {person.link ? (
+              <a className="font-medium text-blue-500" href={person.link}>
+                {person.firstName} {person.lastName}
+              </a>
+            ) : (
+              <div className="font-medium text-gray-900">
+                {person.firstName} {person.lastName}
+              </div>
+            )}
+            <div className="text-sm text-gray-500">
+              {person.yearStart} - {person.yearEnd}
+            </div>
+            <div className="whitespace-nowrap py-4 text-sm pl-8 ">
+              <div className="text-gray-900">{person.percentGuessed}</div>
+            </div>
+          </div>
+        ))}
     </div>
   );
 }
